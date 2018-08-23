@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.MoKpiMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.MoKpi">
+        <id column="mo_kpi_id" property="moKpiId" />
+        <result column="mo_kpi_name" property="moKpiName" />
+        <result column="mo_kpi_key" property="moKpiKey" />
+        <result column="mo_kpi_desc" property="moKpiDesc" />
+        <result column="unit_ch" property="unitCh" />
+        <result column="unit_en" property="unitEn" />
+        <result column="showorder" property="showorder" />
+        <result column="useflag" property="useflag" />
+        <result column="user_id_create" property="userIdCreate" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="user_id_mod" property="userIdMod" />
+        <result column="gmt_modified" property="gmtModified" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        mo_kpi_id AS moKpiId, mo_kpi_name AS moKpiName, mo_kpi_key AS moKpiKey, mo_kpi_desc AS moKpiDesc, unit_ch AS unitCh, unit_en AS unitEn, showorder, useflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
+    </sql>
+
+</mapper>

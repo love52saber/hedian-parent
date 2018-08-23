@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.MqttTerminalMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.MqttTerminal">
+        <id column="id" property="id" />
+        <result column="createtime" property="createtime" />
+        <result column="res_serialnumber" property="resSerialnumber" />
+        <result column="msg_time" property="msgTime" />
+        <result column="topic" property="topic" />
+        <result column="payload" property="payload" />
+        <result column="terminal_status" property="terminalStatus" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, createtime, res_serialnumber AS resSerialnumber, msg_time AS msgTime, topic, payload, terminal_status AS terminalStatus
+    </sql>
+
+</mapper>

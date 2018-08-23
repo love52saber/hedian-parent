@@ -1,0 +1,90 @@
+package com.hedian.service.impl;
+
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.hedian.base.BusinessException;
+import com.hedian.entity.SysGroup;
+import com.hedian.entity.SysGrpRole;
+import com.hedian.entity.SysGrpUser;
+import com.hedian.mapper.SysGroupMapper;
+import com.hedian.model.SysGroupModel;
+import com.hedian.service.ISysGroupService;
+import com.hedian.service.ISysGrpRoleService;
+import com.hedian.service.ISysGrpUserService;
+import com.hedian.util.ComUtil;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+
+/**
+ * <p>
+ * 用户组 服务实现类
+ * </p>
+ *
+ * @author hedian123
+ * @since 2018-08-17
+ */
+@Service
+public class SysGroupServiceImpl extends ServiceImpl<SysGroupMapper, SysGroup> implements ISysGroupService {
+
+
+    @Autowired
+    private ISysGrpRoleService sysGrpRoleService;
+    @Autowired
+    private ISysGrpUserService sysGrpUserService;
+
+    @Override
+    public boolean addRoleAndUsers(SysGroupModel groupModel) throws Exception {
+
+        SysGroup group = new SysGroup();
+        BeanUtils.copyProperties(groupModel, group);
+        group.setUserIdCreate(1L);
+        group.setGmtCreate(new Date());
+        group.setUseflag(1);
+        group.setDelflag(1);
+        boolean result = this.insert(group);
+        if (!result) {
+            throw new BusinessException("插入用户组信息失败");
+        }
+        //插入用户组权限信息
+        result = sysGrpRoleService.saveAll(group.getGrpId(), groupModel.getRoleIds());
+        if (!result) {
+            throw new BusinessException("插入用户组权限信息失败");
+        }
+        //插入用户组用户信息
+        result = sysGrpUserService.saveAll(group.getGrpId(), groupModel.getUserIds());
+        return result;
+    }
+
+    @Override
+    public boolean updateGroupInfo(SysGroupModel groupModel) throws Exception {
+        SysGroup group = this.selectById(groupModel.getGrpId());
+        if (ComUtil.isEmpty(group)) {
+            return false;
+        }
+        BeanUtils.copyProperties(groupModel, group);
+        boolean result = this.updateById(group);
+        if (!result) {
+            throw new BusinessException("更新用户组信息失败");
+        }
+        result = sysGrpRoleService.delete(new EntityWrapper<SysGrpRole>().eq("grp_id", groupModel.getGrpId()));
+        if (!result) {
+            throw new BusinessException("删除权限信息失败");
+        }
+        result = sysGrpRoleService.saveAll(groupModel.getGrpId(), groupModel.getRoleIds());
+        if (!result) {
+            throw new BusinessException("更新权限信息失败");
+        }
+        result = sysGrpUserService.delete(new EntityWrapper<SysGrpUser>().eq("grp_id", groupModel.getGrpId()));
+        if (!result) {
+            throw new BusinessException("删除用户组用户信息失败");
+        }
+        result = sysGrpUserService.saveAll(groupModel.getGrpId(), groupModel.getUserIds());
+        if (!result) {
+            throw new BusinessException("更新用户组用户信息失败");
+        }
+        return result;
+    }
+}

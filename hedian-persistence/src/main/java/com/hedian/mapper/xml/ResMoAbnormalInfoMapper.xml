@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.ResMoAbnormalInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.ResMoAbnormalInfo">
+        <id column="res_abnormal_id" property="resAbnormalId" />
+        <result column="res_id" property="resId" />
+        <result column="mo_th_id" property="moThId" />
+        <result column="mo_kpi_id" property="moKpiId" />
+        <result column="mo_abnormal_id" property="moAbnormalId" />
+        <result column="res_abnormal_code" property="resAbnormalCode" />
+        <result column="res_abnormal_name" property="resAbnormalName" />
+        <result column="res_abnormallevel_id" property="resAbnormallevelId" />
+        <result column="res_abnormaldesc" property="resAbnormaldesc" />
+        <result column="res_abnomaltime" property="resAbnomaltime" />
+        <result column="res_recoverytime" property="resRecoverytime" />
+        <result column="res_abnormalvalue" property="resAbnormalvalue" />
+        <result column="res_revoveryvalue" property="resRevoveryvalue" />
+        <result column="res_abnormalstatus" property="resAbnormalstatus" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        res_abnormal_id AS resAbnormalId, res_id AS resId, mo_th_id AS moThId, mo_kpi_id AS moKpiId, mo_abnormal_id AS moAbnormalId, res_abnormal_code AS resAbnormalCode, res_abnormal_name AS resAbnormalName, res_abnormallevel_id AS resAbnormallevelId, res_abnormaldesc AS resAbnormaldesc, res_abnomaltime AS resAbnomaltime, res_recoverytime AS resRecoverytime, res_abnormalvalue AS resAbnormalvalue, res_revoveryvalue AS resRevoveryvalue, res_abnormalstatus AS resAbnormalstatus
+    </sql>
+
+    <select id="selectByResIdAndkpiId" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_res_mo_abnormal_info
+        <where>
+            <if test="resId != null and resId != ''">
+                and res_id = #{resId}
+            </if>
+            <if test="moKpiId != null and moKpiId != ''">
+                and mo_kpi_id =#{moKpiId}
+            </if>
+            and res_abnormalstatus=1
+        </where>
+    </select>
+
+</mapper>

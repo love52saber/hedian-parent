@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.ResAbnormallevelMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.ResAbnormallevel">
+        <id column="res_abnormallevel_id" property="resAbnormallevelId" />
+        <result column="res_abnormallevel_name" property="resAbnormallevelName" />
+        <result column="res_abnormallevel_color" property="resAbnormallevelColor" />
+        <result column="res_abnormallevel_priority" property="resAbnormallevelPriority" />
+        <result column="showorder" property="showorder" />
+        <result column="useflag" property="useflag" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        res_abnormallevel_id AS resAbnormallevelId, res_abnormallevel_name AS resAbnormallevelName, res_abnormallevel_color AS resAbnormallevelColor, res_abnormallevel_priority AS resAbnormallevelPriority, showorder, useflag
+    </sql>
+
+</mapper>

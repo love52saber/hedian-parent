@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.ResTerminalMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.ResTerminal">
+        <id column="id" property="id" />
+        <result column="res_id_terminal" property="resIdTerminal" />
+        <result column="res_id" property="resId" />
+        <result column="link_port" property="linkPort" />
+        <result column="useflag" property="useflag" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, res_id_terminal AS resIdTerminal, res_id AS resId, link_port AS linkPort, useflag
+    </sql>
+
+    <resultMap id="BaseCustomMap" type="com.hedian.entity.ResTerminal">
+        <id column="id" property="id" />
+        <result column="res_id_terminal" property="resIdTerminal" />
+        <result column="res_id" property="resId" />
+        <result column="link_port" property="linkPort" />
+        <result column="useflag" property="useflag" />
+        <association property="resBase" javaType="com.hedian.entity.ResBase"
+                     resultMap="com.hedian.mapper.ResBaseMapper.ResOtherMap">
+        </association>
+    </resultMap>
+
+    <select id="selectByResIdTerminal" resultMap="BaseCustomMap" parameterType="java.lang.Integer">
+        SELECT *
+        FROM tbl_res_terminal it
+            INNER JOIN tbl_res_base rb ON it.res_id = rb.res_id
+			INNER JOIN tbl_res_subtype rs ON  rb.res_stype_id = rs.res_stype_id
+            INNER JOIN tbl_res_maintype rm ON rb.res_mtype_id = rm.res_mtype_id
+		    INNER JOIN tbl_res_status rss ON rb.res_status = rss.res_status
+            LEFT JOIN tbl_res_abnormallevel ra ON  rb.res_abnormallevel_id = ra.res_abnormallevel_id
+        WHERE it.res_id_terminal = #{res_id_terminal,jdbcType=INTEGER}
+    </select>
+
+</mapper>

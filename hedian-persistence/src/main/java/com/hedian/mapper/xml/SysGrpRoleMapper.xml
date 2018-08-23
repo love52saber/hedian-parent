@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.SysGrpRoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.SysGrpRole">
+        <id column="id" property="id" />
+        <result column="grp_id" property="grpId" />
+        <result column="role_id" property="roleId" />
+        <result column="useflag" property="useflag" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, grp_id AS grpId, role_id AS roleId, useflag
+    </sql>
+
+</mapper>

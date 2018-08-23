@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.ResBaseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.ResBase">
+        <id column="res_id" property="resId" />
+        <result column="res_name" property="resName" />
+        <result column="res_alias" property="resAlias" />
+        <result column="res_serialnumber" property="resSerialnumber" />
+        <result column="res_no" property="resNo" />
+        <result column="res_desc" property="resDesc" />
+        <result column="res_mtype_id" property="resMtypeId" />
+        <result column="res_stype_id" property="resStypeId" />
+        <result column="res_ipv4" property="resIpv4" />
+        <result column="res_port" property="resPort" />
+        <result column="longitude" property="longitude" />
+        <result column="latitude" property="latitude" />
+        <result column="res_address" property="resAddress" />
+        <result column="res_status" property="resStatus" />
+        <result column="res_abnormal_id" property="resAbnormalId" />
+        <result column="res_abnormalcode" property="resAbnormalcode" />
+        <result column="res_abnormallevel_id" property="resAbnormallevelId" />
+        <result column="res_abnormal_name" property="resAbnormalName" />
+        <result column="res_abnormaldesc" property="resAbnormaldesc" />
+        <result column="res_abnomaltime" property="resAbnomaltime" />
+        <result column="res_recoverytime" property="resRecoverytime" />
+        <result column="res_color" property="resColor" />
+        <result column="useflag" property="useflag" />
+        <result column="user_id_create" property="userIdCreate" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="user_id_mod" property="userIdMod" />
+        <result column="gmt_modified" property="gmtModified" />
+    </resultMap>
+
+    <resultMap id="ResOtherMap" type="com.hedian.entity.ResBase" >
+        <id column="res_id" property="resId" />
+        <result column="res_name" property="resName" />
+        <result column="res_alias" property="resAlias" />
+        <result column="res_serialnumber" property="resSerialnumber" />
+        <result column="res_no" property="resNo" />
+        <result column="res_desc" property="resDesc" />
+        <result column="res_mtype_id" property="resMtypeId" />
+        <result column="res_stype_id" property="resStypeId" />
+        <result column="res_ipv4" property="resIpv4" />
+        <result column="res_port" property="resPort" />
+        <result column="longitude" property="longitude" />
+        <result column="latitude" property="latitude" />
+        <result column="res_address" property="resAddress" />
+        <result column="res_status" property="resStatus" />
+        <result column="res_abnormal_id" property="resAbnormalId" />
+        <result column="res_abnormalcode" property="resAbnormalcode" />
+        <result column="res_abnormallevel_id" property="resAbnormallevelId" />
+        <result column="res_abnormal_name" property="resAbnormalName" />
+        <result column="res_abnormaldesc" property="resAbnormaldesc" />
+        <result column="res_abnomaltime" property="resAbnomaltime" />
+        <result column="res_recoverytime" property="resRecoverytime" />
+        <result column="res_color" property="resColor" />
+        <result column="useflag" property="useflag" />
+        <result column="user_id_create" property="userIdCreate" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="user_id_mod" property="userIdMod" />
+        <result column="gmt_modified" property="gmtModified" />
+        <association property="resAbnormalLevel" javaType="com.hedian.entity.ResAbnormallevel">
+            <id column="res_abnormallevel_id" property="resAbnormallevelId" />
+            <result column="res_abnormallevel_name" property="resAbnormallevelName" />
+            <result column="res_abnormallevel_color" property="resAbnormallevelColor" />
+            <result column="res_abnormallevel_priority" property="resAbnormallevelPriority" />
+            <result column="showorder" property="showorder" />
+            <result column="useflag" property="useflag" />
+        </association>
+        <association property="resStatusDO" javaType="com.hedian.entity.ResStatus">
+            <id column="res_status" property="resStatus" />
+            <result column="res_status_name" property="resStatusName" />
+            <result column="res_status_color" property="resStatusColor" />
+            <result column="showorder" property="showorder" />
+            <result column="delflag" property="delflag" />
+            <result column="useflag" property="useflag" />
+        </association>
+        <association property="resMainType" javaType="com.hedian.entity.ResMaintype">
+            <id column="res_mtype_id" property="resMtypeId" />
+            <result column="res_mtype_name" property="resMtypeName" />
+            <result column="res_mtype_desc" property="resMtypeDesc" />
+            <result column="showorder" property="showorder" />
+            <result column="delflag" property="delflag" />
+            <result column="useflag" property="useflag" />
+        </association>
+        <association property="resSubtype" javaType="com.hedian.entity.ResSubtype">
+            <id column="res_stype_id" property="resStypeId" />
+            <result column="res_mtype_id" property="resMtypeId" />
+            <result column="parent_id" property="parentId" />
+            <result column="res_stype_name" property="resStypeName" />
+            <result column="res_stype_desc" property="resStypeDesc" />
+            <result column="showorder" property="showorder" />
+            <result column="delflag" property="delflag" />
+            <result column="useflag" property="useflag" />
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        res_id AS resId, res_name AS resName, res_alias AS resAlias, res_serialnumber AS resSerialnumber, res_no AS resNo, res_desc AS resDesc, res_mtype_id AS resMtypeId, res_stype_id AS resStypeId, res_ipv4 AS resIpv4, res_port AS resPort, longitude, latitude, res_address AS resAddress, res_status AS resStatus, res_abnormal_id AS resAbnormalId, res_abnormalcode AS resAbnormalcode, res_abnormallevel_id AS resAbnormallevelId, res_abnormal_name AS resAbnormalName, res_abnormaldesc AS resAbnormaldesc, res_abnomaltime AS resAbnomaltime, res_recoverytime AS resRecoverytime, res_color AS resColor, useflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
+    </sql>
+
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.MoThresholdMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.MoThreshold">
+        <id column="mo_th_id" property="moThId" />
+        <result column="mo_th_type" property="moThType" />
+        <result column="mo_th_base" property="moThBase" />
+        <result column="mo_th_up" property="moThUp" />
+        <result column="mo_th_down" property="moThDown" />
+        <result column="mo_th_inupdown" property="moThInupdown" />
+        <result column="mo_th_value" property="moThValue" />
+        <result column="mo_th_priority" property="moThPriority" />
+        <result column="res_stype_id" property="resStypeId" />
+        <result column="mo_th_stype_flag" property="moThStypeFlag" />
+        <result column="mo_kpi_id" property="moKpiId" />
+        <result column="mo_abnormal_id" property="moAbnormalId" />
+        <result column="showorder" property="showorder" />
+        <result column="useflag" property="useflag" />
+        <result column="user_id_create" property="userIdCreate" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="user_id_mod" property="userIdMod" />
+        <result column="gmt_modified" property="gmtModified" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        mo_th_id AS moThId, mo_th_type AS moThType, mo_th_base AS moThBase, mo_th_up AS moThUp, mo_th_down AS moThDown, mo_th_inupdown AS moThInupdown, mo_th_value AS moThValue, mo_th_priority AS moThPriority, res_stype_id AS resStypeId, mo_th_stype_flag AS moThStypeFlag, mo_kpi_id AS moKpiId, mo_abnormal_id AS moAbnormalId, showorder, useflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
+    </sql>
+
+</mapper>

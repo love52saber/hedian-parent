@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.MoAbnormalDefMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.MoAbnormalDef">
+        <id column="mo_abnormal_id" property="moAbnormalId" />
+        <result column="mo_abnormalcode" property="moAbnormalcode" />
+        <result column="mo_abnormal_name" property="moAbnormalName" />
+        <result column="res_abnormallevel_id" property="resAbnormallevelId" />
+        <result column="mo_abnormal_desc" property="moAbnormalDesc" />
+        <result column="mo_abnormal_showtemplate" property="moAbnormalShowtemplate" />
+        <result column="showorder" property="showorder" />
+        <result column="useflag" property="useflag" />
+        <result column="user_id_create" property="userIdCreate" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="user_id_mod" property="userIdMod" />
+        <result column="gmt_modified" property="gmtModified" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        mo_abnormal_id AS moAbnormalId, mo_abnormalcode AS moAbnormalcode, mo_abnormal_name AS moAbnormalName, res_abnormallevel_id AS resAbnormallevelId, mo_abnormal_desc AS moAbnormalDesc, mo_abnormal_showtemplate AS moAbnormalShowtemplate, showorder, useflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
+    </sql>
+
+</mapper>

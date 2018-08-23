@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.ResMaintypeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.ResMaintype">
+        <id column="res_mtype_id" property="resMtypeId" />
+        <result column="res_mtype_name" property="resMtypeName" />
+        <result column="res_mtype_desc" property="resMtypeDesc" />
+        <result column="showorder" property="showorder" />
+        <result column="delflag" property="delflag" />
+        <result column="useflag" property="useflag" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        res_mtype_id AS resMtypeId, res_mtype_name AS resMtypeName, res_mtype_desc AS resMtypeDesc, showorder, delflag, useflag
+    </sql>
+
+</mapper>

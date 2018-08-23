@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.SysConfMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.SysConf">
+        <id column="id" property="id" />
+        <result column="c_type" property="cType" />
+        <result column="parakey" property="parakey" />
+        <result column="paravalue" property="paravalue" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, c_type AS cType, parakey, paravalue
+    </sql>
+
+</mapper>

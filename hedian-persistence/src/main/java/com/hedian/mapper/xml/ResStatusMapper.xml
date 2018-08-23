@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.ResStatusMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.ResStatus">
+        <id column="res_status" property="resStatus" />
+        <result column="res_status_name" property="resStatusName" />
+        <result column="res_status_color" property="resStatusColor" />
+        <result column="showorder" property="showorder" />
+        <result column="delflag" property="delflag" />
+        <result column="useflag" property="useflag" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        res_status AS resStatus, res_status_name AS resStatusName, res_status_color AS resStatusColor, showorder, delflag, useflag
+    </sql>
+
+</mapper>

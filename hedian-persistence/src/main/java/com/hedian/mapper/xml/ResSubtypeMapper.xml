@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.ResSubtypeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.ResSubtype">
+        <id column="res_stype_id" property="resStypeId" />
+        <result column="res_mtype_id" property="resMtypeId" />
+        <result column="parent_id" property="parentId" />
+        <result column="res_stype_name" property="resStypeName" />
+        <result column="res_stype_desc" property="resStypeDesc" />
+        <result column="showorder" property="showorder" />
+        <result column="delflag" property="delflag" />
+        <result column="useflag" property="useflag" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        res_stype_id AS resStypeId, res_mtype_id AS resMtypeId, parent_id AS parentId, res_stype_name AS resStypeName, res_stype_desc AS resStypeDesc, showorder, delflag, useflag
+    </sql>
+
+</mapper>
