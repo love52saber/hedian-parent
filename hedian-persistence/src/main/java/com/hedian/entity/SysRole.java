@@ -2,12 +2,17 @@ package com.hedian.entity;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotations.TableLogic;
+import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
+
 import java.util.Date;
+
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+
 import java.io.Serializable;
 
 /**
@@ -42,17 +47,17 @@ public class SysRole extends Model<SysRole> {
     /**
      * 创建用户id
      */
-    @TableField("user_id_create")
+    @TableField(value = "user_id_create", fill = FieldFill.INSERT)
     private Long userIdCreate;
     /**
      * 创建时间
      */
-    @TableField("gmt_create")
+    @TableField(value = "gmt_create", fill = FieldFill.INSERT)
     private Date gmtCreate;
     /**
      * 创建时间
      */
-    @TableField("gmt_modified")
+    @TableField(value = "gmt_modified", fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
     /**
      * 显示顺序
@@ -62,11 +67,12 @@ public class SysRole extends Model<SysRole> {
      * 删除标记：0 不能删除， 1可以删除， 默认 1
      */
     private Integer delflag;
-    @TableField("user_id_mod")
+    @TableField(value = "user_id_mod",fill = FieldFill.UPDATE)
     private Long userIdMod;
     /**
      * 使用标记： 1 使用， 0 不使用
      */
+    @TableLogic
     private Integer useflag;
 
 
@@ -166,17 +172,17 @@ public class SysRole extends Model<SysRole> {
     @Override
     public String toString() {
         return "SysRole{" +
-        "roleId=" + roleId +
-        ", roleName=" + roleName +
-        ", roleSign=" + roleSign +
-        ", remark=" + remark +
-        ", userIdCreate=" + userIdCreate +
-        ", gmtCreate=" + gmtCreate +
-        ", gmtModified=" + gmtModified +
-        ", showorder=" + showorder +
-        ", delflag=" + delflag +
-        ", userIdMod=" + userIdMod +
-        ", useflag=" + useflag +
-        "}";
+                "roleId=" + roleId +
+                ", roleName=" + roleName +
+                ", roleSign=" + roleSign +
+                ", remark=" + remark +
+                ", userIdCreate=" + userIdCreate +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", showorder=" + showorder +
+                ", delflag=" + delflag +
+                ", userIdMod=" + userIdMod +
+                ", useflag=" + useflag +
+                "}";
     }
 }

@@ -1,5 +1,6 @@
 package com.hedian.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hedian.entity.Menu;
 import com.hedian.entity.SysMenu;
 import com.hedian.entity.SysRole;
@@ -29,18 +30,18 @@ public interface ISysRoleService extends IService<SysRole> {
 
     /**
      * 新增角色以及角色权限信息
-     * @param roleModel 角色以及角色权限信息
+     * @param requestJson 角色以及角色权限信息
      * @return 新增结果 true/false
      */
-    boolean addRoleAndPermission(SysRoleModel roleModel)throws Exception;
+    boolean addRoleAndPermission(JSONObject requestJson)throws Exception;
 
     /**
      * 更新色以及角色权限信息
-     * @param roleModel
+     * @param requestJson
      * @return
      * @throws Exception
      */
-    boolean updateRoleInfo(SysRoleModel roleModel) throws Exception;
+    boolean updateRoleInfo(JSONObject requestJson) throws Exception;
 
     /**
      * 根据groupId查询角色

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/tblSysConf")
-@Api(value = "系统配置")
+@Api(description="系统配置")
 public class SysConfController {
 
     @Autowired
@@ -32,7 +32,7 @@ public class SysConfController {
     /**
      * 根据c_type和parakey获取配置值
      */
-    @GetMapping("/{cType}/{paraKey}")
+    @GetMapping(value = "/{cType}/{paraKey}")
     public PublicResult getTreeAllDept(@PathVariable("cType") Integer cType, @PathVariable("paraKey") String paraKey) {
         SysConf sysConf = sysConfService.selectOne(new EntityWrapper<SysConf>().where("c_type={0} and paraKey={1}", cType, paraKey));
         return new PublicResult(PublicResultConstant.SUCCESS, sysConf);

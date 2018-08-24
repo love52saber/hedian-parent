@@ -15,6 +15,9 @@ import com.hedian.service.ISysUserRoleService;
 import com.hedian.service.ISysUserService;
 import com.hedian.util.ComUtil;
 import com.hedian.util.StringUtil;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -84,6 +87,9 @@ public class SysUserController {
         if (!StringUtil.checkEmail(userRegister.getEmail())) {
             return new PublicResult<>(PublicResultConstant.EMAIL_ERROR, null);
         }
+        if (!ComUtil.isEmpty(userService.selectOne(new EntityWrapper<SysUser>().eq("username",userRegister.getUsername())))) {
+            return new PublicResult<>("用户名重复", null);
+        }
         userRegister.setPassword(BCrypt.hashpw(Constant.PASSWORD, BCrypt.gensalt()));
         userRegister.setPwdFlag(2);
         boolean result = userService.register(userRegister, requestJson.getJSONArray("roleId"),requestJson.getString("url"));
@@ -127,21 +133,6 @@ public class SysUserController {
     }
 
 
-//    @PostMapping("/password")
-//    public PublicResult<String> resetPassWord (@CurrentUser User currentUser,@ValidationParam("oldPassWord,passWord,rePassWord")
-//    @RequestBody JSONObject requestJson ) throws Exception{
-//        if (!requestJson.getString("passWord").equals(requestJson.getString("rePassWord"))) {
-//            return new PublicResult<>(PublicResultConstant.INVALID_RE_PASSWORD, null);
-//        }
-//        if(!BCrypt.checkpw(requestJson.getString("oldPassWord"),currentUser.getPassWord())){
-//            return new PublicResult<>(PublicResultConstant.INVALID_USERNAME_PASSWORD, null);
-//        }
-//        currentUser.setPassWord(BCrypt.hashpw(requestJson.getString("passWord"),BCrypt.gensalt()));
-//        userService.updateById(currentUser);
-//        return  new PublicResult<String>(PublicResultConstant.SUCCESS, null);
-//    }
-//
-
     /**
      * 修改密码
      *
@@ -149,18 +140,30 @@ public class SysUserController {
      * @throws Exception
      */
     @PostMapping("/password")
-    public PublicResult<String> resetPassWord(@ValidationParam("id,passWord,rePassWord")
+    public PublicResult<String> resetPassWord(@ValidationParam("userId,password,rePassword")
                                               @RequestBody JSONObject requestJson) throws Exception {
-        SysUser user = userService.selectById(requestJson.getString("id"));
+        SysUser user = userService.selectById(requestJson.getString("userId"));
         if (ComUtil.isEmpty(user)) {
             return new PublicResult<>(PublicResultConstant.INVALID_USER, null);
         }
-        if (!requestJson.getString("passWord").equals(requestJson.getString("rePassWord"))) {
+        if (!requestJson.getString("password").equals(requestJson.getString("rePassword"))) {
             return new PublicResult<>(PublicResultConstant.INVALID_RE_PASSWORD, null);
         }
         user.setPassword(BCrypt.hashpw(requestJson.getString("passWord"), BCrypt.gensalt()));
         userService.updateById(user);
         return new PublicResult<String>(PublicResultConstant.SUCCESS, null);
+    }
+
+    @ApiOperation(value="删除用户", notes="根据url的id来删除用户")
+    @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "String",paramType = "path")
+    @DeleteMapping(value = "/{userId}")
+    public PublicResult<String> deleteUser(@PathVariable("userId") String userId) {
+        SysUser user = userService.selectById(userId);
+        if (ComUtil.isEmpty(user)) {
+            return new PublicResult<>(PublicResultConstant.INVALID_USER, null);
+        }
+        boolean result = userService.deleteById(userId);
+        return result?new PublicResult<>(PublicResultConstant.SUCCESS, null): new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 
 //
@@ -223,17 +226,6 @@ public class SysUserController {
 //        return ComUtil.isEmpty(user)?new PublicResult<>(PublicResultConstant.INVALID_USER, null): new PublicResult<>(PublicResultConstant.SUCCESS, user);
 //    }
 //
-//    @ApiOperation(value="删除用户", notes="根据url的id来删除用户")
-//    @ApiImplicitParam(name = "userNo", value = "用户ID", required = true, dataType = "String",paramType = "path")
-//    @DeleteMapping(value = "/{userNo}")
-//    @RequiresPermissions(value = {"user:delete"})
-//    public PublicResult<String> deleteUser(@PathVariable("userNo") String userNo) {
-//        User user = userService.selectById(userNo);
-//        if (ComUtil.isEmpty(user)) {
-//            return new PublicResult<>(PublicResultConstant.INVALID_USER, null);
-//        }
-//        boolean result = userService.deleteByUserNo(userNo);
-//        return result?new PublicResult<>(PublicResultConstant.SUCCESS, null): new PublicResult<>(PublicResultConstant.ERROR, null);
-//    }
+
 }
 

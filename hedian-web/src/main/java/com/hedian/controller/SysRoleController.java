@@ -1,8 +1,10 @@
 package com.hedian.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.hedian.annotation.ValidationParam;
 import com.hedian.base.Constant;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
@@ -94,19 +96,19 @@ public class SysRoleController {
         if (!ComUtil.isEmpty(sysGrpRoleService.selectList(new EntityWrapper<SysGrpRole>().eq("role_id", roleId)))) {
             return new PublicResult<>("角色存在相关用户组,请先删除相关角色的用户组", null);
         }
-        boolean result = roleService.delete(new EntityWrapper<SysRole>().eq("role_id", roleId));
+        boolean result = roleService.deleteById(roleId);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 
     /**
      * 添加角色
      *
-     * @param roleModel
+     * @param requestJson
      * @return
      */
     @PostMapping
-    public PublicResult<String> addRole(@RequestBody SysRoleModel roleModel) throws Exception {
-        boolean result = roleService.addRoleAndPermission(roleModel);
+    public PublicResult<String> addRole(@ValidationParam("roleName")@RequestBody JSONObject requestJson) throws Exception {
+        boolean result = roleService.addRoleAndPermission(requestJson);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.INVALID_USER, null);
     }
 
@@ -114,8 +116,8 @@ public class SysRoleController {
      * 修改角色信息
      */
     @PutMapping
-    public PublicResult<String> updateRole(@RequestBody SysRoleModel roleModel) throws Exception {
-        boolean result = roleService.updateRoleInfo(roleModel);
+    public PublicResult<String> updateRole(@ValidationParam("roleName,roleId")@RequestBody JSONObject requestJson) throws Exception {
+        boolean result = roleService.updateRoleInfo(requestJson);
         return !result ? new PublicResult<>(PublicResultConstant.INVALID_ROLE, null) : new PublicResult<>(PublicResultConstant.SUCCESS, null);
     }
 

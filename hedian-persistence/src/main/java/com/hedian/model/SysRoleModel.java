@@ -1,6 +1,5 @@
 package com.hedian.model;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -11,7 +10,7 @@ import java.util.List;
  * @author hedian
  * @since 2018-06-30
  */
-public class SysRoleModel {
+public class SysRoleModel{
 
     private Long roleId;
     /**
@@ -27,50 +26,22 @@ public class SysRoleModel {
      */
     private String remark;
     /**
-     * 创建用户id
-     */
-    private Long userIdCreate;
-    /**
-     * 创建时间
-     */
-    private Date gmtCreate;
-    /**
-     * 创建时间
-     */
-    private Date gmtModified;
-    /**
      * 显示顺序
      */
     private Integer showorder;
-    /**
-     * 删除标记：0 不能删除， 1可以删除， 默认 1
-     */
-    private Integer delflag;
 
-    private Long userIdMod;
-    /**
-     * 使用标记： 1 使用， 0 不使用
-     */
-    private Integer useflag;
-
-    private List<Long> menuCodes;
+    private List<Long> menuIds;
 
     public SysRoleModel() {
     }
 
-    public SysRoleModel(Long roleId, String roleName, String roleSign, String remark, Long userIdCreate, Date gmtCreate, Date gmtModified, Integer showorder, Integer delflag, Long userIdMod, Integer useflag, List<Long> menuCodes) {
+    public SysRoleModel(Long roleId, String roleName, String roleSign, String remark, Integer showorder, List<Long> menuIds) {
         this.roleId = roleId;
         this.roleName = roleName;
         this.roleSign = roleSign;
         this.remark = remark;
-        this.userIdCreate = userIdCreate;
-        this.gmtCreate = gmtCreate;
-        this.gmtModified = gmtModified;
         this.showorder = showorder;
-        this.delflag = delflag;
-        this.userIdMod = userIdMod;
-        this.useflag = useflag;
-        this.menuCodes = menuCodes;
+        this.menuIds = menuIds;
     }
 
     @Override
@@ -80,14 +51,8 @@ public class SysRoleModel {
                 ", roleName='" + roleName + '\'' +
                 ", roleSign='" + roleSign + '\'' +
                 ", remark='" + remark + '\'' +
-                ", userIdCreate=" + userIdCreate +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
                 ", showorder=" + showorder +
-                ", delflag=" + delflag +
-                ", userIdMod=" + userIdMod +
-                ", useflag=" + useflag +
-                ", menuCodes=" + menuCodes +
+                ", menuIds=" + menuIds +
                 '}';
     }
 
@@ -123,29 +88,6 @@ public class SysRoleModel {
         this.remark = remark;
     }
 
-    public Long getUserIdCreate() {
-        return userIdCreate;
-    }
-
-    public void setUserIdCreate(Long userIdCreate) {
-        this.userIdCreate = userIdCreate;
-    }
-
-    public Date getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Date gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-    public Date getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Date gmtModified) {
-        this.gmtModified = gmtModified;
-    }
 
     public Integer getShoworder() {
         return showorder;
@@ -155,35 +97,11 @@ public class SysRoleModel {
         this.showorder = showorder;
     }
 
-    public Integer getDelflag() {
-        return delflag;
+    public List<Long> getMenuIds() {
+        return menuIds;
     }
 
-    public void setDelflag(Integer delflag) {
-        this.delflag = delflag;
-    }
-
-    public Long getUserIdMod() {
-        return userIdMod;
-    }
-
-    public void setUserIdMod(Long userIdMod) {
-        this.userIdMod = userIdMod;
-    }
-
-    public Integer getUseflag() {
-        return useflag;
-    }
-
-    public void setUseflag(Integer useflag) {
-        this.useflag = useflag;
-    }
-
-    public List<Long> getMenuCodes() {
-        return menuCodes;
-    }
-
-    public void setMenuCodes(List<Long> menuCodes) {
-        this.menuCodes = menuCodes;
+    public void setMenuIds(List<Long> menuIds) {
+        this.menuIds = menuIds;
     }
 }

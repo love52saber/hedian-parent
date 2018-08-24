@@ -28,6 +28,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Override
     public List<SysMenu> treeMenuList(Long pId, List<SysMenu> list) {
         List<SysMenu> IteratorMenuList = new ArrayList<>();
+
         for (SysMenu m : list) {
             if (m.getParentId().equals(pId)) {
                 List<SysMenu> childMenuList = treeMenuList(m.getMenuId(), list);

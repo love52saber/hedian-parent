@@ -24,13 +24,13 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
 
 
     @Override
-    public boolean saveAll(Long roleCode, List<Long> menuCodes) {
+    public boolean saveAll(Long roleCode, List<Long> menuIds) {
         boolean result = true;
-        if (!ComUtil.isEmpty(menuCodes)) {
+        if (!ComUtil.isEmpty(menuIds)) {
             List<SysRoleMenu> modelList = new ArrayList<>();
-            for (Long menuCode : menuCodes) {
-                modelList.add(new SysRoleMenu(roleCode, menuCode,1));
-            }
+            menuIds.stream().forEach(menuId -> {
+                modelList.add(new SysRoleMenu(roleCode, menuId, 1));
+            });
             result = this.insertBatch(modelList);
         }
         return result;

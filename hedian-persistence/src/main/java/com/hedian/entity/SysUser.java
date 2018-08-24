@@ -2,6 +2,7 @@ package com.hedian.entity;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -133,6 +134,7 @@ public class SysUser extends Model<SysUser> {
     private Integer pwdFlag;
     @TableField("user_id_mod")
     private Long userIdMod;
+    @TableLogic
     private Integer useflag;
     /**
      * 删除标记：0 不能删除， 1可以删除， 默认 1

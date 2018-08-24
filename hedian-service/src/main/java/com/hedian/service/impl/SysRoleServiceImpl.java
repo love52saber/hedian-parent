@@ -1,13 +1,17 @@
 package com.hedian.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hedian.base.BusinessException;
-import com.hedian.entity.*;
+import com.hedian.entity.SysMenu;
+import com.hedian.entity.SysRole;
+import com.hedian.entity.SysRoleMenu;
 import com.hedian.mapper.SysRoleMapper;
-import com.hedian.model.RoleModel;
 import com.hedian.model.SysRoleModel;
-import com.hedian.service.*;
+import com.hedian.service.ISysMenuService;
+import com.hedian.service.ISysRoleMenuService;
+import com.hedian.service.ISysRoleService;
 import com.hedian.util.ComUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +42,15 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     private SysRoleMapper sysRoleMapper;
 
     @Override
-    public boolean addRoleAndPermission(SysRoleModel roleModel) throws Exception {
+    public boolean addRoleAndPermission(JSONObject requestJson) throws Exception {
+        SysRoleModel sysRoleModel = requestJson.toJavaObject(SysRoleModel.class);
         SysRole role = new SysRole();
-        BeanUtils.copyProperties(roleModel, role);
+        BeanUtils.copyProperties(sysRoleModel, role);
         boolean result = this.insert(role);
         if (!result) {
             throw new BusinessException("插入角色信息失败");
         }
-        result = roleToMenuService.saveAll(role.getRoleId(), roleModel.getMenuCodes());
+        result = roleToMenuService.saveAll(role.getRoleId(), sysRoleModel.getMenuIds());
         return result;
     }
 
@@ -59,21 +64,22 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
-    public boolean updateRoleInfo(SysRoleModel roleModel) throws Exception {
-        SysRole role = this.selectById(roleModel.getRoleId());
+    public boolean updateRoleInfo(JSONObject requestJson) throws Exception {
+        SysRoleModel sysRoleModel = requestJson.toJavaObject(SysRoleModel.class);
+        SysRole role = this.selectById(sysRoleModel.getRoleId());
         if (ComUtil.isEmpty(role)) {
             return false;
         }
-        BeanUtils.copyProperties(roleModel, role);
+        BeanUtils.copyProperties(sysRoleModel, role);
         boolean result = this.updateById(role);
         if (!result) {
             throw new BusinessException("更新角色信息失败");
         }
-        result = roleToMenuService.delete(new EntityWrapper<SysRoleMenu>().eq("role_id", roleModel.getRoleId()));
+        result = roleToMenuService.delete(new EntityWrapper<SysRoleMenu>().eq("role_id", sysRoleModel.getRoleId()));
         if (!result) {
             throw new BusinessException("删除权限信息失败");
         }
-        result = roleToMenuService.saveAll(role.getRoleId(), roleModel.getMenuCodes());
+        result = roleToMenuService.saveAll(role.getRoleId(), sysRoleModel.getMenuIds());
         if (!result) {
             throw new BusinessException("更新权限信息失败");
         }
