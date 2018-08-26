@@ -115,7 +115,7 @@ public class SysUserController {
      * @return
      */
     @PostMapping
-    public PublicResult<String> addSysUser(@ValidationParam("name,userName,sex,deptId,mobile,telephone,email,status,roleIds,url")
+    public PublicResult<String> addSysUser(@ValidationParam("name,userName,sex,deptId,mobile,telephone,email,status,roleIds")
                                            @RequestBody JSONObject requestJson) throws Exception {
 
         //可直接转为java对象,简化操作,不用再set一个个属性
@@ -156,7 +156,7 @@ public class SysUserController {
      * @return
      */
     @PutMapping
-    public PublicResult<String> updateSysUser(@ValidationParam("userId,name,userName,sex,deptId,mobile,telephone,email,status,roleIds,url")
+    public PublicResult<String> updateSysUser(@ValidationParam("userId,name,userName,sex,deptId,mobile,telephone,email,status,roleIds")
                                               @RequestBody JSONObject requestJson) throws Exception {
 
         //可直接转为java对象,简化操作,不用再set一个个属性

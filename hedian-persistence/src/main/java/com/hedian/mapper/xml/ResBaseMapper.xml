@@ -61,14 +61,7 @@
         <result column="gmt_create" property="gmtCreate" />
         <result column="user_id_mod" property="userIdMod" />
         <result column="gmt_modified" property="gmtModified" />
-        <association property="resAbnormalLevel" javaType="com.hedian.entity.ResAbnormallevel">
-            <id column="res_abnormallevel_id" property="resAbnormallevelId" />
-            <result column="res_abnormallevel_name" property="resAbnormallevelName" />
-            <result column="res_abnormallevel_color" property="resAbnormallevelColor" />
-            <result column="res_abnormallevel_priority" property="resAbnormallevelPriority" />
-            <result column="showorder" property="showorder" />
-            <result column="useflag" property="useflag" />
-        </association>
+
         <association property="resStatusDO" javaType="com.hedian.entity.ResStatus">
             <id column="res_status" property="resStatus" />
             <result column="res_status_name" property="resStatusName" />
@@ -93,6 +86,14 @@
             <result column="res_stype_desc" property="resStypeDesc" />
             <result column="showorder" property="showorder" />
             <result column="delflag" property="delflag" />
+            <result column="useflag" property="useflag" />
+        </association>
+        <association property="resAbnormallevel" javaType="com.hedian.entity.ResAbnormallevel">
+            <id column="res_abnormallevel_id" property="resAbnormallevelId" />
+            <result column="res_abnormallevel_name" property="resAbnormallevelName" />
+            <result column="res_abnormallevel_color" property="resAbnormallevelColor" />
+            <result column="res_abnormallevel_priority" property="resAbnormallevelPriority" />
+            <result column="showorder" property="showorder" />
             <result column="useflag" property="useflag" />
         </association>
     </resultMap>

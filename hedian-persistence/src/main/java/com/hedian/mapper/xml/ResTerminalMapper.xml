@@ -27,7 +27,7 @@
         </association>
     </resultMap>
 
-    <select id="selectByResIdTerminal" resultMap="BaseCustomMap" parameterType="java.lang.Integer">
+    <select id="selectByResIdTerminal" resultMap="BaseCustomMap">
         SELECT *
         FROM tbl_res_terminal it
             INNER JOIN tbl_res_base rb ON it.res_id = rb.res_id

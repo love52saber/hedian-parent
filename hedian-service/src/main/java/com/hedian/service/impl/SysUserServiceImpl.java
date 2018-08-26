@@ -105,6 +105,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public Map<String, Object> getLoginUserAndMenuInfo(SysUser user) {
         Map<String, Object> result = new HashMap<>();
+        result.put("token", JWTUtil.sign(user.getUsername(), user.getPassword()));
         user.setPassword(null);
         result.put("user", user);
         //根据用户主键查询启用的菜单权限

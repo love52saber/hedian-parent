@@ -26,7 +26,7 @@ public class MyMetaObjectHandler extends MetaObjectHandler {
             setFieldValByName("gmtCreate", new Date(), metaObject);
         }
         if (null == delFlag) {
-            setFieldValByName("delFlag", 0, metaObject);
+            setFieldValByName("delFlag", 1, metaObject);
         }
         if (null == delflag) {
             setFieldValByName("delflag", 1, metaObject);

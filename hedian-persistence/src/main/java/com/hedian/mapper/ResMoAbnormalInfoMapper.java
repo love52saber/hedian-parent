@@ -1,8 +1,12 @@
 package com.hedian.mapper;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.entity.ResMoAbnormalInfo;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.hedian.model.AlarmInfoModel;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,4 +25,12 @@ public interface ResMoAbnormalInfoMapper extends BaseMapper<ResMoAbnormalInfo> {
      * @return
      */
     ResMoAbnormalInfo selectByResIdAndkpiId(Map<String, Object> map);
+
+    /**
+     * 告警列表  等同于编写一个普通 list 查询，mybatis-plus 自动替你分页
+     */
+
+    List<AlarmInfoModel> selectAlarmByResId(Page<AlarmInfoModel> page, @Param("resId") String resId);
+
+
 }

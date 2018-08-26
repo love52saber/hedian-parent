@@ -1,57 +1,48 @@
 package com.hedian.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hedian.annotation.CurrentUser;
 import com.hedian.annotation.Log;
 import com.hedian.annotation.Pass;
 import com.hedian.annotation.ValidationParam;
-import com.hedian.base.Constant;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
-import com.hedian.entity.SmsVerify;
 import com.hedian.entity.SysUser;
-import com.hedian.entity.User;
-import com.hedian.service.ISmsVerifyService;
 import com.hedian.service.ISysUserService;
-import com.hedian.service.IUserService;
 import com.hedian.util.ComUtil;
-import com.hedian.util.JWTUtil;
-import com.hedian.util.SmsSendUtil;
-import com.hedian.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Map;
 
 /**
- *  登录接口
+ * 登录接口
+ *
  * @author hedian
  * @since 2018-05-03
  */
 @RestController
 @RequestMapping("/api")
-@Api(description="身份认证模块")
+@Api(description = "身份认证模块")
 public class LoginController {
     @Autowired
     private ISysUserService userService;
 
 
     @PostMapping("/login")
-    @Log(description="前台密码登录接口:/login")
+    @Log(description = "前台密码登录接口:/login")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "requestJson", value = "{\\\"username\\\":\\\"admin\\\",\\\"password\\\":\\\"XXXX\\\"}" , required = true, dataType = "String",paramType="body")
+            @ApiImplicitParam(name = "requestJson", value = "{\\\"username\\\":\\\"admin\\\",\\\"password\\\":\\\"XXXX\\\"}", required = true, dataType = "String", paramType = "body")
     })
     @Pass
-    public PublicResult<String> login(
-            @ValidationParam("username,password")@RequestBody JSONObject requestJson) throws Exception{
+    public PublicResult<Map<String, Object>> login(
+            @ValidationParam("username,password") @RequestBody JSONObject requestJson) throws Exception {
         //由于 @ValidationParam注解已经验证过mobile和passWord参数，所以可以直接get使用没毛病。
         String userName = requestJson.getString("username");
         SysUser user = userService.getUserByUserName(userName);
@@ -62,18 +53,11 @@ public class LoginController {
             return new PublicResult<>(PublicResultConstant.INVALID_USERNAME_PASSWORD, null);
         }
         if (user.getStatus().equals(0)) {
-            return new PublicResult<>("该用已被禁用请联系管理员",null);
+            return new PublicResult<>("该用已被禁用请联系管理员", null);
         }
-        return new PublicResult<>(PublicResultConstant.SUCCESS, JWTUtil.sign(user.getUsername(), user.getPassword()));
-    }
-
-    @GetMapping("/user/me")
-    @Log(description="前台登陆用户信息接口:/user/me")
-    public PublicResult<Map<String, Object>> userInfo(@CurrentUser SysUser user) throws Exception{
         Map<String, Object> result = userService.getLoginUserAndMenuInfo(user);
         return new PublicResult<>(PublicResultConstant.SUCCESS, result);
     }
-
 
 
 //    @ApiOperation(value="手机密码登录", notes="body体参数,不需要Authorization",produces = "application/json")

@@ -63,7 +63,7 @@ public class SysDept extends Model<SysDept> {
     @TableField(value = "delflag", fill = FieldFill.INSERT)
     private Integer delflag;
     /**
-     * 是否删除  -1：已删除  0：正常
+     * 是否删除  0：已删除  1：正常
      */
     @TableField(value = "del_flag", fill = FieldFill.INSERT)
     @TableLogic

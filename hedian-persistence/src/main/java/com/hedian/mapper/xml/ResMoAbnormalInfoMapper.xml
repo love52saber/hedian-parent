@@ -4,20 +4,33 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.hedian.entity.ResMoAbnormalInfo">
-        <id column="res_abnormal_id" property="resAbnormalId" />
-        <result column="res_id" property="resId" />
-        <result column="mo_th_id" property="moThId" />
-        <result column="mo_kpi_id" property="moKpiId" />
-        <result column="mo_abnormal_id" property="moAbnormalId" />
-        <result column="res_abnormal_code" property="resAbnormalCode" />
-        <result column="res_abnormal_name" property="resAbnormalName" />
-        <result column="res_abnormallevel_id" property="resAbnormallevelId" />
-        <result column="res_abnormaldesc" property="resAbnormaldesc" />
-        <result column="res_abnomaltime" property="resAbnomaltime" />
-        <result column="res_recoverytime" property="resRecoverytime" />
-        <result column="res_abnormalvalue" property="resAbnormalvalue" />
-        <result column="res_revoveryvalue" property="resRevoveryvalue" />
-        <result column="res_abnormalstatus" property="resAbnormalstatus" />
+        <id column="res_abnormal_id" property="resAbnormalId"/>
+        <result column="res_id" property="resId"/>
+        <result column="mo_th_id" property="moThId"/>
+        <result column="mo_kpi_id" property="moKpiId"/>
+        <result column="mo_abnormal_id" property="moAbnormalId"/>
+        <result column="res_abnormal_code" property="resAbnormalCode"/>
+        <result column="res_abnormal_name" property="resAbnormalName"/>
+        <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
+        <result column="res_abnormaldesc" property="resAbnormaldesc"/>
+        <result column="res_abnomaltime" property="resAbnomaltime"/>
+        <result column="res_recoverytime" property="resRecoverytime"/>
+        <result column="res_abnormalvalue" property="resAbnormalvalue"/>
+        <result column="res_revoveryvalue" property="resRevoveryvalue"/>
+        <result column="res_abnormalstatus" property="resAbnormalstatus"/>
+    </resultMap>
+
+    <resultMap id="AlarmResultMap" type="com.hedian.model.AlarmInfoModel">
+        <id column="res_id" property="resId"/>
+        <result column="res_alias" property="alarmObjectAlias"/>
+        <result column="res_abnormallevel_name" property="alarmLevel"/>
+        <result column="res_abnormallevel_color" property="alarmColor"/>
+        <result column="res_abnormal_code" property="alarmCode"/>
+        <result column="res_name" property="alarmObjectType"/>
+        <result column="res_abnormal_name" property="alarmName"/>
+        <result column="mo_abnormal_name" property="alarmObject"/>
+        <result column="res_abnormaldesc" property="alarmDesc"/>
+        <result column="res_abnomaltime" property="alarmTime"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -38,6 +51,24 @@
             </if>
             and res_abnormalstatus=1
         </where>
+    </select>
+
+    <select id="selectAlarmByResId" resultMap="AlarmResultMap">
+        select (@:=@+1) AS
+        res_id,b.res_alias,d.res_abnormallevel_name,d.res_abnormallevel_color,a.res_abnormal_code,b.res_name,a.res_abnormal_name,e.mo_abnormal_name,
+        a.res_abnormaldesc,a.res_abnomaltime
+        from
+        (select * from tbl_res_mo_abnormal_info where
+        1=1
+        <if test="resId != null and resId != ''">
+            and res_id=#{resId,jdbcType=BIGINT}
+        </if>
+        and res_abnormalstatus=1 ) a
+        left join tbl_res_base b on a.res_id=b.res_id
+        left join tbl_res_abnormallevel d on a.res_abnormallevel_id=d.res_abnormallevel_id
+        left join tbl_mo_abnormal_def e on a.mo_abnormal_id=e.mo_abnormal_id
+        join (SELECT @:=0) r
+        order by a.res_abnomaltime desc
     </select>
 
 </mapper>

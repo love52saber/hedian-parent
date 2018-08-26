@@ -151,7 +151,7 @@ public class ResBase extends Model<ResBase> {
      * 告警等级实体类
      */
     @TableField(exist = false)
-    private ResMoAbnormalInfo resAbnormalLevel;
+    private ResAbnormallevel resAbnormallevel;
     /**
      * 设备状态实体类
      */
@@ -184,6 +184,14 @@ public class ResBase extends Model<ResBase> {
     @TableField(exist = false)
     private Map<Integer, ResMoAbnormalInfo> terminalErrInfos = new LinkedHashMap<>();
 
+    public ResAbnormallevel getResAbnormallevel() {
+        return resAbnormallevel;
+    }
+
+    public void setResAbnormallevel(ResAbnormallevel resAbnormallevel) {
+        this.resAbnormallevel = resAbnormallevel;
+    }
+
     public ResMaintype getResMainType() {
         return resMainType;
     }
@@ -200,13 +208,6 @@ public class ResBase extends Model<ResBase> {
         this.resSubtype = resSubtype;
     }
 
-    public ResMoAbnormalInfo getResAbnormalLevel() {
-        return resAbnormalLevel;
-    }
-
-    public void setResAbnormalLevel(ResMoAbnormalInfo resAbnormalLevel) {
-        this.resAbnormalLevel = resAbnormalLevel;
-    }
 
     public ResStatus getResStatusDO() {
         return resStatusDO;
