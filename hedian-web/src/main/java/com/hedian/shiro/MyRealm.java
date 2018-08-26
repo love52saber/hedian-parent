@@ -58,7 +58,7 @@ public class MyRealm extends AuthorizingRealm {
 
         String userName = JWTUtil.getUserNo(principals.toString());
         SysUser user = userService.getUserByUserName(userName);
-        SysUserRole userToRole = userToRoleService.selectByUserId(user.getUserId());
+//        SysUserRole userToRole = userToRoleService.selectByUserId(user.getUserId());
 
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         ArrayList<String> pers = new ArrayList<>();
@@ -70,7 +70,7 @@ public class MyRealm extends AuthorizingRealm {
 
         //控制菜单级别按钮  类中用@RequiresPermissions("user:list") 对应数据库中code字段来控制controller
 //        ArrayList<String> pers = new ArrayList<>();
-        List<SysMenu> menuList = menuService.findMenuByRoleId(userToRole.getRoleId());
+        List<SysMenu> menuList = menuService.findMenuByUserId(user.getUserId());
         for (SysMenu per : menuList) {
              if (!ComUtil.isEmpty(per.getPerms())) {
                   pers.add(per.getPerms());

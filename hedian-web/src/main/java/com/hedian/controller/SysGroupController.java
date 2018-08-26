@@ -12,12 +12,14 @@ import com.hedian.entity.SysGrpUser;
 import com.hedian.model.SysGroupModel;
 import com.hedian.service.*;
 import com.hedian.util.ComUtil;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -29,6 +31,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/sysGroup")
+@Api(description = "用户组管理")
 public class SysGroupController {
 
     @Autowired
@@ -55,6 +58,12 @@ public class SysGroupController {
             ew.like("grp_name", grpName);
         }
         Page<SysGroup> page = sysGroupService.selectPage(new Page<>(pageIndex, pageSize), ew);
+        page.getRecords().stream().forEach(sysGroup -> {
+            List<SysGrpRole> sysGrpRoleList = sysGrpRoleService.selectList(new EntityWrapper<SysGrpRole>().eq("grp_id", sysGroup.getGrpId()));
+            sysGroup.setRoleIds(sysGrpRoleList.stream().map(SysGrpRole::getRoleId).collect(Collectors.toList()));
+            List<SysGrpUser> sysGrpUserList = sysGrpUserService.selectList(new EntityWrapper<SysGrpUser>().eq("grp_id", sysGroup.getGrpId()));
+            sysGroup.setUserIds(sysGrpUserList.stream().map(SysGrpUser::getUserId).collect(Collectors.toList()));
+        });
         return new PublicResult<PageResult>(PublicResultConstant.SUCCESS, new PageResult<>(
                 page.getTotal(), pageIndex, pageSize, page.getRecords()));
     }

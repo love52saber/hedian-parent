@@ -30,5 +30,36 @@
             AND r.role_id = #{roleId}
         </if>
     </select>
+    <!--根据用户id 查询权限列表，自己角色权限和自己所属用户组角色权限  去并集-->
+    <select id="findMenuByUserId" resultMap="BaseResultMap">
+        select DISTINCT * FROM (
+        select  sm.* from(
+        select rm.* from(
+        select sr.role_id from sys_grp_role gr INNER JOIN sys_role sr on gr.role_id=sr.role_id
+        where gr.grp_id in (select grp_id from sys_grp_user where
+        1 = 1
+        <if test=" userId !=null and userId !=''">
+            AND user_id = #{userId}
+        </if>
+        )) t
+        INNER JOIN sys_role_menu rm on t.role_id=rm.role_id) m
+        INNER JOIN sys_menu sm on m.menu_id=sm.menu_id
+
+        union all
+
+        select sm.* from
+        (select rm.menu_id from
+        (
+        select sr.role_id from sys_user_role ur INNER JOIN sys_role sr on ur.role_id=sr.role_id
+        where
+        1 = 1
+        <if test=" userId !=null and userId !=''">
+            AND ur.user_id = #{userId}
+        </if>
+        ) m
+        INNER JOIN sys_role_menu rm on m.role_id = rm.role_id)tt
+        INNER JOIN sys_menu sm on tt.menu_id = sm.menu_id) menu_all
+
+    </select>
 
 </mapper>

@@ -29,4 +29,12 @@ public interface ISysMenuService extends IService<SysMenu> {
      * @return
      */
     List<SysMenu> findMenuByRoleId(Long roleId);
+
+
+    /**
+     * 根据用户查所有权限
+     * @param userId
+     * @return
+     */
+    List<SysMenu> findMenuByUserId(Long userId);
 }

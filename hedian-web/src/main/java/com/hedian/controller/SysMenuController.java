@@ -13,6 +13,7 @@ import com.hedian.entity.User;
 import com.hedian.service.IMenuService;
 import com.hedian.service.ISysMenuService;
 import com.hedian.util.ComUtil;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/sysMenu")
+@Api(description = "系统菜单")
 public class SysMenuController {
 
     @Autowired

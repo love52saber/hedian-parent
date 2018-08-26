@@ -4,6 +4,7 @@ package com.hedian.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -13,8 +14,8 @@ import org.springframework.stereotype.Controller;
  * @author hedian123
  * @since 2018-08-17
  */
-@Controller
-@RequestMapping("/tblResBase")
+@RestController
+@RequestMapping("/api/resBase")
 public class ResBaseController {
 
 }

@@ -2,6 +2,7 @@ package com.hedian.controller;
 
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.hedian.annotation.Pass;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.SysConf;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2018-08-17
  */
 @RestController
-@RequestMapping("/api/tblSysConf")
+@RequestMapping("/api/sysConf")
 @Api(description="系统配置")
 public class SysConfController {
 
@@ -33,7 +34,8 @@ public class SysConfController {
      * 根据c_type和parakey获取配置值
      */
     @GetMapping(value = "/{cType}/{paraKey}")
-    public PublicResult getTreeAllDept(@PathVariable("cType") Integer cType, @PathVariable("paraKey") String paraKey) {
+    @Pass
+    public PublicResult getSysConfig(@PathVariable("cType") Integer cType, @PathVariable("paraKey") String paraKey) {
         SysConf sysConf = sysConfService.selectOne(new EntityWrapper<SysConf>().where("c_type={0} and paraKey={1}", cType, paraKey));
         return new PublicResult(PublicResultConstant.SUCCESS, sysConf);
     }

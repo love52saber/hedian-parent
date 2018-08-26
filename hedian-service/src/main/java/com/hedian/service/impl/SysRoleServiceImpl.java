@@ -2,6 +2,7 @@ package com.hedian.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hedian.base.BusinessException;
 import com.hedian.entity.SysMenu;
@@ -40,6 +41,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
     @Autowired
     private SysRoleMapper sysRoleMapper;
+
 
     @Override
     public boolean addRoleAndPermission(JSONObject requestJson) throws Exception {
@@ -85,6 +87,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         }
         return result;
 
+    }
+
+    @Override
+    public Page<SysRole> selectPageByConditionRole(Page<SysRole> userPage,String info) {
+       return null;
     }
 
     @Override

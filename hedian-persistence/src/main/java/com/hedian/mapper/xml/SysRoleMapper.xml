@@ -22,6 +22,8 @@
         role_id AS roleId, role_name AS roleName, role_sign AS roleSign, remark, user_id_create AS userIdCreate, gmt_create AS gmtCreate, gmt_modified AS gmtModified, showorder, delflag, user_id_mod AS userIdMod, useflag
     </sql>
 
+
+
     <!-- 根据用户查询角色 -->
     <select id="findRoleByUserId" resultMap="BaseResultMap">
         select r.* from sys_role r LEFT JOIN sys_user_role u on r.role_id= u.role_id

@@ -11,18 +11,23 @@ import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.SysUser;
+import com.hedian.entity.SysUserRole;
 import com.hedian.service.ISysUserRoleService;
 import com.hedian.service.ISysUserService;
 import com.hedian.util.ComUtil;
 import com.hedian.util.StringUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -34,6 +39,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/sysUser")
+@Api(description = "用户管理")
 public class SysUserController {
     @Autowired
     private ISysUserService userService;
@@ -52,19 +58,52 @@ public class SysUserController {
     public PublicResult<SysUser> getUser(@CurrentUser SysUser user) throws Exception {
         return new PublicResult<SysUser>(PublicResultConstant.SUCCESS, user);
     }
+
+//    @PostMapping("/info")
+//    public PublicResult<String> resetUserInfo (@CurrentUser SysUser currentUser,@RequestBody JSONObject requestJson) throws Exception{
+//        if(!ComUtil.isEmpty(requestJson.getString("userName"))){
+//            currentUser.setUserName(requestJson.getString("userName"));
+//        }
+//        if(!ComUtil.isEmpty(requestJson.getString("avatar"))){
+//            currentUser.setAvatar(requestJson.getString("avatar"));
+//        }
+//        if(!ComUtil.isEmpty(requestJson.getString("unit"))){
+//            currentUser.setUnit(requestJson.getString("unit"));
+//        }
+//        if(!ComUtil.isEmpty(requestJson.getString("job"))){
+//            currentUser.setJob(requestJson.getString("job"));
+//        }
+//        userService.updateById(currentUser);
+//        return  new PublicResult<String>(PublicResultConstant.SUCCESS, null);
+//    }
+
     @GetMapping(value = "/pageList")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageIndex", value = "第几页"
+                    , dataType = "String",paramType="query"),
+            @ApiImplicitParam(name = "pageSize", value = "每页多少条"
+                    , dataType = "String",paramType="query"),
+            @ApiImplicitParam(name = "info", value = "用户名称"
+                    , dataType = "String",paramType="query"),
+            @ApiImplicitParam(name = "deptId", value = "部门id"
+            , dataType = "String",paramType="query"),
+    })
     public PublicResult findList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
                                  @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-                                 @RequestParam(value = "userName", defaultValue = "", required = false) String userName,
+                                 @RequestParam(value = "info", defaultValue = "", required = false) String info,
                                  @RequestParam(value = "deptId", defaultValue = "", required = false) String deptId) {
         EntityWrapper<SysUser> ew = new EntityWrapper<>();
-        if (!ComUtil.isEmpty(userName)) {
-            ew.like("user_name", userName);
+        if (!ComUtil.isEmpty(info)) {
+            ew.like("user_name", info);
         }
         if (!ComUtil.isEmpty(deptId)) {
             ew.eq("dept_id", deptId);
         }
         Page<SysUser> page = userService.selectPage(new Page<>(pageIndex, pageSize), ew);
+        page.getRecords().stream().forEach(sysUser -> {
+            List<SysUserRole> sysUserRoleList = userRoleService.selectList(new EntityWrapper<SysUserRole>().eq("user_id", sysUser.getUserId()));
+            sysUser.setRoleIds(sysUserRoleList.stream().map(SysUserRole::getRoleId).collect(Collectors.toList()));
+        });
         return new PublicResult<PageResult>(PublicResultConstant.SUCCESS, new PageResult<>(
                 page.getTotal(), pageIndex, pageSize, page.getRecords()));
     }
@@ -87,12 +126,12 @@ public class SysUserController {
         if (!StringUtil.checkEmail(userRegister.getEmail())) {
             return new PublicResult<>(PublicResultConstant.EMAIL_ERROR, null);
         }
-        if (!ComUtil.isEmpty(userService.selectOne(new EntityWrapper<SysUser>().eq("username",userRegister.getUsername())))) {
+        if (!ComUtil.isEmpty(userService.selectOne(new EntityWrapper<SysUser>().eq("username", userRegister.getUsername())))) {
             return new PublicResult<>("用户名重复", null);
         }
         userRegister.setPassword(BCrypt.hashpw(Constant.PASSWORD, BCrypt.gensalt()));
         userRegister.setPwdFlag(2);
-        boolean result = userService.register(userRegister, requestJson.getJSONArray("roleId"),requestJson.getString("url"));
+        boolean result = userService.register(userRegister, requestJson.getJSONArray("roleId"), requestJson.getString("url"));
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) :
                 new PublicResult<>(PublicResultConstant.ERROR, null);
     }
@@ -112,6 +151,7 @@ public class SysUserController {
 
     /**
      * 修改用户
+     *
      * @param requestJson
      * @return
      */
@@ -127,7 +167,7 @@ public class SysUserController {
         if (!StringUtil.checkEmail(userUpdate.getEmail())) {
             return new PublicResult<>(PublicResultConstant.EMAIL_ERROR, null);
         }
-        boolean result = userService.updateInfo(userUpdate, requestJson.getJSONArray("roleIds"),requestJson.getString("url"));
+        boolean result = userService.updateInfo(userUpdate, requestJson.getJSONArray("roleIds"), requestJson.getString("url"));
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) :
                 new PublicResult<>(PublicResultConstant.ERROR, null);
     }
@@ -139,9 +179,9 @@ public class SysUserController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/password")
-    public PublicResult<String> resetPassWord(@ValidationParam("userId,password,rePassword")
-                                              @RequestBody JSONObject requestJson) throws Exception {
+    @PostMapping("/updatePassword")
+    public PublicResult<String> updatePassword(@ValidationParam("userId,password,rePassword")
+                                               @RequestBody JSONObject requestJson) throws Exception {
         SysUser user = userService.selectById(requestJson.getString("userId"));
         if (ComUtil.isEmpty(user)) {
             return new PublicResult<>(PublicResultConstant.INVALID_USER, null);
@@ -154,8 +194,28 @@ public class SysUserController {
         return new PublicResult<String>(PublicResultConstant.SUCCESS, null);
     }
 
-    @ApiOperation(value="删除用户", notes="根据url的id来删除用户")
-    @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "String",paramType = "path")
+    /**
+     * 重置密码
+     *
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/resetPassword")
+    public PublicResult<String> resetPassWord(@CurrentUser SysUser user) throws Exception {
+        user.setPwdFlag(2);
+        user.setWrongTimes(null);
+        user.setLockflag(0);
+        user.setLocktype(null);
+        user.setUnlocktime(null);
+        user.setLockreason(null);
+        user.setPassword(BCrypt.hashpw(Constant.PASSWORD, BCrypt.gensalt()));
+        userService.updateAllColumnById(user);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);
+    }
+
+
+    @ApiOperation(value = "删除用户", notes = "根据url的id来删除用户")
+    @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "String", paramType = "path")
     @DeleteMapping(value = "/{userId}")
     public PublicResult<String> deleteUser(@PathVariable("userId") String userId) {
         SysUser user = userService.selectById(userId);
@@ -163,27 +223,36 @@ public class SysUserController {
             return new PublicResult<>(PublicResultConstant.INVALID_USER, null);
         }
         boolean result = userService.deleteById(userId);
-        return result?new PublicResult<>(PublicResultConstant.SUCCESS, null): new PublicResult<>(PublicResultConstant.ERROR, null);
+        if (result) {
+            result = userRoleService.delete(new EntityWrapper<SysUserRole>().eq("user_id", userId));
+        }
+        return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 
-//
-//    @PostMapping("/info")
-//    public PublicResult<String> resetUserInfo (@CurrentUser User currentUser,@RequestBody JSONObject requestJson) throws Exception{
-//        if(!ComUtil.isEmpty(requestJson.getString("userName"))){
-//            currentUser.setUserName(requestJson.getString("userName"));
+
+    @PostMapping("/info")
+    public PublicResult<String> resetUserInfo (@CurrentUser SysUser currentUser,@RequestBody JSONObject requestJson) throws Exception{
+        if(!ComUtil.isEmpty(requestJson.getString("name"))){
+            currentUser.setName(requestJson.getString("name"));
+        }
+        if(!ComUtil.isEmpty(requestJson.getString("sex"))){
+            currentUser.setSex(requestJson.getLong("sex"));
+        }
+        if(!ComUtil.isEmpty(requestJson.getString("email"))){
+            currentUser.setEmail(requestJson.getString("email"));
+        }
+        if(!ComUtil.isEmpty(requestJson.getString("mobile"))){
+            currentUser.setMobile(requestJson.getString("mobile"));
+        }
+//        if(!ComUtil.isEmpty(requestJson.getString("mobile"))){
+//            currentUser.setJob(requestJson.getString("mobile"));
 //        }
-//        if(!ComUtil.isEmpty(requestJson.getString("avatar"))){
-//            currentUser.setAvatar(requestJson.getString("avatar"));
+//        if(!ComUtil.isEmpty(requestJson.getString("mobile"))){
+//            currentUser.setJob(requestJson.getString("mobile"));
 //        }
-//        if(!ComUtil.isEmpty(requestJson.getString("unit"))){
-//            currentUser.setUnit(requestJson.getString("unit"));
-//        }
-//        if(!ComUtil.isEmpty(requestJson.getString("job"))){
-//            currentUser.setJob(requestJson.getString("job"));
-//        }
-//        userService.updateById(currentUser);
-//        return  new PublicResult<String>(PublicResultConstant.SUCCESS, null);
-//    }
+        userService.updateById(currentUser);
+        return  new PublicResult<String>(PublicResultConstant.SUCCESS, null);
+    }
 //
 //
 //

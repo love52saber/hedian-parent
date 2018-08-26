@@ -40,6 +40,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/user")
+@ApiIgnore
 public class UserController {
 
     @Autowired

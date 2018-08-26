@@ -104,13 +104,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public Map<String, Object> getLoginUserAndMenuInfo(SysUser user) {
-
         Map<String, Object> result = new HashMap<>();
-        SysUserRole userToRole = sysUserRoleService.selectByUserId(user.getUserId());
-        user.setToken(JWTUtil.sign(user.getUsername(), user.getPassword()));
+        user.setPassword(null);
         result.put("user", user);
-        //根据角色主键查询启用的菜单权限
-        List<SysMenu> menuList = sysMenuService.findMenuByRoleId(userToRole.getRoleId());
+        //根据用户主键查询启用的菜单权限
+        List<SysMenu> menuList = sysMenuService.findMenuByUserId(user.getUserId());
         List<SysMenu> retMenuList = sysMenuService.treeMenuList(0L, menuList);
         result.put("menuList", retMenuList);
         return result;

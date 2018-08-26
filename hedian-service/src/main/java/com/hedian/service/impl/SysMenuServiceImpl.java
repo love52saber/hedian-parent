@@ -44,4 +44,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public List<SysMenu> findMenuByRoleId(Long roleId) {
         return sysMenuMapper.findMenuByRoleId(roleId);
     }
+
+
+    @Override
+    public List<SysMenu> findMenuByUserId(Long userId) {
+        return sysMenuMapper.findMenuByUserId(userId);
+    }
 }

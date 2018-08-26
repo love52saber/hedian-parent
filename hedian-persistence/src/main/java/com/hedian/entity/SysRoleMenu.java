@@ -38,6 +38,9 @@ public class SysRoleMenu extends Model<SysRoleMenu> {
     @TableLogic
     private Integer useflag;
 
+    public SysRoleMenu() {
+    }
+
     public SysRoleMenu(Long roleId, Long menuId, Integer useflag) {
         this.roleId = roleId;
         this.menuId = menuId;

@@ -11,6 +11,7 @@ import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.SysDept;
 import com.hedian.service.ISysDeptService;
 import com.hedian.util.ComUtil;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/sysDept")
+@Api(description = "部门管理")
 public class SysDeptController {
     @Autowired
     private ISysDeptService sysDeptService;
@@ -46,7 +48,7 @@ public class SysDeptController {
      */
     @GetMapping("/all")
     public PublicResult getAllDept() {
-        List<SysDept> roleList = sysDeptService.selectList(new EntityWrapper<SysDept>().where("del_flag", 0));
+        List<SysDept> roleList = sysDeptService.selectList(new EntityWrapper<SysDept>());
         return new PublicResult(PublicResultConstant.SUCCESS, roleList);
     }
 
@@ -55,7 +57,7 @@ public class SysDeptController {
      */
     @GetMapping("/treeAll")
     public PublicResult getTreeAllDept() {
-        List<SysDept> sysDeptList = sysDeptService.selectList(new EntityWrapper<SysDept>().where("del_flag={0}", 0));
+        List<SysDept> sysDeptList = sysDeptService.selectList(new EntityWrapper<SysDept>());
         List<SysDept> sysTreeDeptList = sysDeptService.treeDeptList(0L, sysDeptList);
         return new PublicResult(PublicResultConstant.SUCCESS, sysTreeDeptList);
     }

@@ -2,6 +2,7 @@ package com.hedian.entity;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
@@ -37,6 +38,7 @@ public class SysUserRole extends Model<SysUserRole> {
     /**
      * 使用标记： 1 使用， 0 不使用 
      */
+    @TableLogic
     private Integer useflag;
 
     public SysUserRole() {

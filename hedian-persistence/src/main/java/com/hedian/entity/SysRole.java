@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -75,6 +76,16 @@ public class SysRole extends Model<SysRole> {
     @TableLogic
     private Integer useflag;
 
+    @TableField(exist = false)
+    private List<Long> menuIds;
+
+    public List<Long> getMenuIds() {
+        return menuIds;
+    }
+
+    public void setMenuIds(List<Long> menuIds) {
+        this.menuIds = menuIds;
+    }
 
     public Long getRoleId() {
         return roleId;

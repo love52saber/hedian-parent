@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -142,14 +143,14 @@ public class SysUser extends Model<SysUser> {
     private Integer delflag;
 
     @TableField(exist = false)
-    private String token;
+    private List<Long> roleIds;
 
-    public String getToken() {
-        return token;
+    public List<Long> getRoleIds() {
+        return roleIds;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setRoleIds(List<Long> roleIds) {
+        this.roleIds = roleIds;
     }
 
     public Long getUserId() {
@@ -439,7 +440,7 @@ public class SysUser extends Model<SysUser> {
                 ", userIdMod=" + userIdMod +
                 ", useflag=" + useflag +
                 ", delflag=" + delflag +
-                ", token='" + token + '\'' +
+                ", roleIds=" + roleIds +
                 '}';
     }
 }

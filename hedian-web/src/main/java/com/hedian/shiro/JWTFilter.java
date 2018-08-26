@@ -83,7 +83,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         return true;
     }
 
-    private  void setUserBean(ServletRequest request, ServletResponse response, JWTToken token) throws Exception{
+    private void setUserBean(ServletRequest request, ServletResponse response, JWTToken token) throws Exception {
         if (this.userService == null) {
             this.userService = SpringContextBean.getBean(ISysUserService.class);
         }
@@ -92,7 +92,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         /**
          * TODO 暂且放在全局变量里
          */
-        BeanUtils.copyProperties(CacheConstans.CACHE_USER,userBean);
+        BeanUtils.copyProperties(CacheConstans.CACHE_USER, userBean);
         request.setAttribute("currentUser", userBean);
     }
 
@@ -101,6 +101,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
+        System.out.println("Ip address is :" + request.getLocalAddr());
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         httpServletResponse.setHeader("Access-control-Allow-Origin", httpServletRequest.getHeader("Origin"));

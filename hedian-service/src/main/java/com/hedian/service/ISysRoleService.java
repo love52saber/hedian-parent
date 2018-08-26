@@ -1,6 +1,7 @@
 package com.hedian.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.entity.Menu;
 import com.hedian.entity.SysMenu;
 import com.hedian.entity.SysRole;
@@ -51,4 +52,5 @@ public interface ISysRoleService extends IService<SysRole> {
     List<SysRole> getRolesByGrpId(Long grpId);
 
 
+    Page<SysRole> selectPageByConditionRole(Page<SysRole> sysRolePage, String info);
 }

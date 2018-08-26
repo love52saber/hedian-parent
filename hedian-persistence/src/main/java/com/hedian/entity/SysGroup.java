@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -62,6 +63,27 @@ public class SysGroup extends Model<SysGroup> {
      */
     private Integer delflag;
 
+    @TableField(exist = false)
+    private List<Long> roleIds;
+
+    @TableField(exist = false)
+    private List<Long> userIds;
+
+    public List<Long> getRoleIds() {
+        return roleIds;
+    }
+
+    public void setRoleIds(List<Long> roleIds) {
+        this.roleIds = roleIds;
+    }
+
+    public List<Long> getUserIds() {
+        return userIds;
+    }
+
+    public void setUserIds(List<Long> userIds) {
+        this.userIds = userIds;
+    }
 
     public Integer getGrpId() {
         return grpId;
@@ -153,14 +175,16 @@ public class SysGroup extends Model<SysGroup> {
         return "SysGroup{" +
                 "grpId=" + grpId +
                 ", grpType=" + grpType +
-                ", grpName=" + grpName +
-                ", grpDesc=" + grpDesc +
+                ", grpName='" + grpName + '\'' +
+                ", grpDesc='" + grpDesc + '\'' +
                 ", userIdCreate=" + userIdCreate +
                 ", gmtCreate=" + gmtCreate +
                 ", gmtModified=" + gmtModified +
                 ", useflag=" + useflag +
                 ", userIdMod=" + userIdMod +
                 ", delflag=" + delflag +
-                "}";
+                ", roleIds=" + roleIds +
+                ", userIds=" + userIds +
+                '}';
     }
 }
