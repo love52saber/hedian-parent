@@ -20,13 +20,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -59,34 +60,16 @@ public class SysUserController {
         return new PublicResult<SysUser>(PublicResultConstant.SUCCESS, user);
     }
 
-//    @PostMapping("/info")
-//    public PublicResult<String> resetUserInfo (@CurrentUser SysUser currentUser,@RequestBody JSONObject requestJson) throws Exception{
-//        if(!ComUtil.isEmpty(requestJson.getString("userName"))){
-//            currentUser.setUserName(requestJson.getString("userName"));
-//        }
-//        if(!ComUtil.isEmpty(requestJson.getString("avatar"))){
-//            currentUser.setAvatar(requestJson.getString("avatar"));
-//        }
-//        if(!ComUtil.isEmpty(requestJson.getString("unit"))){
-//            currentUser.setUnit(requestJson.getString("unit"));
-//        }
-//        if(!ComUtil.isEmpty(requestJson.getString("job"))){
-//            currentUser.setJob(requestJson.getString("job"));
-//        }
-//        userService.updateById(currentUser);
-//        return  new PublicResult<String>(PublicResultConstant.SUCCESS, null);
-//    }
-
     @GetMapping(value = "/pageList")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageIndex", value = "第几页"
-                    , dataType = "String",paramType="query"),
+                    , dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "pageSize", value = "每页多少条"
-                    , dataType = "String",paramType="query"),
+                    , dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "info", value = "用户名称"
-                    , dataType = "String",paramType="query"),
+                    , dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "deptId", value = "部门id"
-            , dataType = "String",paramType="query"),
+                    , dataType = "String", paramType = "query"),
     })
     public PublicResult findList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
                                  @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
@@ -94,7 +77,7 @@ public class SysUserController {
                                  @RequestParam(value = "deptId", defaultValue = "", required = false) String deptId) {
         EntityWrapper<SysUser> ew = new EntityWrapper<>();
         if (!ComUtil.isEmpty(info)) {
-            ew.like("user_name", info);
+            ew.like("username", info);
         }
         if (!ComUtil.isEmpty(deptId)) {
             ew.eq("dept_id", deptId);
@@ -115,7 +98,7 @@ public class SysUserController {
      * @return
      */
     @PostMapping
-    public PublicResult<String> addSysUser(@ValidationParam("name,userName,sex,deptId,mobile,telephone,email,status,roleIds")
+    public PublicResult<String> addSysUser(@ValidationParam("name,username,sex,deptId,mobile,email,status")
                                            @RequestBody JSONObject requestJson) throws Exception {
 
         //可直接转为java对象,简化操作,不用再set一个个属性
@@ -136,18 +119,45 @@ public class SysUserController {
                 new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 
-
     /**
-     * 用户详情
+     * 用户锁定和解锁
      *
      * @param userId
      * @return
      */
-    @GetMapping(value = "/{userId}")
-    public PublicResult<Map<String, Object>> getById(@PathVariable("userId") Long userId) throws Exception {
-        Map<String, Object> result = userService.getUserInfoAndRoles(userId);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, result);
+    @GetMapping("/lock/{userId}")
+    public PublicResult<SysUser> getUserByUserName(@PathVariable("userId") String userId, String lockInfo,
+                                                   @CurrentUser SysUser sysUser, HttpServletRequest request) throws Exception {
+        SysUser user = userService.selectById(userId);
+        if (ComUtil.isEmpty(sysUser)) {
+            return new PublicResult<>(PublicResultConstant.INVALID_USER, null);
+        }
+
+        if (lockInfo.equals("lock")) {
+            String lockReson = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ","
+                    + request.getLocalAddr() + "," + sysUser.getUsername() + "锁定";
+            //锁定
+            user.setLockflag(1);
+            user.setLocktype(2);
+            user.setWrongTimes(null);
+            user.setLocktype(null);
+            user.setUnlocktime(null);
+            user.setLastwrongTime(null);
+            user.setLockreason(lockReson);
+
+        } else {
+            //解锁
+            user.setLockflag(0);
+            user.setLocktype(null);
+            user.setWrongTimes(null);
+            user.setLocktype(null);
+            user.setUnlocktime(null);
+            user.setLockreason(null);
+        }
+        boolean result = userService.updateAllColumnById(sysUser);
+        return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
+
 
     /**
      * 修改用户
@@ -156,7 +166,7 @@ public class SysUserController {
      * @return
      */
     @PutMapping
-    public PublicResult<String> updateSysUser(@ValidationParam("userId,name,userName,sex,deptId,mobile,telephone,email,status,roleIds")
+    public PublicResult<String> updateSysUser(@ValidationParam("userId,name,username,sex,deptId,mobile,email,status")
                                               @RequestBody JSONObject requestJson) throws Exception {
 
         //可直接转为java对象,简化操作,不用再set一个个属性
@@ -203,8 +213,8 @@ public class SysUserController {
     @PostMapping("/resetPassword")
     public PublicResult<String> resetPassWord(@CurrentUser SysUser user) throws Exception {
         user.setPwdFlag(2);
-        user.setWrongTimes(null);
         user.setLockflag(0);
+        user.setWrongTimes(null);
         user.setLocktype(null);
         user.setUnlocktime(null);
         user.setLockreason(null);
@@ -231,17 +241,17 @@ public class SysUserController {
 
 
     @PostMapping("/info")
-    public PublicResult<String> resetUserInfo (@CurrentUser SysUser currentUser,@RequestBody JSONObject requestJson) throws Exception{
-        if(!ComUtil.isEmpty(requestJson.getString("name"))){
+    public PublicResult<String> resetUserInfo(@CurrentUser SysUser currentUser, @RequestBody JSONObject requestJson) throws Exception {
+        if (!ComUtil.isEmpty(requestJson.getString("name"))) {
             currentUser.setName(requestJson.getString("name"));
         }
-        if(!ComUtil.isEmpty(requestJson.getString("sex"))){
+        if (!ComUtil.isEmpty(requestJson.getString("sex"))) {
             currentUser.setSex(requestJson.getLong("sex"));
         }
-        if(!ComUtil.isEmpty(requestJson.getString("email"))){
+        if (!ComUtil.isEmpty(requestJson.getString("email"))) {
             currentUser.setEmail(requestJson.getString("email"));
         }
-        if(!ComUtil.isEmpty(requestJson.getString("mobile"))){
+        if (!ComUtil.isEmpty(requestJson.getString("mobile"))) {
             currentUser.setMobile(requestJson.getString("mobile"));
         }
 //        if(!ComUtil.isEmpty(requestJson.getString("mobile"))){
@@ -251,7 +261,7 @@ public class SysUserController {
 //            currentUser.setJob(requestJson.getString("mobile"));
 //        }
         userService.updateById(currentUser);
-        return  new PublicResult<String>(PublicResultConstant.SUCCESS, null);
+        return new PublicResult<String>(PublicResultConstant.SUCCESS, null);
     }
 //
 //

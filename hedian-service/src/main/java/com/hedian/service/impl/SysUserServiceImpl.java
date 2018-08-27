@@ -10,6 +10,7 @@ import com.hedian.service.ISysFileService;
 import com.hedian.service.ISysMenuService;
 import com.hedian.service.ISysUserRoleService;
 import com.hedian.service.ISysUserService;
+import com.hedian.util.ComUtil;
 import com.hedian.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,12 +51,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             result = sysFileService.insert(new SysFile(0, url));
         }
         if (result) {
-            List<SysUserRole> sysUserRoles = new ArrayList<>();
-            for (Object roleId : roleIds) {
-                SysUserRole sysUserRole = new SysUserRole(user.getUserId(), (Long) roleId, 1);
-                sysUserRoles.add(sysUserRole);
+            if (!ComUtil.isEmpty(roleIds)) {
+                List<SysUserRole> sysUserRoles = new ArrayList<>();
+                for (Object roleId : roleIds) {
+                    SysUserRole sysUserRole = new SysUserRole(user.getUserId(), (Long) roleId, 1);
+                    sysUserRoles.add(sysUserRole);
+                }
+                result = sysUserRoleService.insertBatch(sysUserRoles);
             }
-            result = sysUserRoleService.insertBatch(sysUserRoles);
         }
         return result;
     }
