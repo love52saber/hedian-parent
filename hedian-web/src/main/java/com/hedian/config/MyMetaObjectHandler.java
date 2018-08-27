@@ -17,7 +17,7 @@ public class MyMetaObjectHandler extends MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         Object gmtCreate = getFieldValByName("gmtCreate", metaObject);
-        Object delFlag = getFieldValByName("delflag", metaObject);
+        Object delflag = getFieldValByName("delflag", metaObject);
         Object userIdCreate = getFieldValByName("userIdCreate", metaObject);
         Object gmtModified = getFieldValByName("gmtModified", metaObject);
         Object useFlag = getFieldValByName("useflag", metaObject);
@@ -25,8 +25,8 @@ public class MyMetaObjectHandler extends MetaObjectHandler {
         if (null == gmtCreate) {
             setFieldValByName("gmtCreate", new Date(), metaObject);
         }
-        if (null == delFlag) {
-            setFieldValByName("delFlag", 1, metaObject);
+        if (null == delflag) {
+            setFieldValByName("delflag", 1, metaObject);
         }
         if (null == userIdCreate) {
             setFieldValByName("userIdCreate", CacheConstans.CACHE_USER.getUserId(), metaObject);

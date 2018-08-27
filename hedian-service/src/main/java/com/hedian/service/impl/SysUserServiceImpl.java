@@ -44,7 +44,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private ISysFileService sysFileService;
 
     @Override
-    public boolean register(SysUser user, JSONArray roleIds, String url) {
+    public boolean register(SysUser user, List<Long> roleIds, String url) {
         user.setGmtCreate(new Date());
         boolean result = this.insert(user);
         if (result) {
@@ -53,10 +53,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (result) {
             if (!ComUtil.isEmpty(roleIds)) {
                 List<SysUserRole> sysUserRoles = new ArrayList<>();
-                for (Object roleId : roleIds) {
-                    SysUserRole sysUserRole = new SysUserRole(user.getUserId(), (Long) roleId, 1);
-                    sysUserRoles.add(sysUserRole);
-                }
+                roleIds.stream().forEach(roleId->{
+                    sysUserRoles.add(new SysUserRole(user.getUserId(), roleId));
+                });
                 result = sysUserRoleService.insertBatch(sysUserRoles);
             }
         }
@@ -64,7 +63,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public boolean updateInfo(SysUser userUpdate, JSONArray roleIds, String url) {
+    public boolean updateInfo(SysUser userUpdate, List<Long> roleIds, String url) {
         userUpdate.setGmtCreate(new Date());
         boolean result = this.updateById(userUpdate);
         if (result) {
@@ -72,12 +71,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         if (result) {
             sysUserRoleService.delete(new EntityWrapper<SysUserRole>().eq("user_id", userUpdate.getUserId()));
-            List<SysUserRole> sysUserRoles = new ArrayList<>();
-            for (Object roleId : roleIds) {
-                SysUserRole sysUserRole = new SysUserRole(userUpdate.getUserId(), (Long) roleId, 1);
-                sysUserRoles.add(sysUserRole);
+            if (!ComUtil.isEmpty(roleIds)) {
+                List<SysUserRole> sysUserRoles = new ArrayList<>();
+                roleIds.stream().forEach(roleId->{
+                    sysUserRoles.add(new SysUserRole(userUpdate.getUserId(), roleId));
+                });
+                result = sysUserRoleService.insertBatch(sysUserRoles);
             }
-            result = sysUserRoleService.insertBatch(sysUserRoles);
         }
         return result;
     }
