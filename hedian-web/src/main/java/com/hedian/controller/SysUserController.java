@@ -114,7 +114,7 @@ public class SysUserController {
         }
         userRegister.setPassword(BCrypt.hashpw(Constant.PASSWORD, BCrypt.gensalt()));
         userRegister.setPwdFlag(2);
-        boolean result = userService.register(userRegister, requestJson.getJSONArray("roleId"), requestJson.getString("url"));
+        boolean result = userService.register(userRegister, userRegister.getRoleIds(), requestJson.getString("url"));
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) :
                 new PublicResult<>(PublicResultConstant.ERROR, null);
     }
@@ -166,7 +166,7 @@ public class SysUserController {
      * @return
      */
     @PutMapping
-    public PublicResult<String> updateSysUser(@ValidationParam("userId,name,username,sex,deptId,mobile,email,status")
+    public PublicResult<String> updateSysUser(@ValidationParam("userId,name,username,sex,deptId,mobile,email,status,roleIds")
                                               @RequestBody JSONObject requestJson) throws Exception {
 
         //可直接转为java对象,简化操作,不用再set一个个属性
@@ -177,7 +177,7 @@ public class SysUserController {
         if (!StringUtil.checkEmail(userUpdate.getEmail())) {
             return new PublicResult<>(PublicResultConstant.EMAIL_ERROR, null);
         }
-        boolean result = userService.updateInfo(userUpdate, requestJson.getJSONArray("roleIds"), requestJson.getString("url"));
+        boolean result = userService.updateInfo(userUpdate, userUpdate.getRoleIds(), requestJson.getString("url"));
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) :
                 new PublicResult<>(PublicResultConstant.ERROR, null);
     }
@@ -227,7 +227,7 @@ public class SysUserController {
     @ApiOperation(value = "删除用户", notes = "根据url的id来删除用户")
     @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "String", paramType = "path")
     @DeleteMapping(value = "/{userId}")
-    public PublicResult<String> deleteUser(@PathVariable("userId") String userId) {
+    public PublicResult<String> deleteUser(@PathVariable("userId") Long userId) {
         SysUser user = userService.selectById(userId);
         if (ComUtil.isEmpty(user)) {
             return new PublicResult<>(PublicResultConstant.INVALID_USER, null);

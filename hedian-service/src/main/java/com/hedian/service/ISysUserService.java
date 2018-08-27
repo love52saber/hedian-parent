@@ -23,7 +23,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param roleIds
      * @return
      */
-    boolean register(SysUser user, JSONArray roleIds, String url);
+    boolean register(SysUser user,  List<Long> roleIds, String url);
 
     /**
      * 修改用户信息
@@ -31,7 +31,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param roleIds
      * @return
      */
-    boolean updateInfo(SysUser userUpdate, JSONArray roleIds, String url);
+    boolean updateInfo(SysUser userUpdate, List<Long> roleIds, String url);
 
     /**
      * 根据用户id 获取用户详情

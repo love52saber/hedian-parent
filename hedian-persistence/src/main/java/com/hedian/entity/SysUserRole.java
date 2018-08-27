@@ -44,10 +44,9 @@ public class SysUserRole extends Model<SysUserRole> {
     public SysUserRole() {
     }
 
-    public SysUserRole(Long userId, Long roleId, Integer useflag) {
+    public SysUserRole(Long userId, Long roleId) {
         this.userId = userId;
         this.roleId = roleId;
-        this.useflag = useflag;
     }
 
     public Long getId() {
