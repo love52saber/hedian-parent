@@ -12,6 +12,7 @@ import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.SysUser;
 import com.hedian.entity.SysUserRole;
+import com.hedian.service.ISysDeptService;
 import com.hedian.service.ISysUserRoleService;
 import com.hedian.service.ISysUserService;
 import com.hedian.util.ComUtil;
@@ -46,6 +47,8 @@ public class SysUserController {
     private ISysUserService userService;
     @Autowired
     private ISysUserRoleService userRoleService;
+    @Autowired
+    private ISysDeptService sysDeptService;
 
 
     /**
@@ -77,7 +80,7 @@ public class SysUserController {
                                  @RequestParam(value = "deptId", defaultValue = "", required = false) String deptId) {
         EntityWrapper<SysUser> ew = new EntityWrapper<>();
         if (!ComUtil.isEmpty(info)) {
-            ew.like("username", info);
+            ew.like("username", info).or().like("name",info);
         }
         if (!ComUtil.isEmpty(deptId)) {
             ew.eq("dept_id", deptId);
@@ -86,6 +89,7 @@ public class SysUserController {
         page.getRecords().stream().forEach(sysUser -> {
             List<SysUserRole> sysUserRoleList = userRoleService.selectList(new EntityWrapper<SysUserRole>().eq("user_id", sysUser.getUserId()));
             sysUser.setRoleIds(sysUserRoleList.stream().map(SysUserRole::getRoleId).collect(Collectors.toList()));
+            sysUser.setSysDept(sysDeptService.selectById(sysUser.getDeptId()));
         });
         return new PublicResult<PageResult>(PublicResultConstant.SUCCESS, new PageResult<>(
                 page.getTotal(), pageIndex, pageSize, page.getRecords()));

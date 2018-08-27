@@ -14,4 +14,5 @@ public class FastJsonHttpMessageConverterEx extends FastJsonHttpMessageConverter
     protected boolean supports(Class<?> clazz) {
         return super.supports(clazz);
     }
+
 }

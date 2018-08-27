@@ -2,6 +2,7 @@ package com.hedian.entity;
 
 import java.io.Serializable;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
@@ -81,6 +82,7 @@ public class SysUser extends Model<SysUser> {
     /**
      * 解锁时间，开始锁定时间+锁定时长=解锁时间，在验证解锁时间到达之后同时需要更新lockflag为解锁状态以及将锁定原因清空
      */
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date unlocktime;
     /**
      * 被锁定原因
@@ -90,6 +92,7 @@ public class SysUser extends Model<SysUser> {
      * 创建时间
      */
     @TableField(value = "gmt_create", fill = FieldFill.INSERT)
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date gmtCreate;
     /**
      * 修改时间
@@ -147,6 +150,17 @@ public class SysUser extends Model<SysUser> {
 
     @TableField(exist = false)
     private List<Long> roleIds;
+
+    @TableField(exist = false)
+    private SysDept sysDept;
+
+    public SysDept getSysDept() {
+        return sysDept;
+    }
+
+    public void setSysDept(SysDept sysDept) {
+        this.sysDept = sysDept;
+    }
 
     public List<Long> getRoleIds() {
         return roleIds;

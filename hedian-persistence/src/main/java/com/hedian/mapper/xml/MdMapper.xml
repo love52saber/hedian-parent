@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hedian.mapper.MangeddomainMapper">
+<mapper namespace="com.hedian.mapper.MdMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.hedian.entity.Mangeddomain">
+    <resultMap id="BaseResultMap" type="com.hedian.entity.Md">
         <id column="md_id" property="mdId" />
         <result column="md_name" property="mdName" />
         <result column="md_desc" property="mdDesc" />

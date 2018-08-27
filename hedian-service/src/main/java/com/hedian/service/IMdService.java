@@ -1,6 +1,6 @@
 package com.hedian.service;
 
-import com.hedian.entity.Mangeddomain;
+import com.hedian.entity.Md;
 import com.baomidou.mybatisplus.service.IService;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.service.IService;
  * </p>
  *
  * @author hedian123
- * @since 2018-08-17
+ * @since 2018-08-27
  */
-public interface IMangeddomainService extends IService<Mangeddomain> {
+public interface IMdService extends IService<Md> {
 
 }

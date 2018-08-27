@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import java.io.Serializable;
 
 /**
  * <p>
@@ -14,10 +15,10 @@ import com.baomidou.mybatisplus.annotations.TableName;
  * </p>
  *
  * @author hedian123
- * @since 2018-08-17
+ * @since 2018-08-27
  */
-@TableName("tbl_mangeddomain")
-public class Mangeddomain extends Model<Mangeddomain> {
+@TableName("tbl_md")
+public class Md extends Model<Md> {
 
     private static final long serialVersionUID = 1L;
 
@@ -142,7 +143,7 @@ public class Mangeddomain extends Model<Mangeddomain> {
 
     @Override
     public String toString() {
-        return "Mangeddomain{" +
+        return "Md{" +
         "mdId=" + mdId +
         ", mdName=" + mdName +
         ", mdDesc=" + mdDesc +

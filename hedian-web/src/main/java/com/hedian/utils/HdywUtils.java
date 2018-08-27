@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class HdywUtils {
@@ -28,7 +25,15 @@ public class HdywUtils {
     @Autowired
     private ISysUserService sysUserService;
     @Autowired
-    private IMangeddomainService mangeddomainService;
+    private IMdResService  mdResService;
+    @Autowired
+    private IMdDeptService  mdDeptService;
+    @Autowired
+    private ISysDeptService sysDeptService;
+    @Autowired
+
+
+
     public static HdywUtils hdywUtils;
 
     public HdywUtils() {
@@ -45,7 +50,7 @@ public class HdywUtils {
 //    public static int[] getResidsByUserid(SysUser sysUser) {
 //        int[] resIds = null;
 //        int[] finalResids = null;
-//        Map<String, Object> map = new HashMap<String, Object>(16);
+//        Map<String, Object> map = new HashMap<>(16);
 //        map.put("uId", sysUser.getUserId());
 //        //根据用户id获取该用户管理域列表
 //        List<SysUser> sysUsers = hdywUtils.sysUserService.selectByMap(map);
@@ -60,13 +65,13 @@ public class HdywUtils {
 //            map.clear();
 //            map.put("mdIds", mdIsd);
 //            //获取管理域关联的资产
-//            List<Mangeddomain> mangeddomains = hdywUtils.mangeddomainService.selectByMap(map);
-//            if(!ComUtil.isEmpty(mangeddomains)) {
+//            List<MdRes> mdResList = hdywUtils.mdResService.selectByMap(map);
+//            if(!ComUtil.isEmpty(mdResList)) {
 //                //资产ID
-//                resIds = new int[mangeddomains.size()];
+//                resIds = new int[mdResList.size()];
 //                index = 0;
-//                for (Mangeddomain mangeddomain : mangeddomains) {
-//                    resIds[index] = mangeddomain.ge;
+//                for (MdRes mdRes : mdResList) {
+//                    resIds[index] = mdRes.getResId();
 //                    index++;
 //                }
 //                map.clear();
@@ -76,12 +81,12 @@ public class HdywUtils {
 //            }
 //        } else {
 //            //如果该用户没有管理域，获取该用户的部门，并判断该部门是否有管理域
-//            Long deptId = userDO.getDeptId();
+//            Long deptId = sysUser.getDeptId();
 //            //获取该部门及其下的所有子部门的id
 //            Long[] deptIds = hdywUtils.sysDeptService.getChildIds(deptId);
 //            map.put("orgIds", deptIds);
 //            //获取管理域关联的组织机构
-//            List<MdOrg> mdOrgs = hdywUtils.mdOrgService.findByMap(map);
+//            List<MdDept> mdOrgs = hdywUtils.mdDeptService.selectByMap(map);
 //            //管理域ID集合
 //            Integer[] mdIsd = new Integer[mdOrgs.size()];
 //            int index = 0;
@@ -111,6 +116,25 @@ public class HdywUtils {
 //        }
 //        return finalResids;
 //    }
+
+    private static int[] method1(int a[],int b[]) {
+        TreeSet<Integer> list = new TreeSet<>();
+        for (int i=0;i<a.length;i++){
+            list.add(a[i]);
+        }
+        for (int i=0;i<b.length;i++){
+            list.add(b[i]);
+        }
+        //建立c数组，并将a添加进去
+        Object c[]= list.toArray();
+        System.out.println(list.toString());
+        Integer[] d = new Integer[list.size()];
+        System.arraycopy(c,0,d,0,d.length);
+        int[] ints;
+        ints= Arrays.stream(d).mapToInt(Integer::valueOf).toArray();
+        return ints;
+    }
+
 
     /**
      * 获取采集数据
