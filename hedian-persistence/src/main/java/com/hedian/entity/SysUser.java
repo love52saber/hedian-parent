@@ -3,6 +3,7 @@ package com.hedian.entity;
 import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotations.TableLogic;
+import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -57,7 +58,7 @@ public class SysUser extends Model<SysUser> {
     /**
      * 创建用户id
      */
-    @TableField("user_id_create")
+    @TableField(value = "user_id_create", fill = FieldFill.INSERT)
     private Long userIdCreate;
     /**
      * 用户名或密码错误时间
@@ -88,12 +89,12 @@ public class SysUser extends Model<SysUser> {
     /**
      * 创建时间
      */
-    @TableField("gmt_create")
+    @TableField(value = "gmt_create", fill = FieldFill.INSERT)
     private Date gmtCreate;
     /**
      * 修改时间
      */
-    @TableField("gmt_modified")
+    @TableField(value = "gmt_modified", fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
     /**
      * 性别
@@ -133,13 +134,15 @@ public class SysUser extends Model<SysUser> {
      */
     @TableField("pwd_flag")
     private Integer pwdFlag;
-    @TableField("user_id_mod")
+    @TableField(value = "user_id_mod", fill = FieldFill.INSERT_UPDATE)
     private Long userIdMod;
     @TableLogic
+    @TableField(value = "useflag", fill = FieldFill.INSERT)
     private Integer useflag;
     /**
      * 删除标记：0 不能删除， 1可以删除， 默认 1
      */
+    @TableField(value = "delflag", fill = FieldFill.INSERT)
     private Integer delflag;
 
     @TableField(exist = false)

@@ -3,6 +3,7 @@ package com.hedian.entity;
 import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotations.TableLogic;
+import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
@@ -36,15 +37,15 @@ public class SysRoleMenu extends Model<SysRoleMenu> {
     @TableField("menu_id")
     private Long menuId;
     @TableLogic
+    @TableField(value = "useflag", fill = FieldFill.INSERT)
     private Integer useflag;
 
     public SysRoleMenu() {
     }
 
-    public SysRoleMenu(Long roleId, Long menuId, Integer useflag) {
+    public SysRoleMenu(Long roleId, Long menuId) {
         this.roleId = roleId;
         this.menuId = menuId;
-        this.useflag = useflag;
     }
 
     public Long getId() {

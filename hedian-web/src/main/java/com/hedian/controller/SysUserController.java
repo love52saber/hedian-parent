@@ -20,14 +20,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -98,7 +98,7 @@ public class SysUserController {
      * @return
      */
     @PostMapping
-    public PublicResult<String> addSysUser(@ValidationParam("name,userName,sex,deptId,mobile,telephone,email,status,roleIds")
+    public PublicResult<String> addSysUser(@ValidationParam("name,username,sex,deptId,mobile,email,status")
                                            @RequestBody JSONObject requestJson) throws Exception {
 
         //可直接转为java对象,简化操作,不用再set一个个属性
@@ -126,33 +126,36 @@ public class SysUserController {
      * @return
      */
     @GetMapping("/lock/{userId}")
-    public PublicResult<SysUser> getUserByUserName(@PathVariable("userId") String userId, String lockInfo) throws Exception {
-        SysUser sysUser = userService.selectById(userId);
+    public PublicResult<SysUser> getUserByUserName(@PathVariable("userId") String userId, String lockInfo,
+                                                   @CurrentUser SysUser sysUser, HttpServletRequest request) throws Exception {
+        SysUser user = userService.selectById(userId);
         if (ComUtil.isEmpty(sysUser)) {
             return new PublicResult<>(PublicResultConstant.INVALID_USER, null);
         }
-//        String lockReson = new SimpleDateFormat("yyyy-HH-dd:HH:ss:mm")
-        if(lockInfo.equals("lock")){
-            //锁定
-            sysUser.setLockflag(1);
-            sysUser.setLocktype(2);
-            sysUser.setWrongTimes(null);
-            sysUser.setLocktype(null);
-            sysUser.setUnlocktime(null);
-            sysUser.setLastwrongTime(null);
-            sysUser.setLockreason(null);
 
-        }else{
+        if (lockInfo.equals("lock")) {
+            String lockReson = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + ","
+                    + request.getLocalAddr() + "," + sysUser.getUsername() + "锁定";
+            //锁定
+            user.setLockflag(1);
+            user.setLocktype(2);
+            user.setWrongTimes(null);
+            user.setLocktype(null);
+            user.setUnlocktime(null);
+            user.setLastwrongTime(null);
+            user.setLockreason(lockReson);
+
+        } else {
             //解锁
-            sysUser.setLockflag(0);
-            sysUser.setLocktype(null);
-            sysUser.setWrongTimes(null);
-            sysUser.setLocktype(null);
-            sysUser.setUnlocktime(null);
-            sysUser.setLockreason(null);
+            user.setLockflag(0);
+            user.setLocktype(null);
+            user.setWrongTimes(null);
+            user.setLocktype(null);
+            user.setUnlocktime(null);
+            user.setLockreason(null);
         }
-        userService.updateAllColumnById(sysUser);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, sysUser);
+        boolean result = userService.updateAllColumnById(sysUser);
+        return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 
 
@@ -163,7 +166,7 @@ public class SysUserController {
      * @return
      */
     @PutMapping
-    public PublicResult<String> updateSysUser(@ValidationParam("userId,name,userName,sex,deptId,mobile,telephone,email,status,roleIds")
+    public PublicResult<String> updateSysUser(@ValidationParam("userId,name,username,sex,deptId,mobile,email,status")
                                               @RequestBody JSONObject requestJson) throws Exception {
 
         //可直接转为java对象,简化操作,不用再set一个个属性

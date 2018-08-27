@@ -3,10 +3,8 @@ package com.hedian.utils;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.hedian.entity.*;
 import com.hedian.fault.QuatzConstants;
-import com.hedian.service.IMqttDevService;
-import com.hedian.service.IResMoAbnormalInfoService;
-import com.hedian.service.IResStypeKpiService;
-import com.hedian.service.IResTerminalService;
+import com.hedian.service.*;
+import com.hedian.util.ComUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +25,10 @@ public class HdywUtils {
     private IResTerminalService resTerminalService;
     @Autowired
     private IResMoAbnormalInfoService resMoAbnormalInfoService;
-
+    @Autowired
+    private ISysUserService sysUserService;
+    @Autowired
+    private IMangeddomainService mangeddomainService;
     public static HdywUtils hdywUtils;
 
     public HdywUtils() {
@@ -39,6 +40,77 @@ public class HdywUtils {
         hdywUtils = this;
     }
 
+
+
+//    public static int[] getResidsByUserid(SysUser sysUser) {
+//        int[] resIds = null;
+//        int[] finalResids = null;
+//        Map<String, Object> map = new HashMap<String, Object>(16);
+//        map.put("uId", sysUser.getUserId());
+//        //根据用户id获取该用户管理域列表
+//        List<SysUser> sysUsers = hdywUtils.sysUserService.selectByMap(map);
+//        if(!ComUtil.isEmpty(sysUsers)) {
+//            //管理域ID集合
+//            Long[] mdIsd = new Long[sysUsers.size()];
+//            int index = 0;
+//            for (SysUser mdUser : sysUsers) {
+//                mdIsd[index] = Long.valueOf(sysUser.getUserId());
+//                index++;
+//            }
+//            map.clear();
+//            map.put("mdIds", mdIsd);
+//            //获取管理域关联的资产
+//            List<Mangeddomain> mangeddomains = hdywUtils.mangeddomainService.selectByMap(map);
+//            if(!ComUtil.isEmpty(mangeddomains)) {
+//                //资产ID
+//                resIds = new int[mangeddomains.size()];
+//                index = 0;
+//                for (Mangeddomain mangeddomain : mangeddomains) {
+//                    resIds[index] = mangeddomain.ge;
+//                    index++;
+//                }
+//                map.clear();
+//                map.put("resId", resIds);
+//                int[] deviceIds = hdywUtils.resTerminalService.getByResid(map);
+//                finalResids = method1(resIds,deviceIds);
+//            }
+//        } else {
+//            //如果该用户没有管理域，获取该用户的部门，并判断该部门是否有管理域
+//            Long deptId = userDO.getDeptId();
+//            //获取该部门及其下的所有子部门的id
+//            Long[] deptIds = hdywUtils.sysDeptService.getChildIds(deptId);
+//            map.put("orgIds", deptIds);
+//            //获取管理域关联的组织机构
+//            List<MdOrg> mdOrgs = hdywUtils.mdOrgService.findByMap(map);
+//            //管理域ID集合
+//            Integer[] mdIsd = new Integer[mdOrgs.size()];
+//            int index = 0;
+//            if (null != mdOrgs && mdOrgs.size() > 0) {
+//                //管理域对应的部门id集合
+//                for (MdOrg mdOrg : mdOrgs) {
+//                    mdIsd[index] = mdOrg.getMdId();
+//                }
+//                map.clear();
+//                map.put("mdIds", mdIsd);
+//                //获取管理域关联的资产
+//                List<MdRes> mdRes = hdywUtils.mdResService.findByMap(map);
+//                if (null != mdRes && mdRes.size() > 0) {
+//                    //资产ID
+//                    resIds = new int[mdRes.size()];
+//                    index = 0;
+//                    for (MdRes mdRes1 : mdRes) {
+//                        resIds[index] = mdRes1.getResId();
+//                        index++;
+//                    }
+//                }
+//                map.clear();
+//                map.put("resId", resIds);
+//                int[] deviceIds = hdywUtils.resTerminalService.getByResid(map);
+//                finalResids = method1(resIds,deviceIds);
+//            }
+//        }
+//        return finalResids;
+//    }
 
     /**
      * 获取采集数据

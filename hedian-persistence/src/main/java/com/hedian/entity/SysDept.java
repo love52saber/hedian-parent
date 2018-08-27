@@ -65,9 +65,9 @@ public class SysDept extends Model<SysDept> {
     /**
      * 是否删除  0：已删除  1：正常
      */
-    @TableField(value = "del_flag", fill = FieldFill.INSERT)
+    @TableField(value = "useflag", fill = FieldFill.INSERT)
     @TableLogic
-    private Integer delFlag;
+    private Integer useflag;
     @TableField(value = "user_id_create", fill = FieldFill.INSERT)
     private Long userIdCreate;
     @TableField(value = "gmt_create", fill = FieldFill.INSERT)
@@ -171,12 +171,12 @@ public class SysDept extends Model<SysDept> {
         this.delflag = delflag;
     }
 
-    public Integer getDelFlag() {
-        return delFlag;
+    public Integer getUseflag() {
+        return useflag;
     }
 
-    public void setDelFlag(Integer delFlag) {
-        this.delFlag = delFlag;
+    public void setUseflag(Integer useflag) {
+        this.useflag = useflag;
     }
 
     public Long getUserIdCreate() {
@@ -228,7 +228,7 @@ public class SysDept extends Model<SysDept> {
                 ", orgDesc='" + orgDesc + '\'' +
                 ", orderNum=" + orderNum +
                 ", delflag=" + delflag +
-                ", delFlag=" + delFlag +
+                ", useflag=" + useflag +
                 ", userIdCreate=" + userIdCreate +
                 ", gmtCreate=" + gmtCreate +
                 ", gmtModified=" + gmtModified +

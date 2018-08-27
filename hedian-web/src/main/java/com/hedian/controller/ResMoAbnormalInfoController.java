@@ -44,6 +44,11 @@ public class ResMoAbnormalInfoController {
         Page<AlarmInfoModel> rolePage = resMoAbnormalInfoService.selectAlarmByResId(new Page<>(pageIndex, pageSize), resId);
         return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(rolePage.getTotal(), pageIndex, pageSize, rolePage.getRecords()));
     }
+    /**
+     * 获取最新故障
+     */
+//    @GetMapping("/getTopAlarm")
+
 
 }
 

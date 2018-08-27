@@ -29,7 +29,7 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
         if (!ComUtil.isEmpty(menuIds)) {
             List<SysRoleMenu> modelList = new ArrayList<>();
             menuIds.stream().forEach(menuId -> {
-                modelList.add(new SysRoleMenu(roleCode, menuId, 1));
+                modelList.add(new SysRoleMenu(roleCode, menuId));
             });
             result = this.insertBatch(modelList);
         }
