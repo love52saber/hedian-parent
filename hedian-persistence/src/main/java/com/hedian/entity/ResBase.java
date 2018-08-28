@@ -137,6 +137,22 @@ public class ResBase extends Model<ResBase> {
     @TableField("gmt_modified")
     private Date gmtModified;
 
+
+    /**
+     * 故障编码
+     */
+    private static final int BROKEN_CODE = 2;
+    /**
+     * 具体设备展示颜色
+     */
+    @TableField(exist = false)
+    private String showColor;
+    /**
+     * 告警统计
+     */
+    @TableField(exist = false)
+    private Integer countNum;
+
     /**
      * 设备主类型实体类
      */
@@ -177,6 +193,7 @@ public class ResBase extends Model<ResBase> {
     @TableField(exist = false)
     private Map<String,ResBase> terminalObjct = new LinkedHashMap<>();
 
+
     /**
      * 终端下的每个kpi异常数据
      * @return
@@ -190,6 +207,25 @@ public class ResBase extends Model<ResBase> {
 
     public void setResAbnormallevel(ResAbnormallevel resAbnormallevel) {
         this.resAbnormallevel = resAbnormallevel;
+        if(this.resStatus == BROKEN_CODE){
+            setShowColor(resAbnormallevel.getResAbnormallevelColor());
+        }
+    }
+
+    public String getShowColor() {
+        return showColor;
+    }
+
+    public void setShowColor(String showColor) {
+        this.showColor = showColor;
+    }
+
+    public Integer getCountNum() {
+        return countNum;
+    }
+
+    public void setCountNum(Integer countNum) {
+        this.countNum = countNum;
     }
 
     public ResMaintype getResMainType() {
@@ -215,6 +251,9 @@ public class ResBase extends Model<ResBase> {
 
     public void setResStatusDO(ResStatus resStatusDO) {
         this.resStatusDO = resStatusDO;
+        if(this.resStatus != BROKEN_CODE){
+            setShowColor(resStatusDO.getResStatusColor());
+        }
     }
 
     public Map<String, MoKpi> getKpiKeyMap() {
@@ -473,33 +512,43 @@ public class ResBase extends Model<ResBase> {
     @Override
     public String toString() {
         return "ResBase{" +
-        "resId=" + resId +
-        ", resName=" + resName +
-        ", resAlias=" + resAlias +
-        ", resSerialnumber=" + resSerialnumber +
-        ", resNo=" + resNo +
-        ", resDesc=" + resDesc +
-        ", resMtypeId=" + resMtypeId +
-        ", resStypeId=" + resStypeId +
-        ", resIpv4=" + resIpv4 +
-        ", resPort=" + resPort +
-        ", longitude=" + longitude +
-        ", latitude=" + latitude +
-        ", resAddress=" + resAddress +
-        ", resStatus=" + resStatus +
-        ", resAbnormalId=" + resAbnormalId +
-        ", resAbnormalcode=" + resAbnormalcode +
-        ", resAbnormallevelId=" + resAbnormallevelId +
-        ", resAbnormalName=" + resAbnormalName +
-        ", resAbnormaldesc=" + resAbnormaldesc +
-        ", resAbnomaltime=" + resAbnomaltime +
-        ", resRecoverytime=" + resRecoverytime +
-        ", resColor=" + resColor +
-        ", useflag=" + useflag +
-        ", userIdCreate=" + userIdCreate +
-        ", gmtCreate=" + gmtCreate +
-        ", userIdMod=" + userIdMod +
-        ", gmtModified=" + gmtModified +
-        "}";
+                "resId=" + resId +
+                ", resName='" + resName + '\'' +
+                ", resAlias='" + resAlias + '\'' +
+                ", resSerialnumber='" + resSerialnumber + '\'' +
+                ", resNo='" + resNo + '\'' +
+                ", resDesc='" + resDesc + '\'' +
+                ", resMtypeId=" + resMtypeId +
+                ", resStypeId=" + resStypeId +
+                ", resIpv4='" + resIpv4 + '\'' +
+                ", resPort=" + resPort +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", resAddress='" + resAddress + '\'' +
+                ", resStatus=" + resStatus +
+                ", resAbnormalId=" + resAbnormalId +
+                ", resAbnormalcode=" + resAbnormalcode +
+                ", resAbnormallevelId=" + resAbnormallevelId +
+                ", resAbnormalName='" + resAbnormalName + '\'' +
+                ", resAbnormaldesc='" + resAbnormaldesc + '\'' +
+                ", resAbnomaltime=" + resAbnomaltime +
+                ", resRecoverytime=" + resRecoverytime +
+                ", resColor='" + resColor + '\'' +
+                ", useflag=" + useflag +
+                ", userIdCreate=" + userIdCreate +
+                ", gmtCreate=" + gmtCreate +
+                ", userIdMod=" + userIdMod +
+                ", gmtModified=" + gmtModified +
+                ", showColor='" + showColor + '\'' +
+                ", countNum=" + countNum +
+                ", resMainType=" + resMainType +
+                ", resSubtype=" + resSubtype +
+                ", resAbnormallevel=" + resAbnormallevel +
+                ", resStatusDO=" + resStatusDO +
+                ", kpiKeyMap=" + kpiKeyMap +
+                ", kpiIdMap=" + kpiIdMap +
+                ", terminalObjct=" + terminalObjct +
+                ", terminalErrInfos=" + terminalErrInfos +
+                '}';
     }
 }

@@ -47,6 +47,19 @@ public class MoAbnormalDef extends Model<MoAbnormalDef> {
     @TableField("gmt_modified")
     private Date gmtModified;
 
+    /**
+     * 统计值
+     */
+    @TableField(exist = false)
+    private Integer countNum;
+
+    public Integer getCountNum() {
+        return countNum;
+    }
+
+    public void setCountNum(Integer countNum) {
+        this.countNum = countNum;
+    }
 
     public Integer getMoAbnormalId() {
         return moAbnormalId;

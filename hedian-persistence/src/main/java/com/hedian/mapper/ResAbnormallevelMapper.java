@@ -3,6 +3,9 @@ package com.hedian.mapper;
 import com.hedian.entity.ResAbnormallevel;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * 资源异常级别 Mapper 接口
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface ResAbnormallevelMapper extends BaseMapper<ResAbnormallevel> {
 
+    List<ResAbnormallevel> getCountByLevelMap(Map<String,Object> map);
 }

@@ -2,6 +2,10 @@ package com.hedian.mapper;
 
 import com.hedian.entity.MdDept;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.hedian.entity.MdRes;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -12,5 +16,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @since 2018-08-27
  */
 public interface MdDeptMapper extends BaseMapper<MdDept> {
+
+    List<MdDept> findByMap(Map<String,Object> map);
 
 }

@@ -98,9 +98,50 @@
         </association>
     </resultMap>
 
+    <resultMap id="TopResMap" type="com.hedian.entity.ResBase" >
+        <id column="res_id" property="resId"/>
+        <result column="res_name" property="resName"/>
+        <result column="res_alias" property="resAlias" />
+        <result column="countNum" property="countNum"/>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         res_id AS resId, res_name AS resName, res_alias AS resAlias, res_serialnumber AS resSerialnumber, res_no AS resNo, res_desc AS resDesc, res_mtype_id AS resMtypeId, res_stype_id AS resStypeId, res_ipv4 AS resIpv4, res_port AS resPort, longitude, latitude, res_address AS resAddress, res_status AS resStatus, res_abnormal_id AS resAbnormalId, res_abnormalcode AS resAbnormalcode, res_abnormallevel_id AS resAbnormallevelId, res_abnormal_name AS resAbnormalName, res_abnormaldesc AS resAbnormaldesc, res_abnomaltime AS resAbnomaltime, res_recoverytime AS resRecoverytime, res_color AS resColor, useflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
     </sql>
+
+    <!--top故障列表-->
+    <select id="findByMap"  resultMap="ResOtherMap">
+        select a.*,b.*,d.*
+        from (select * from tbl_res_base where res_status != 1
+            <if test="resIds != null">
+                and res_id IN
+                <foreach item="rId" collection="resIds" open="(" separator=","
+                         close=")">
+                    #{rId}
+                </foreach>
+            </if>
+        ) a
+        LEFT JOIN (select * from tbl_res_abnormallevel where useflag=1) b ON a.res_abnormallevel_id=b.res_abnormallevel_id
+        LEFT JOIN (select * from tbl_res_status where useflag=1) d ON a.res_status=d.res_status
+        ORDER BY b.res_abnormallevel_priority ASC, a.res_abnomaltime DESC
+        LIMIT 8
+    </select>
+
+    <select id="getTopRes" resultMap="TopResMap" >
+        select b.res_id,b.res_name,b.res_alias,count(b.res_id) as countNum
+        from (select * from tbl_res_mo_abnormal_info
+        <where>
+            <if test="resIds != null"> and res_id IN
+                <foreach item="rId" collection="resIds" open="(" separator=","
+                         close=")">
+                    #{rId}
+                </foreach>
+            </if>
+        </where>
+        ) a
+        LEFT JOIN tbl_res_base b ON a.res_id=b.res_id
+        GROUP BY a.res_id ORDER BY countNum DESC
+    </select>
 
 </mapper>

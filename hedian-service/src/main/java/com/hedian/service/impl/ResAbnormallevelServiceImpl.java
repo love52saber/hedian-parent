@@ -4,7 +4,11 @@ import com.hedian.entity.ResAbnormallevel;
 import com.hedian.mapper.ResAbnormallevelMapper;
 import com.hedian.service.IResAbnormallevelService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -17,4 +21,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class ResAbnormallevelServiceImpl extends ServiceImpl<ResAbnormallevelMapper, ResAbnormallevel> implements IResAbnormallevelService {
 
+
+    @Autowired
+    private ResAbnormallevelMapper resAbnormallevelMapper;
+    @Override
+    public List<ResAbnormallevel> getCountByLevelMap(Map<String, Object> map) {
+        return resAbnormallevelMapper.getCountByLevelMap(map);
+    }
 }

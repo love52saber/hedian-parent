@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
 
 /**
@@ -37,6 +38,19 @@ public class ResAbnormallevel extends Model<ResAbnormallevel> {
     private Integer showorder;
     private Integer useflag;
 
+    /**
+     * 统计值
+     */
+    @TableField(exist = false)
+    private Integer countNum;
+
+    public Integer getCountNum() {
+        return countNum;
+    }
+
+    public void setCountNum(Integer countNum) {
+        this.countNum = countNum;
+    }
 
     public Integer getResAbnormallevelId() {
         return resAbnormallevelId;

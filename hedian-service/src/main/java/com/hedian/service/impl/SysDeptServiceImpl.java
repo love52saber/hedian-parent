@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hedian.entity.SysDept;
 import com.hedian.mapper.SysDeptMapper;
 import com.hedian.service.ISysDeptService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +23,9 @@ import java.util.List;
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> implements ISysDeptService {
 
 
+    @Autowired
+    private SysDeptMapper sysDeptMapper;
+
     @Override
     public List<SysDept> treeDeptList(Long pId, List<SysDept> list) {
         List<SysDept> IteratorMenuList = new ArrayList<>();
@@ -37,5 +41,10 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             }
         }
         return IteratorMenuList;
+    }
+
+    @Override
+    public List<SysDept> getChildList(Long deptId) {
+        return sysDeptMapper.getChildList(deptId);
     }
 }

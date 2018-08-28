@@ -28,13 +28,12 @@ public class HdywUtils {
     @Autowired
     private IMdUserService mdUserService;
     @Autowired
-    private IMdResService  mdResService;
+    private IMdResService mdResService;
     @Autowired
-    private IMdDeptService  mdDeptService;
+    private IMdDeptService mdDeptService;
     @Autowired
     private ISysDeptService sysDeptService;
     @Autowired
-
 
 
     public static HdywUtils hdywUtils;
@@ -49,65 +48,44 @@ public class HdywUtils {
     }
 
 
-
-//    public static int[] getResidsByUserid(SysUser sysUser) {
-//        int[] resIds = null;
-//        int[] finalResids = null;
-//        Map<String, Object> map = new HashMap<>(16);
-//        //根据用户id获取该用户管理域列表
-//        List<MdUser> mdUsers = hdywUtils.mdUserService.selectList(new EntityWrapper<MdUser>().eq("user_id",sysUser.getUserId()));
-//        if(!ComUtil.isEmpty(mdUsers)) {
-//            map.put("mdIds",  mdUsers.stream().map(MdUser::getUserId).collect(Collectors.toList()));
-//            //获取管理域关联的资产
-//            List<MdRes> mdResList = hdywUtils.mdResService.selectByMap(map);
-//            if(!ComUtil.isEmpty(mdResList)) {
-//                map.clear();
-//                map.put("resId", mdResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
-//                List<ResTerminal> resTerminals = hdywUtils.resTerminalService.selectByMap(map);
-////                finalResids = method1(resIds,deviceIds);
-//            }
-//        } else {
-//            //如果该用户没有管理域，获取该用户的部门，并判断该部门是否有管理域
-//            Long deptId = sysUser.getDeptId();
-//            //获取该部门及其下的所有子部门的id
-//            Long[] deptIds = hdywUtils.sysDeptService.getChildIds(deptId);
-//            map.put("deptIds", deptIds);
-//            //获取管理域关联的组织机构
-//            List<MdDept> mdDepts = hdywUtils.mdDeptService.selectByMap(map);
-//
-//            if(!ComUtil.isEmpty(mdDepts)) {
-//                map.clear();
-//                //管理域ID集合
-//                map.put("mdIds", mdDepts.stream().map(MdDept::getMdId).collect(Collectors.toList()));
-//                //获取管理域关联的资产
-//                List<MdRes> mdResList = hdywUtils.mdResService.selectByMap(map);
-//                if (!ComUtil.isEmpty(mdResList)) {
-//                    map.clear();
-//                    map.put("resId", mdResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
-//                }
-//                int[] deviceIds = hdywUtils.resTerminalService.getByResid(map);
-//                finalResids = method1(resIds,deviceIds);
-//            }
-//        }
-//        return finalResids;
-//    }
-
-    private static int[] method1(int a[],int b[]) {
-        TreeSet<Integer> list = new TreeSet<>();
-        for (int i=0;i<a.length;i++){
-            list.add(a[i]);
+    /**
+     * 根据用户查询设备  1.先找改用户下面的管理域
+     *
+     * @param sysUser
+     * @return
+     */
+    public static List<Integer> getResidsByUserid(SysUser sysUser) {
+        List<Integer> resIds = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>(16);
+        //根据用户id获取该用户管理域列表
+        List<MdUser> mdUsers = hdywUtils.mdUserService.selectList(new EntityWrapper<MdUser>().eq("user_id", sysUser.getUserId()));
+        if (!ComUtil.isEmpty(mdUsers)) {
+            map.put("mdIds", mdUsers.stream().map(MdUser::getUserId).collect(Collectors.toList()));
+            //获取管理域关联的资产
+            List<MdRes> mdResList = hdywUtils.mdResService.findByMap(map);
+            resIds = mdResList.stream().map(MdRes::getResId).collect(Collectors.toList());
+        } else {
+            //如果该用户没有管理域，获取该用户的部门，并判断该部门是否有管理域
+            Long deptId = sysUser.getDeptId();
+            //获取该部门及其下的所有子部门的id
+            List<SysDept> sysDeptList = hdywUtils.sysDeptService.getChildList(deptId);
+            List<Long> deptIds = null;
+            if (!ComUtil.isEmpty(sysDeptList)) {
+                deptIds = sysDeptList.stream().map(SysDept::getDeptId).collect(Collectors.toList());
+            }
+            map.put("deptIds", deptIds);
+            //获取管理域关联的组织机构
+            List<MdDept> mdDepts = hdywUtils.mdDeptService.findByMap(map);
+            if (!ComUtil.isEmpty(mdDepts)) {
+                map.clear();
+                //管理域ID集合
+                map.put("mdIds", mdDepts.stream().map(MdDept::getMdId).collect(Collectors.toList()));
+                //获取管理域关联的资产
+                List<MdRes> mdResList = hdywUtils.mdResService.findByMap(map);
+                resIds = mdResList.stream().map(MdRes::getResId).collect(Collectors.toList());
+            }
         }
-        for (int i=0;i<b.length;i++){
-            list.add(b[i]);
-        }
-        //建立c数组，并将a添加进去
-        Object c[]= list.toArray();
-        System.out.println(list.toString());
-        Integer[] d = new Integer[list.size()];
-        System.arraycopy(c,0,d,0,d.length);
-        int[] ints;
-        ints= Arrays.stream(d).mapToInt(Integer::valueOf).toArray();
-        return ints;
+        return resIds;
     }
 
 

@@ -33,6 +33,14 @@
         <result column="res_abnomaltime" property="alarmTime"/>
     </resultMap>
 
+
+    <resultMap id="TopAbnormalMap" type="com.hedian.entity.MoAbnormalDef">
+        <id column="mo_abnormal_id" property="moAbnormalId"/>
+        <result column="mo_abnormalcode" property="moAbnormalcode"/>
+        <result column="mo_abnormal_name" property="moAbnormalName"/>
+        <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
+        <result column="countNum" property="countNum"/>
+    </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         res_abnormal_id AS resAbnormalId, res_id AS resId, mo_th_id AS moThId, mo_kpi_id AS moKpiId, mo_abnormal_id AS moAbnormalId, res_abnormal_code AS resAbnormalCode, res_abnormal_name AS resAbnormalName, res_abnormallevel_id AS resAbnormallevelId, res_abnormaldesc AS resAbnormaldesc, res_abnomaltime AS resAbnomaltime, res_recoverytime AS resRecoverytime, res_abnormalvalue AS resAbnormalvalue, res_revoveryvalue AS resRevoveryvalue, res_abnormalstatus AS resAbnormalstatus
@@ -69,6 +77,21 @@
         left join tbl_mo_abnormal_def e on a.mo_abnormal_id=e.mo_abnormal_id
         join (SELECT @:=0) r
         order by a.res_abnomaltime desc
+    </select>
+
+    <select id="getTopAbnormal" resultMap="TopAbnormalMap">
+        select b.mo_abnormal_id,b.mo_abnormalcode,b.mo_abnormal_name,b.res_abnormallevel_id,count(b.mo_abnormal_id) as
+        countNum
+        from
+        (select * from tbl_res_mo_abnormal_info where 1=1
+        <if test="resIds != null">and res_id IN
+            <foreach item="rId" collection="resIds" open="(" separator=","
+                     close=")">
+                #{rId}
+            </foreach>
+        </if>
+        ) a LEFT JOIN tbl_mo_abnormal_def b ON a.mo_abnormal_id=b.mo_abnormal_id
+        GROUP BY b.mo_abnormal_id ORDER BY countNum DESC
     </select>
 
 </mapper>

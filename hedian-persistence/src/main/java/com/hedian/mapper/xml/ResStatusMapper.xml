@@ -4,17 +4,44 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.hedian.entity.ResStatus">
-        <id column="res_status" property="resStatus" />
-        <result column="res_status_name" property="resStatusName" />
-        <result column="res_status_color" property="resStatusColor" />
-        <result column="showorder" property="showorder" />
-        <result column="delflag" property="delflag" />
-        <result column="useflag" property="useflag" />
+        <id column="res_status" property="resStatus"/>
+        <result column="res_status_name" property="resStatusName"/>
+        <result column="res_status_color" property="resStatusColor"/>
+        <result column="showorder" property="showorder"/>
+        <result column="delflag" property="delflag"/>
+        <result column="useflag" property="useflag"/>
+    </resultMap>
+
+    <resultMap id="CountResultMap" type="com.hedian.entity.ResStatus">
+        <id column="res_status" property="resStatus"/>
+        <result column="res_status_name" property="resStatusName"/>
+        <result column="res_status_color" property="resStatusColor"/>
+        <result column="showorder" property="showorder"/>
+        <result column="delflag" property="delflag"/>
+        <result column="useflag" property="useflag"/>
+        <result column="countNum" property="countNum"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         res_status AS resStatus, res_status_name AS resStatusName, res_status_color AS resStatusColor, showorder, delflag, useflag
     </sql>
+
+    <select id="getCountByStatusMap" resultMap="CountResultMap">
+        select b.res_status,b.res_status_name,b.res_status_color,count(a.res_status) as countNum from tbl_res_status b
+        left join (select * from tbl_res_base
+        <where>
+            <if test="resIds != null">and res_id IN
+                <foreach item="rId" collection="resIds" open="(" separator=","
+                         close=")">
+                    #{rId}
+                </foreach>
+            </if>
+        </where>
+        ) a on b.res_status=a.res_status
+        where
+        b.useflag=1
+        GROUP BY b.res_status ORDER BY b.showorder DESC
+    </select>
 
 </mapper>

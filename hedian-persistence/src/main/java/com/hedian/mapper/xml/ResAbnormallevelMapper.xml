@@ -4,17 +4,45 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.hedian.entity.ResAbnormallevel">
+        <id column="res_abnormallevel_id" property="resAbnormallevelId"/>
+        <result column="res_abnormallevel_name" property="resAbnormallevelName"/>
+        <result column="res_abnormallevel_color" property="resAbnormallevelColor"/>
+        <result column="res_abnormallevel_priority" property="resAbnormallevelPriority"/>
+        <result column="showorder" property="showorder"/>
+        <result column="useflag" property="useflag"/>
+    </resultMap>
+
+    <resultMap id="CountResultMap" type="com.hedian.entity.ResAbnormallevel" >
         <id column="res_abnormallevel_id" property="resAbnormallevelId" />
-        <result column="res_abnormallevel_name" property="resAbnormallevelName" />
-        <result column="res_abnormallevel_color" property="resAbnormallevelColor" />
-        <result column="res_abnormallevel_priority" property="resAbnormallevelPriority" />
-        <result column="showorder" property="showorder" />
+        <result column="res_abnormallevel_name" property="resAbnormallevelName"/>
+        <result column="res_abnormallevel_color" property="resAbnormallevelColor"/>
+        <result column="res_abnormallevel_priority" property="resAbnormallevelPriority"/>
+        <result column="showorder" property="showorder"/>
         <result column="useflag" property="useflag" />
+        <result column="countNum" property="countNum"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         res_abnormallevel_id AS resAbnormallevelId, res_abnormallevel_name AS resAbnormallevelName, res_abnormallevel_color AS resAbnormallevelColor, res_abnormallevel_priority AS resAbnormallevelPriority, showorder, useflag
     </sql>
+
+
+    <select id="getCountByLevelMap" resultMap="CountResultMap">
+        select b.res_abnormallevel_id,b.res_abnormallevel_name,b.res_abnormallevel_color,count(a.res_abnormallevel_id)
+        as countNum from tbl_res_abnormallevel b
+        left join (select * from tbl_res_base
+        where 1 =1
+        <if test="resIds">and res_id IN
+            <foreach item="rId" collection="resIds" open="(" separator=","
+                     close=")">
+                #{rId}
+            </foreach>
+        </if>
+        ) a on b.res_abnormallevel_id=a.res_abnormallevel_id
+        where
+        b.useflag=1
+        GROUP BY b.res_abnormallevel_id order by b.res_abnormallevel_priority
+    </select>
 
 </mapper>

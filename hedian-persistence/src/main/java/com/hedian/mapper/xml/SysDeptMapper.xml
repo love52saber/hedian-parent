@@ -13,7 +13,7 @@
         <result column="org_desc" property="orgDesc" />
         <result column="order_num" property="orderNum" />
         <result column="delflag" property="delflag" />
-        <result column="del_flag" property="delFlag" />
+        <result column="useflag" property="useflag" />
         <result column="user_id_create" property="userIdCreate" />
         <result column="gmt_create" property="gmtCreate" />
         <result column="gmt_modified" property="gmtModified" />
@@ -22,7 +22,15 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        dept_id AS deptId, parent_id AS parentId, org_type AS orgType, org_code AS orgCode, name, short_name AS shortName, org_desc AS orgDesc, order_num AS orderNum, delflag, del_flag AS delFlag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, gmt_modified AS gmtModified, user_id_mod AS userIdMod
+        dept_id AS deptId, parent_id AS parentId, org_type AS orgType, org_code AS orgCode, name, short_name AS shortName, org_desc AS orgDesc, order_num AS orderNum, delflag, useflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, gmt_modified AS gmtModified, user_id_mod AS userIdMod
     </sql>
+
+    <select id="getChildList" resultType="com.hedian.entity.SysDept">
+		select `dept_id`,`parent_id`,`name`,`order_num`,`del_flag` from
+		sys_dept
+		where dept_id IN (
+		select dept_id from sys_dept where FIND_IN_SET(dept_id,getChildList(#{value}))
+		)
+	</select>
 
 </mapper>

@@ -4,7 +4,11 @@ import com.hedian.entity.ResBase;
 import com.hedian.mapper.ResBaseMapper;
 import com.hedian.service.IResBaseService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -17,4 +21,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> implements IResBaseService {
 
+    @Autowired
+    private ResBaseMapper resBaseMapper;
+
+    @Override
+    public List<ResBase> findByMap(Map<String, Object> map) {
+        return resBaseMapper.findByMap(map);
+    }
+
+    @Override
+    public List<ResBase> getTopRes(Map<String, Object> map) {
+        return resBaseMapper.getTopRes(map);
+    }
 }

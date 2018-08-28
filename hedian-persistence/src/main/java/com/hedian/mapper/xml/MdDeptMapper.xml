@@ -4,15 +4,27 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.hedian.entity.MdDept">
-        <id column="id" property="id" />
-        <result column="dept_id" property="deptId" />
-        <result column="md_id" property="mdId" />
-        <result column="useflag" property="useflag" />
+        <id column="id" property="id"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="md_id" property="mdId"/>
+        <result column="useflag" property="useflag"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, dept_id AS deptId, md_id AS mdId, useflag
     </sql>
+
+    <select id="findByMap" resultType="com.hedian.entity.MdDept">
+        select
+        <include refid="Base_Column_List"/>
+        from tbl_md_dept where useflag=1
+        <if test="mdIds != null">and md_id IN
+            <foreach item="mId" collection="mdIds" open="(" separator=","
+                     close=")">
+                #{mId}
+            </foreach>
+        </if>
+    </select>
 
 </mapper>

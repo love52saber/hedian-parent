@@ -1,6 +1,7 @@
 package com.hedian.mapper;
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.hedian.entity.MoAbnormalDef;
 import com.hedian.entity.ResMoAbnormalInfo;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.hedian.model.AlarmInfoModel;
@@ -31,6 +32,13 @@ public interface ResMoAbnormalInfoMapper extends BaseMapper<ResMoAbnormalInfo> {
      */
 
     List<AlarmInfoModel> selectAlarmByResId(Page<AlarmInfoModel> page, @Param("resId") String resId);
+
+    /**
+     * top 故障设备统计
+     * @param map
+     * @return
+     */
+    List<MoAbnormalDef> getTopAbnormal(Map<String,Object> map);
 
 
 }

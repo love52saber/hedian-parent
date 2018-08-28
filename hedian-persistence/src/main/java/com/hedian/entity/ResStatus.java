@@ -30,6 +30,20 @@ public class ResStatus extends Model<ResStatus> {
     private Integer delflag;
     private Integer useflag;
 
+    /**
+     * 统计值
+     */
+    @TableField(exist = false)
+    private Integer countNum;
+
+
+    public Integer getCountNum() {
+        return countNum;
+    }
+
+    public void setCountNum(Integer countNum) {
+        this.countNum = countNum;
+    }
 
     public Integer getResStatus() {
         return resStatus;
