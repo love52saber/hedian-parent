@@ -46,6 +46,10 @@ public class SysGroup extends Model<SysGroup> {
      */
     @TableField("grp_desc")
     private String grpDesc;
+
+    @TableField("dept_id")
+    private String deptId;
+
     @TableField("user_id_create")
     private Long userIdCreate;
     @TableField("gmt_create")
@@ -68,6 +72,25 @@ public class SysGroup extends Model<SysGroup> {
 
     @TableField(exist = false)
     private List<Long> userIds;
+
+    @TableField(exist = false)
+    private SysDept sysDept;
+
+    public SysDept getSysDept() {
+        return sysDept;
+    }
+
+    public void setSysDept(SysDept sysDept) {
+        this.sysDept = sysDept;
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
+    }
 
     public List<Long> getRoleIds() {
         return roleIds;

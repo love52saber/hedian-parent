@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class HdywUtils {
@@ -24,6 +25,8 @@ public class HdywUtils {
     private IResMoAbnormalInfoService resMoAbnormalInfoService;
     @Autowired
     private ISysUserService sysUserService;
+    @Autowired
+    private IMdUserService mdUserService;
     @Autowired
     private IMdResService  mdResService;
     @Autowired
@@ -51,65 +54,37 @@ public class HdywUtils {
 //        int[] resIds = null;
 //        int[] finalResids = null;
 //        Map<String, Object> map = new HashMap<>(16);
-//        map.put("uId", sysUser.getUserId());
 //        //根据用户id获取该用户管理域列表
-//        List<SysUser> sysUsers = hdywUtils.sysUserService.selectByMap(map);
-//        if(!ComUtil.isEmpty(sysUsers)) {
-//            //管理域ID集合
-//            Long[] mdIsd = new Long[sysUsers.size()];
-//            int index = 0;
-//            for (SysUser mdUser : sysUsers) {
-//                mdIsd[index] = Long.valueOf(sysUser.getUserId());
-//                index++;
-//            }
-//            map.clear();
-//            map.put("mdIds", mdIsd);
+//        List<MdUser> mdUsers = hdywUtils.mdUserService.selectList(new EntityWrapper<MdUser>().eq("user_id",sysUser.getUserId()));
+//        if(!ComUtil.isEmpty(mdUsers)) {
+//            map.put("mdIds",  mdUsers.stream().map(MdUser::getUserId).collect(Collectors.toList()));
 //            //获取管理域关联的资产
 //            List<MdRes> mdResList = hdywUtils.mdResService.selectByMap(map);
 //            if(!ComUtil.isEmpty(mdResList)) {
-//                //资产ID
-//                resIds = new int[mdResList.size()];
-//                index = 0;
-//                for (MdRes mdRes : mdResList) {
-//                    resIds[index] = mdRes.getResId();
-//                    index++;
-//                }
 //                map.clear();
-//                map.put("resId", resIds);
-//                int[] deviceIds = hdywUtils.resTerminalService.getByResid(map);
-//                finalResids = method1(resIds,deviceIds);
+//                map.put("resId", mdResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
+//                List<ResTerminal> resTerminals = hdywUtils.resTerminalService.selectByMap(map);
+////                finalResids = method1(resIds,deviceIds);
 //            }
 //        } else {
 //            //如果该用户没有管理域，获取该用户的部门，并判断该部门是否有管理域
 //            Long deptId = sysUser.getDeptId();
 //            //获取该部门及其下的所有子部门的id
 //            Long[] deptIds = hdywUtils.sysDeptService.getChildIds(deptId);
-//            map.put("orgIds", deptIds);
+//            map.put("deptIds", deptIds);
 //            //获取管理域关联的组织机构
-//            List<MdDept> mdOrgs = hdywUtils.mdDeptService.selectByMap(map);
-//            //管理域ID集合
-//            Integer[] mdIsd = new Integer[mdOrgs.size()];
-//            int index = 0;
-//            if (null != mdOrgs && mdOrgs.size() > 0) {
-//                //管理域对应的部门id集合
-//                for (MdOrg mdOrg : mdOrgs) {
-//                    mdIsd[index] = mdOrg.getMdId();
-//                }
+//            List<MdDept> mdDepts = hdywUtils.mdDeptService.selectByMap(map);
+//
+//            if(!ComUtil.isEmpty(mdDepts)) {
 //                map.clear();
-//                map.put("mdIds", mdIsd);
+//                //管理域ID集合
+//                map.put("mdIds", mdDepts.stream().map(MdDept::getMdId).collect(Collectors.toList()));
 //                //获取管理域关联的资产
-//                List<MdRes> mdRes = hdywUtils.mdResService.findByMap(map);
-//                if (null != mdRes && mdRes.size() > 0) {
-//                    //资产ID
-//                    resIds = new int[mdRes.size()];
-//                    index = 0;
-//                    for (MdRes mdRes1 : mdRes) {
-//                        resIds[index] = mdRes1.getResId();
-//                        index++;
-//                    }
+//                List<MdRes> mdResList = hdywUtils.mdResService.selectByMap(map);
+//                if (!ComUtil.isEmpty(mdResList)) {
+//                    map.clear();
+//                    map.put("resId", mdResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
 //                }
-//                map.clear();
-//                map.put("resId", resIds);
 //                int[] deviceIds = hdywUtils.resTerminalService.getByResid(map);
 //                finalResids = method1(resIds,deviceIds);
 //            }

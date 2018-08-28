@@ -14,7 +14,7 @@ import com.hedian.model.SysGroupModel;
  */
 public interface ISysGroupService extends IService<SysGroup> {
 
-    boolean addRoleAndUsers(SysGroupModel groupModel) throws Exception;
+    boolean addRoleAndUsers(SysGroup sysGroup) throws Exception;
 
-    boolean updateGroupInfo(SysGroupModel groupModel) throws Exception;
+    boolean updateGroupInfo(SysGroup sysGroup) throws Exception;
 }

@@ -129,8 +129,8 @@ public class SysUserController {
      * @param userId
      * @return
      */
-    @GetMapping("/lock/{userId}")
-    public PublicResult<SysUser> getUserByUserName(@PathVariable("userId") String userId, String lockInfo,
+    @GetMapping("/lock/{userId}/{lockInfo}")
+    public PublicResult<SysUser> getUserByUserName(@PathVariable("userId") String userId, @PathVariable("lockInfo")String lockInfo,
                                                    @CurrentUser SysUser sysUser, HttpServletRequest request) throws Exception {
         SysUser user = userService.selectById(userId);
         if (ComUtil.isEmpty(sysUser)) {

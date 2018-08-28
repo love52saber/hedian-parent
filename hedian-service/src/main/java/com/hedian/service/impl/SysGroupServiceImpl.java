@@ -36,52 +36,44 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupMapper, SysGroup> i
     private ISysGrpUserService sysGrpUserService;
 
     @Override
-    public boolean addRoleAndUsers(SysGroupModel groupModel) throws Exception {
-
-        SysGroup group = new SysGroup();
-        BeanUtils.copyProperties(groupModel, group);
-        group.setUserIdCreate(1L);
-        group.setGmtCreate(new Date());
-        group.setUseflag(1);
-        group.setDelflag(1);
-        boolean result = this.insert(group);
+    public boolean addRoleAndUsers(SysGroup sysGroup) throws Exception {
+        boolean result = this.insert(sysGroup);
         if (!result) {
             throw new BusinessException("插入用户组信息失败");
         }
         //插入用户组权限信息
-        result = sysGrpRoleService.saveAll(group.getGrpId(), groupModel.getRoleIds());
+        result = sysGrpRoleService.saveAll(sysGroup.getGrpId(), sysGroup.getRoleIds());
         if (!result) {
             throw new BusinessException("插入用户组权限信息失败");
         }
         //插入用户组用户信息
-        result = sysGrpUserService.saveAll(group.getGrpId(), groupModel.getUserIds());
+        result = sysGrpUserService.saveAll(sysGroup.getGrpId(), sysGroup.getUserIds());
         return result;
     }
 
     @Override
-    public boolean updateGroupInfo(SysGroupModel groupModel) throws Exception {
-        SysGroup group = this.selectById(groupModel.getGrpId());
+    public boolean updateGroupInfo(SysGroup sysGroup) throws Exception {
+        SysGroup group = this.selectById(sysGroup.getGrpId());
         if (ComUtil.isEmpty(group)) {
             return false;
         }
-        BeanUtils.copyProperties(groupModel, group);
-        boolean result = this.updateById(group);
+        boolean result = this.updateById(sysGroup);
         if (!result) {
             throw new BusinessException("更新用户组信息失败");
         }
-        result = sysGrpRoleService.delete(new EntityWrapper<SysGrpRole>().eq("grp_id", groupModel.getGrpId()));
+        result = sysGrpRoleService.delete(new EntityWrapper<SysGrpRole>().eq("grp_id", sysGroup.getGrpId()));
         if (!result) {
             throw new BusinessException("删除权限信息失败");
         }
-        result = sysGrpRoleService.saveAll(groupModel.getGrpId(), groupModel.getRoleIds());
+        result = sysGrpRoleService.saveAll(sysGroup.getGrpId(), sysGroup.getRoleIds());
         if (!result) {
             throw new BusinessException("更新权限信息失败");
         }
-        result = sysGrpUserService.delete(new EntityWrapper<SysGrpUser>().eq("grp_id", groupModel.getGrpId()));
+        result = sysGrpUserService.delete(new EntityWrapper<SysGrpUser>().eq("grp_id", sysGroup.getGrpId()));
         if (!result) {
             throw new BusinessException("删除用户组用户信息失败");
         }
-        result = sysGrpUserService.saveAll(groupModel.getGrpId(), groupModel.getUserIds());
+        result = sysGrpUserService.saveAll(sysGroup.getGrpId(), sysGroup.getUserIds());
         if (!result) {
             throw new BusinessException("更新用户组用户信息失败");
         }

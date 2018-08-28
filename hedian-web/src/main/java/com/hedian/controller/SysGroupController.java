@@ -1,8 +1,10 @@
 package com.hedian.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.hedian.annotation.ValidationParam;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
@@ -49,6 +51,9 @@ public class SysGroupController {
     @Autowired
     private ISysUserService sysUserService;
 
+    @Autowired
+    private ISysDeptService sysDeptService;
+
     @GetMapping(value = "/pageList")
     public PublicResult findList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
                                  @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
@@ -63,6 +68,7 @@ public class SysGroupController {
             sysGroup.setRoleIds(sysGrpRoleList.stream().map(SysGrpRole::getRoleId).collect(Collectors.toList()));
             List<SysGrpUser> sysGrpUserList = sysGrpUserService.selectList(new EntityWrapper<SysGrpUser>().eq("grp_id", sysGroup.getGrpId()));
             sysGroup.setUserIds(sysGrpUserList.stream().map(SysGrpUser::getUserId).collect(Collectors.toList()));
+            sysGroup.setSysDept(sysDeptService.selectById(sysGroup.getDeptId()));
         });
         return new PublicResult<PageResult>(PublicResultConstant.SUCCESS, new PageResult<>(
                 page.getTotal(), pageIndex, pageSize, page.getRecords()));
@@ -98,12 +104,14 @@ public class SysGroupController {
     /**
      * 添加用户组
      *
-     * @param groupModel
+     * @param requestJson
      * @return
      */
     @PostMapping
-    public PublicResult<String> addGroup(@RequestBody SysGroupModel groupModel) throws Exception {
-        boolean result = sysGroupService.addRoleAndUsers(groupModel);
+    public PublicResult<String> addGroup(@ValidationParam("grpName")
+                                             @RequestBody JSONObject requestJson) throws Exception {
+        SysGroup sysGroup = requestJson.toJavaObject(SysGroup.class);
+        boolean result = sysGroupService.addRoleAndUsers(sysGroup);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.INVALID_USER, null);
     }
 
@@ -112,8 +120,10 @@ public class SysGroupController {
      * 修改用户组信息
      */
     @PutMapping
-    public PublicResult<String> updateGroup(@RequestBody SysGroupModel groupModel) throws Exception {
-        boolean result = sysGroupService.updateGroupInfo(groupModel);
+    public PublicResult<String> updateGroup(@ValidationParam("grpId,grpName,roleIds,userIds")
+                                                @RequestBody JSONObject requestJson) throws Exception {
+        SysGroup sysGroup = requestJson.toJavaObject(SysGroup.class);
+        boolean result = sysGroupService.updateGroupInfo(sysGroup);
         return !result ? new PublicResult<>(PublicResultConstant.INVALID_ROLE, null) : new PublicResult<>(PublicResultConstant.SUCCESS, null);
     }
 
