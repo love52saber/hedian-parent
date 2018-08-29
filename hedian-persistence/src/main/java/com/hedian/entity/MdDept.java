@@ -22,7 +22,7 @@ public class MdDept extends Model<MdDept> {
 
     private Integer id;
     @TableField("dept_id")
-    private Integer deptId;
+    private Long deptId;
     @TableField("md_id")
     private Integer mdId;
     private Integer useflag;
@@ -36,11 +36,11 @@ public class MdDept extends Model<MdDept> {
         this.id = id;
     }
 
-    public Integer getDeptId() {
+    public Long getDeptId() {
         return deptId;
     }
 
-    public void setDeptId(Integer deptId) {
+    public void setDeptId(Long deptId) {
         this.deptId = deptId;
     }
 

@@ -9,12 +9,14 @@ import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.SysDept;
+import com.hedian.model.Tree;
 import com.hedian.service.ISysDeptService;
 import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -74,6 +76,7 @@ public class SysDeptController {
         }
         return new PublicResult<>(PublicResultConstant.SUCCESS, sysDept);
     }
+
 
     /**
      * 添加组织

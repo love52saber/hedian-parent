@@ -33,4 +33,12 @@
 		)
 	</select>
 
+    <select id="getParentList" resultType="com.hedian.entity.SysDept">
+		select `dept_id`,`parent_id`,`name`,`order_num`,`del_flag` from
+		sys_dept
+		where dept_id IN (
+			select dept_id from sys_dept where FIND_IN_SET(dept_id,getParentList(#{value}))
+		)
+	</select>
+
 </mapper>

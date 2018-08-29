@@ -6,7 +6,9 @@ import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.ResBase;
+import com.hedian.entity.SysDept;
 import com.hedian.entity.SysUser;
+import com.hedian.model.Tree;
 import com.hedian.service.IResBaseService;
 import com.hedian.util.ComUtil;
 import com.hedian.utils.HdywUtils;
@@ -16,10 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -54,6 +53,7 @@ public class ResBaseController {
         Map<String, Object> map = new HashMap<>(16);
         List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
         map.put("resIds", resIds);
+        map.put("resStatus", 1);
         List<ResBase> resBaseAlarms = resBaseService.findByMap(map);
         return new PublicResult(PublicResultConstant.SUCCESS, resBaseAlarms);
 
@@ -73,6 +73,14 @@ public class ResBaseController {
         List<ResBase> resBaseList = resBaseService.getTopRes(map);
         return new PublicResult(PublicResultConstant.SUCCESS, resBaseList);
     }
+
+
+    @GetMapping("/getResTree")
+    public PublicResult getResTree(@CurrentUser SysUser sysUser) {
+        Tree<SysDept> tree = resBaseService.genResTreeByUser(sysUser);
+        return new PublicResult(PublicResultConstant.SUCCESS, tree);
+    }
+
 
 }
 

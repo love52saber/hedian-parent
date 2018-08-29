@@ -8,6 +8,7 @@ import com.hedian.entity.ResAbnormallevel;
 import com.hedian.entity.SysUser;
 import com.hedian.service.IResAbnormallevelService;
 import com.hedian.utils.HdywUtils;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/resAbnormallevel")
+@Api(description = "资源告警等级管理")
 public class ResAbnormallevelController {
 
     @Autowired

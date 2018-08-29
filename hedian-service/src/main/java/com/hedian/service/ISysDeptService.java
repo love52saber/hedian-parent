@@ -2,6 +2,7 @@ package com.hedian.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.hedian.entity.SysDept;
+import com.hedian.model.Tree;
 
 import java.util.List;
 
@@ -30,4 +31,8 @@ public interface ISysDeptService extends IService<SysDept> {
      * @return
      */
     List<SysDept> getChildList(Long deptId);
+
+    Tree<SysDept> getParentList(List<Long> deptIds);
+
+    Tree<SysDept> getChildLists(Long deptId);
 }
