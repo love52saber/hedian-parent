@@ -10,9 +10,11 @@ import com.hedian.base.Constant;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
+import com.hedian.entity.SysFile;
 import com.hedian.entity.SysUser;
 import com.hedian.entity.SysUserRole;
 import com.hedian.service.ISysDeptService;
+import com.hedian.service.ISysFileService;
 import com.hedian.service.ISysUserRoleService;
 import com.hedian.service.ISysUserService;
 import com.hedian.util.ComUtil;
@@ -49,6 +51,8 @@ public class SysUserController {
     private ISysUserRoleService userRoleService;
     @Autowired
     private ISysDeptService sysDeptService;
+    @Autowired
+    private ISysFileService sysFileService;
 
 
     /**
@@ -80,7 +84,7 @@ public class SysUserController {
                                  @RequestParam(value = "deptId", defaultValue = "", required = false) String deptId) {
         EntityWrapper<SysUser> ew = new EntityWrapper<>();
         if (!ComUtil.isEmpty(info)) {
-            ew.like("username", info).or().like("name",info);
+            ew.like("username", info).or().like("name", info);
         }
         if (!ComUtil.isEmpty(deptId)) {
             ew.eq("dept_id", deptId);
@@ -130,10 +134,10 @@ public class SysUserController {
      * @return
      */
     @GetMapping("/lock/{userId}/{lockInfo}")
-    public PublicResult<SysUser> getUserByUserName(@PathVariable("userId") String userId, @PathVariable("lockInfo")String lockInfo,
+    public PublicResult<SysUser> getUserByUserName(@PathVariable("userId") String userId, @PathVariable("lockInfo") String lockInfo,
                                                    @CurrentUser SysUser sysUser, HttpServletRequest request) throws Exception {
         SysUser user = userService.selectById(userId);
-        if (ComUtil.isEmpty(sysUser)) {
+        if (ComUtil.isEmpty(user)) {
             return new PublicResult<>(PublicResultConstant.INVALID_USER, null);
         }
 
@@ -144,7 +148,6 @@ public class SysUserController {
             user.setLockflag(1);
             user.setLocktype(2);
             user.setWrongTimes(null);
-            user.setLocktype(null);
             user.setUnlocktime(null);
             user.setLastwrongTime(null);
             user.setLockreason(lockReson);
@@ -152,13 +155,12 @@ public class SysUserController {
         } else {
             //解锁
             user.setLockflag(0);
-            user.setLocktype(null);
             user.setWrongTimes(null);
             user.setLocktype(null);
             user.setUnlocktime(null);
             user.setLockreason(null);
         }
-        boolean result = userService.updateAllColumnById(sysUser);
+        boolean result = userService.updateAllColumnById(user);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 
@@ -193,17 +195,24 @@ public class SysUserController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/updatePassword")
-    public PublicResult<String> updatePassword(@ValidationParam("userId,password,rePassword")
+    @PutMapping("/updatePassword")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "requestJson", value = "{\\\"userId\\\":\\\"xxx\\\",\\\"oldPassword\\\":\\\"xxx\\\"," +
+                    "\\\"password\\\":\\\"xxx\\\",\\\"rePassword\\\":\\\"xxx\\\"}", required = true, dataType = "String", paramType = "body")
+    })
+    public PublicResult<String> updatePassword(@ValidationParam("userId,oldPassword,password,rePassword")
                                                @RequestBody JSONObject requestJson) throws Exception {
         SysUser user = userService.selectById(requestJson.getString("userId"));
         if (ComUtil.isEmpty(user)) {
             return new PublicResult<>(PublicResultConstant.INVALID_USER, null);
         }
+        if (!BCrypt.checkpw(requestJson.getString("oldPassword"), user.getPassword())) {
+            return new PublicResult<>("旧密码不正确", null);
+        }
         if (!requestJson.getString("password").equals(requestJson.getString("rePassword"))) {
             return new PublicResult<>(PublicResultConstant.INVALID_RE_PASSWORD, null);
         }
-        user.setPassword(BCrypt.hashpw(requestJson.getString("passWord"), BCrypt.gensalt()));
+        user.setPassword(BCrypt.hashpw(requestJson.getString("password"), BCrypt.gensalt()));
         userService.updateById(user);
         return new PublicResult<String>(PublicResultConstant.SUCCESS, null);
     }
@@ -214,7 +223,7 @@ public class SysUserController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/resetPassword")
+    @PutMapping("/resetPassword")
     public PublicResult<String> resetPassWord(@CurrentUser SysUser user) throws Exception {
         user.setPwdFlag(2);
         user.setLockflag(0);
@@ -244,28 +253,29 @@ public class SysUserController {
     }
 
 
-    @PostMapping("/info")
+    @PutMapping("/info")
     public PublicResult<String> resetUserInfo(@CurrentUser SysUser currentUser, @RequestBody JSONObject requestJson) throws Exception {
-        if (!ComUtil.isEmpty(requestJson.getString("name"))) {
-            currentUser.setName(requestJson.getString("name"));
-        }
-        if (!ComUtil.isEmpty(requestJson.getString("sex"))) {
-            currentUser.setSex(requestJson.getLong("sex"));
-        }
+
         if (!ComUtil.isEmpty(requestJson.getString("email"))) {
             currentUser.setEmail(requestJson.getString("email"));
         }
         if (!ComUtil.isEmpty(requestJson.getString("mobile"))) {
             currentUser.setMobile(requestJson.getString("mobile"));
         }
-//        if(!ComUtil.isEmpty(requestJson.getString("mobile"))){
-//            currentUser.setJob(requestJson.getString("mobile"));
-//        }
-//        if(!ComUtil.isEmpty(requestJson.getString("mobile"))){
-//            currentUser.setJob(requestJson.getString("mobile"));
-//        }
+        if (!ComUtil.isEmpty(requestJson.getString("telephone"))) {
+            currentUser.setTelephone(requestJson.getString("telephone"));
+        }
         userService.updateById(currentUser);
-        return new PublicResult<String>(PublicResultConstant.SUCCESS, null);
+
+        if (!ComUtil.isEmpty(requestJson.getString("url"))) {
+            SysFile sysFile = new SysFile(0, requestJson.getString("url"));
+            boolean result = sysFileService.insert(sysFile);
+            if (result) {
+                currentUser.setPicId(sysFile.getId());
+                userService.updateById(currentUser);
+            }
+        }
+        return new PublicResult<>(PublicResultConstant.SUCCESS, null);
     }
 //
 //
@@ -309,6 +319,10 @@ public class SysUserController {
 //        return ComUtil.isEmpty(user)?new PublicResult<>(PublicResultConstant.INVALID_USER, null): new PublicResult<>(PublicResultConstant.SUCCESS, user);
 //    }
 //
+
+    public static void main(String[] args) {
+        System.out.println(BCrypt.hashpw("123456", BCrypt.gensalt()));
+    }
 
 }
 

@@ -2,6 +2,7 @@ package com.hedian.entity;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -36,7 +37,7 @@ public class SysFile extends Model<SysFile> {
     /**
      * 创建时间
      */
-    @TableField("gmt_create")
+    @TableField(value = "gmt_create",fill = FieldFill.INSERT)
     private Date gmtCreate;
 
     public SysFile() {

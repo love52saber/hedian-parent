@@ -1,4 +1,4 @@
-package com.hedian.fault;
+package com.hedian.base;
 
 /**
  * @author why

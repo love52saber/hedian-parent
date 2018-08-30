@@ -1,6 +1,7 @@
 package com.hedian.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.hedian.base.QuatzConstants;
 import com.hedian.entity.*;
 import com.hedian.mapper.ResBaseMapper;
 import com.hedian.model.Tree;
@@ -116,9 +117,7 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
         return tree;
     }
 
-    private static int RES_MTYPEID = 1001;
-
-    /**
+    /**0
      * 递归方式将资源插入部门tree中
      *
      * @param tree
@@ -144,7 +143,7 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
                 }
             }
             map.put("resIds", resIds);
-            map.put("resMtypeId", RES_MTYPEID);
+            map.put("resMtypeId", QuatzConstants.ZD_MAIN_TYPE);
             //根据管理域对应的资源ids获取资源列表
             resBaseList = this.findByMap(map);
             //将资源数据放入tree中

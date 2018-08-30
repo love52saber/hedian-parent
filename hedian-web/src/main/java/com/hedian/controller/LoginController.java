@@ -9,6 +9,7 @@ import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.SysUser;
 import com.hedian.service.ISysUserService;
 import com.hedian.util.ComUtil;
+import com.hedian.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -43,19 +45,46 @@ public class LoginController {
     @Pass
     public PublicResult<Map<String, Object>> login(
             @ValidationParam("username,password") @RequestBody JSONObject requestJson) throws Exception {
-        //由于 @ValidationParam注解已经验证过mobile和passWord参数，所以可以直接get使用没毛病。
+        //由于 @ValidationParam注解已经验证过mobile和password参数，所以可以直接get使用没毛病。
         String userName = requestJson.getString("username");
         SysUser user = userService.getUserByUserName(userName);
         if (ComUtil.isEmpty(user)) {
             return new PublicResult<>(PublicResultConstant.INVALID_USERNAME_PASSWORD, null);
         }
         if (!BCrypt.checkpw(requestJson.getString("password"), user.getPassword())) {
+            //todo 做用户修改 判断登录几次  超过5次锁定用户
+//            if (user.getLastwrongTime().getTime() < System.currentTimeMillis() + (30 * 60 * 1000)) {
+//                user.setWrongTimes((ComUtil.isEmpty(user.getWrongTimes())) ? 1 : user.getWrongTimes() + 1);
+//            } else {
+//                user.setWrongTimes(1);
+//            }
+//            user.setLastwrongTime(new Date());
+//            if (user.getWrongTimes().equals(5)) {
+//                user.setLockreason("aaa");
+//                user.setLocktype(1);
+//                user.setLockflag(1);
+//                user.setUnlocktime(new Date());
+//                user.setLastwrongTime(null);
+//                user.setWrongTimes(null);
+//            }
+//            userService.updateAllColumnById(user);
             return new PublicResult<>(PublicResultConstant.INVALID_USERNAME_PASSWORD, null);
         }
         if (user.getStatus().equals(0)) {
-            return new PublicResult<>("该用已被禁用请联系管理员", null);
+            return new PublicResult<>("该用户已被禁用请联系管理员", null);
+        }
+        if (user.getLockflag().equals(1) && user.getLocktype().equals(1)
+                && user.getUnlocktime().getTime() > System.currentTimeMillis()) {
+            return new PublicResult<>("该用户已经锁定，请稍后从试或者联系管理员解锁", null);
+        } else {
+            //更新用户信息
+        }
+        if (user.getLockflag().equals(1) && user.getLocktype().equals(2)) {
+            return new PublicResult<>("该用户已经锁定，请稍后从试或者联系管理员解锁", null);
         }
         Map<String, Object> result = userService.getLoginUserAndMenuInfo(user);
+
+
         return new PublicResult<>(PublicResultConstant.SUCCESS, result);
     }
 

@@ -108,7 +108,7 @@ public class SysDeptController {
      * 删除组织
      */
     @DeleteMapping(value = "/{deptId}")
-    public PublicResult deleteRole(@PathVariable("deptId") Long deptId) {
+    public PublicResult deleteDept(@PathVariable("deptId") Long deptId) {
         if (ComUtil.isEmpty(sysDeptService.selectById(deptId))) {
             return new PublicResult<>(PublicResultConstant.ERROR, null);
         }

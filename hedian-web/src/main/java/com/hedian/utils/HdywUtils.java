@@ -1,8 +1,8 @@
 package com.hedian.utils;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.hedian.base.QuatzConstants;
 import com.hedian.entity.*;
-import com.hedian.fault.QuatzConstants;
 import com.hedian.service.*;
 import com.hedian.util.ComUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,5 +175,4 @@ public class HdywUtils {
             }
         }
     }
-
 }

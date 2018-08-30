@@ -90,6 +90,11 @@ public class TranslateTemplateUtil {
     public static final String RES_REVOVERYVALUE = "$$res_revoveryvalue";
 
     /**
+     * 格式化日期格式
+     */
+    public static final String FORMAT_DATE = "yyyy-MM-dd HH:mm:ss";
+
+    /**
      * 翻译错误模版信息
      *
      * @param template         模版定义
@@ -109,7 +114,7 @@ public class TranslateTemplateUtil {
                                            ResBase resBase, ResMaintype resMainType, ResSubtype resSubtype) {
         if (StringUtils.isNotEmpty(template)) {
             //获取当前  yyyy-MM-dd HH:mm:ss 时间
-            String currentTime = DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+            String currentTime = DateUtils.format(new Date(), FORMAT_DATE);
             /**
              * 资源别名
              */
