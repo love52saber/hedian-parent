@@ -122,12 +122,11 @@
             </foreach>
         </if>
         <if test="resMtypeId != null and resMtypeId != ''">and res_mtype_id = #{resMtypeId}</if>
-        <if test="res_status != null and res_status != ''">and res_status != #{resStatus}</if>
+        <if test="resStatus != null and resStatus != ''">and res_status != #{resStatus}</if>
         ) a
-        LEFT JOIN (select * from tbl_res_abnormallevel where useflag=1) b ON
-        a.res_abnormallevel_id=b.res_abnormallevel_id
+        LEFT JOIN (select * from tbl_res_abnormallevel where useflag=1) b ON a.res_abnormallevel_id=b.res_abnormallevel_id
         LEFT JOIN (select * from tbl_res_status where useflag=1) d ON a.res_status=d.res_status
-        ORDER BY b.res_abnormallevel_priority ASC, a.res_abnomaltime DESC
+        order by  a.res_id
     </select>
 
     <select id="getTopRes" resultMap="TopResMap">
@@ -145,5 +144,43 @@
         LEFT JOIN tbl_res_base b ON a.res_id=b.res_id
         GROUP BY a.res_id ORDER BY countNum DESC
     </select>
+
+    <select id="selectByResMtypeId" resultMap="ResOtherMap">
+        SELECT *
+        FROM tbl_res_base rb
+          INNER JOIN tbl_res_subtype rs ON  rb.res_stype_id = rs.res_stype_id
+          INNER JOIN tbl_res_maintype rm ON rb.res_mtype_id = rm.res_mtype_id
+      WHERE
+          rb.res_mtype_id = #{res_mtype_id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectPageByConditionResBase" resultMap="ResOtherMap">
+        SELECT *
+        FROM tbl_res_base rb
+          INNER JOIN tbl_res_subtype rs ON  rb.res_stype_id = rs.res_stype_id
+          INNER JOIN tbl_res_maintype rm ON rb.res_mtype_id = rm.res_mtype_id
+        <where>
+            <if test="resName != null and resName != '' ">
+                and rb.res_name like concat('%',#{info},'%')
+            </if>
+            <if test="resIPV4 != null and resIPV4 != '' ">
+                and rb.res_ipv4 like concat('%',#{info},'%')
+            </if>
+            <if test="resSerialNum != null and resSerialNum != '' ">
+                and rb.res_serialnumber like concat('%',#{info},'%')
+            </if>
+            <if test="resAddress != null and resAddress != '' ">
+                and rb.res_address like concat('%',#{info},'%')
+            </if>
+            <if test="resStypeName != null and resStypeName != '' ">
+                and rs.res_stype_name like concat('%',#{info},'%')
+            </if>
+            <if test="resMtypeName != null and resMtypeName != '' ">
+                and rm.res_mtype_name like concat('%',#{info},'%')
+            </if>
+        </where>
+        ORDER BY rb.gmt_create DESC
+    </select>
+
 
 </mapper>

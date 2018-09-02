@@ -52,22 +52,21 @@ public class LoginController {
             return new PublicResult<>(PublicResultConstant.INVALID_USERNAME_PASSWORD, null);
         }
         if (!BCrypt.checkpw(requestJson.getString("password"), user.getPassword())) {
-            //todo 做用户修改 判断登录几次  超过5次锁定用户
-//            if (user.getLastwrongTime().getTime() < System.currentTimeMillis() + (30 * 60 * 1000)) {
-//                user.setWrongTimes((ComUtil.isEmpty(user.getWrongTimes())) ? 1 : user.getWrongTimes() + 1);
-//            } else {
-//                user.setWrongTimes(1);
-//            }
-//            user.setLastwrongTime(new Date());
-//            if (user.getWrongTimes().equals(5)) {
-//                user.setLockreason("aaa");
-//                user.setLocktype(1);
-//                user.setLockflag(1);
-//                user.setUnlocktime(new Date());
-//                user.setLastwrongTime(null);
-//                user.setWrongTimes(null);
-//            }
-//            userService.updateAllColumnById(user);
+            if (user.getLastwrongTime().getTime() < System.currentTimeMillis() + (30 * 60 * 1000)) {
+                user.setWrongTimes((ComUtil.isEmpty(user.getWrongTimes())) ? 1 : user.getWrongTimes() + 1);
+            } else {
+                user.setWrongTimes(1);
+            }
+            user.setLastwrongTime(new Date());
+            if (user.getWrongTimes().equals(5)) {
+                user.setLockreason("aaa");
+                user.setLocktype(1);
+                user.setLockflag(1);
+                user.setUnlocktime(new Date());
+                user.setLastwrongTime(null);
+                user.setWrongTimes(null);
+            }
+            userService.updateAllColumnById(user);
             return new PublicResult<>(PublicResultConstant.INVALID_USERNAME_PASSWORD, null);
         }
         if (user.getStatus().equals(0)) {

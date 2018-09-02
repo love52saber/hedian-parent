@@ -46,7 +46,7 @@ public class ResourceController {
                     + new SimpleDateFormat("MM").format(new Date()) + "/"
                     + new SimpleDateFormat("dd").format(new Date());
             result = FtpUtil.uploadFile(ftpHost, ftpPort, ftpUserName, ftpPassWord, ftpBasePath, filePath, newFileName, multipartFile.getInputStream());
-            newFileName = filePath + newFileName;
+            newFileName = filePath + "/" + newFileName;
         }
         return result ? new PublicResult(PublicResultConstant.SUCCESS, newFileName) : new PublicResult(PublicResultConstant.ERROR, null);
     }

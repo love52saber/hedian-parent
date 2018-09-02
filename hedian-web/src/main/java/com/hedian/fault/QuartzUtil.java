@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.toolkit.StringUtils;
 import com.hedian.base.QuatzConstants;
 import com.hedian.entity.*;
 import com.hedian.service.*;
+import com.hedian.util.ComUtil;
 import com.hedian.utils.HdywUtils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,17 +62,17 @@ public class QuartzUtil {
     @Transactional(rollbackFor = Exception.class)
     public void updateResBase() {
         //取出系统配置时间 c_type=20000 parakey为offline_count和offline_interval的配置值
-        SysConf sysConf = sysConfService.selectOne(new EntityWrapper<SysConf>().where("c_type={0}", QuatzConstants.SYS_TIME_CONFIG));
+        List<SysConf> sysConfs = sysConfService.selectList(new EntityWrapper<SysConf>().where("c_type={0}", QuatzConstants.SYS_TIME_CONFIG));
         int timeFlag = 0;
-        if (null != sysConf) {
+        if (!ComUtil.isEmpty(sysConfs)) {
             try {
-                timeFlag = Integer.parseInt(sysConf.getParavalue()) * Integer.parseInt(sysConf.getParavalue());
+                timeFlag = Integer.parseInt(sysConfs.get(0).getParavalue()) * Integer.parseInt(sysConfs.get(1).getParavalue());
             } catch (NumberFormatException e) {
                 log.info("parse int failed");
             }
         }
         //根据1001查询所有系统下的终端
-        List<ResBase> resBaseList = resBaseService.selectList(new EntityWrapper<ResBase>().where("res_mtype_id={0}", QuatzConstants.ZD_MAIN_TYPE));
+        List<ResBase> resBaseList = resBaseService.selectByResMtypeId(QuatzConstants.ZD_MAIN_TYPE);
 
         if (null != resBaseList && resBaseList.size() > 0) {
             for (ResBase resBase : resBaseList) {

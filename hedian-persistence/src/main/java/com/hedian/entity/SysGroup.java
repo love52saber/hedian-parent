@@ -7,7 +7,9 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
@@ -50,21 +52,24 @@ public class SysGroup extends Model<SysGroup> {
     @TableField("dept_id")
     private String deptId;
 
-    @TableField("user_id_create")
+    @TableField(value = "user_id_create",fill = FieldFill.INSERT)
     private Long userIdCreate;
-    @TableField("gmt_create")
+    @TableField(value = "gmt_create", fill = FieldFill.INSERT)
     private Date gmtCreate;
-    @TableField("gmt_modified")
+    @TableField(value = "gmt_modified",fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
     /**
      * 使用标记： 1 使用， 0 不使用
      */
+    @TableLogic
+    @TableField(fill = FieldFill.INSERT)
     private Integer useflag;
-    @TableField("user_id_mod")
+    @TableField(value = "user_id_mod", fill = FieldFill.UPDATE)
     private Long userIdMod;
     /**
      * 删除标记：0 不能删除， 1可以删除， 默认 1
      */
+    @TableField(fill = FieldFill.INSERT)
     private Integer delflag;
 
     @TableField(exist = false)

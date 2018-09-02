@@ -1,7 +1,8 @@
 package com.hedian.service;
 
-import com.hedian.entity.ResBase;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.hedian.entity.ResBase;
 import com.hedian.entity.SysDept;
 import com.hedian.entity.SysUser;
 import com.hedian.model.Tree;
@@ -21,7 +22,12 @@ public interface IResBaseService extends IService<ResBase> {
 
     List<ResBase> findByMap(Map<String, Object> map);
 
-    List<ResBase> getTopRes(Map<String,Object> map);
+    List<ResBase> getTopRes(Map<String, Object> map);
 
     Tree<SysDept> genResTreeByUser(SysUser sysUser);
+
+    List<ResBase> selectByResMtypeId(Integer resMtypeId);
+
+    Page<ResBase> selectPageByConditionResBase(Page<ResBase> page, String resName, String resStypeName, String resIPV4, String resSerialNum,
+                                               String resAddress, String resMtypeName);
 }

@@ -127,13 +127,12 @@ public class HdywUtils {
     public static void getMainMap(Map<String, ResBase> mainMap, String resBaseKey, ResBase rootBase, Map<String, String> dataMap, Integer flag) {
         mainMap.put(resBaseKey, rootBase);
         List<ResStypeKpi> resStypeKpiList = hdywUtils.resStypeKpiService.selectByResStypeId(rootBase.getResStypeId());
-        HashMap<String, Object> map = new HashMap<>(16);
         //封装掉电和离线异常
         if (flag == 0) {
-            map.put("resId", rootBase.getResId());
-            map.put("moKpiId", QuatzConstants.OFFLINE_KEY);
-
-            ResMoAbnormalInfo rootResMoAbnormalInfo = hdywUtils.resMoAbnormalInfoService.selectByResIdAndkpiId(map);
+            ResMoAbnormalInfo rootResMoAbnormalInfo = hdywUtils.resMoAbnormalInfoService.selectOne(
+                    new EntityWrapper<ResMoAbnormalInfo>()
+                    .where("res_abnormalstatus ={0} and res_id= {1} and mo_kpi_id = {2}",
+                            1,rootBase.getResId(),QuatzConstants.OFFLINE_KEY));
             if (null != rootResMoAbnormalInfo) {
                 rootBase.getTerminalErrInfos().put(QuatzConstants.OFFLINE_KEY, rootResMoAbnormalInfo);
             }
@@ -143,10 +142,10 @@ public class HdywUtils {
                 MoKpi moKpi = resStypeKpi.getMoKpi();
                 //判断当前stypeId有没有匹配到kpi
                 if (null != moKpi) {
-                    map.clear();
-                    map.put("resId", rootBase.getResId());
-                    map.put("moKpiId", moKpi.getMoKpiId());
-                    ResMoAbnormalInfo resMoAbnormalInfo = hdywUtils.resMoAbnormalInfoService.selectByResIdAndkpiId(map);
+                    ResMoAbnormalInfo resMoAbnormalInfo = hdywUtils.resMoAbnormalInfoService.selectOne(
+                            new EntityWrapper<ResMoAbnormalInfo>()
+                            .where("res_abnormalstatus ={0} and res_id= {1} and mo_kpi_id = {2}",
+                                    1,rootBase.getResId(),moKpi.getMoKpiId()));
                     if (null != resMoAbnormalInfo) {
                         rootBase.getTerminalErrInfos().put(moKpi.getMoKpiId(), resMoAbnormalInfo);
                     }

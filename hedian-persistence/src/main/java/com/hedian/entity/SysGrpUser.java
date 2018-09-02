@@ -5,7 +5,9 @@ import java.io.Serializable;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
@@ -30,16 +32,17 @@ public class SysGrpUser extends Model<SysGrpUser> {
     @TableField("user_id")
     private Long userId;
     private Integer showorder;
+    @TableLogic
+    @TableField(fill = FieldFill.INSERT)
     private Integer useflag;
 
     public SysGrpUser() {
     }
 
-    public SysGrpUser(Integer grpId, Long userId, Integer showorder, Integer useflag) {
+    public SysGrpUser(Integer grpId, Long userId, Integer showorder) {
         this.grpId = grpId;
         this.userId = userId;
         this.showorder = showorder;
-        this.useflag = useflag;
     }
 
     public Integer getId() {

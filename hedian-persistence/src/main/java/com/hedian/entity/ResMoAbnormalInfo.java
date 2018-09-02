@@ -178,20 +178,20 @@ public class ResMoAbnormalInfo extends Model<ResMoAbnormalInfo> {
     @Override
     public String toString() {
         return "ResMoAbnormalInfo{" +
-        "resAbnormalId=" + resAbnormalId +
-        ", resId=" + resId +
-        ", moThId=" + moThId +
-        ", moKpiId=" + moKpiId +
-        ", moAbnormalId=" + moAbnormalId +
-        ", resAbnormalCode=" + resAbnormalCode +
-        ", resAbnormalName=" + resAbnormalName +
-        ", resAbnormallevelId=" + resAbnormallevelId +
-        ", resAbnormaldesc=" + resAbnormaldesc +
-        ", resAbnomaltime=" + resAbnomaltime +
-        ", resRecoverytime=" + resRecoverytime +
-        ", resAbnormalvalue=" + resAbnormalvalue +
-        ", resRevoveryvalue=" + resRevoveryvalue +
-        ", resAbnormalstatus=" + resAbnormalstatus +
-        "}";
+                "resAbnormalId=" + resAbnormalId +
+                ", resId=" + resId +
+                ", moThId=" + moThId +
+                ", moKpiId=" + moKpiId +
+                ", moAbnormalId=" + moAbnormalId +
+                ", resAbnormalCode=" + resAbnormalCode +
+                ", resAbnormalName='" + resAbnormalName + '\'' +
+                ", resAbnormallevelId=" + resAbnormallevelId +
+                ", resAbnormaldesc='" + resAbnormaldesc + '\'' +
+                ", resAbnomaltime=" + resAbnomaltime +
+                ", resRecoverytime=" + resRecoverytime +
+                ", resAbnormalvalue='" + resAbnormalvalue + '\'' +
+                ", resRevoveryvalue='" + resRevoveryvalue + '\'' +
+                ", resAbnormalstatus=" + resAbnormalstatus +
+                '}';
     }
 }

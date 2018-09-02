@@ -47,13 +47,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public boolean register(SysUser user, List<Long> roleIds, String url) {
         user.setGmtCreate(new Date());
         boolean result = this.insert(user);
-        if (result) {
+        if (result && !ComUtil.isEmpty(url)) {
             result = sysFileService.insert(new SysFile(0, url));
         }
         if (result) {
             if (!ComUtil.isEmpty(roleIds)) {
                 List<SysUserRole> sysUserRoles = new ArrayList<>();
-                roleIds.stream().forEach(roleId->{
+                roleIds.stream().forEach(roleId -> {
                     sysUserRoles.add(new SysUserRole(user.getUserId(), roleId));
                 });
                 result = sysUserRoleService.insertBatch(sysUserRoles);
@@ -64,16 +64,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public boolean updateInfo(SysUser userUpdate, List<Long> roleIds, String url) {
-        userUpdate.setGmtCreate(new Date());
-        boolean result = this.updateById(userUpdate);
-        if (result) {
-            result = sysFileService.updateById(new SysFile(userUpdate.getPicId(), url));
+        boolean result = false;
+        SysFile sysFile = null;
+        if (!ComUtil.isEmpty(url)) {
+            sysFile = new SysFile(userUpdate.getPicId(), url);
+            result = sysFileService.insert(sysFile);
+        }
+        userUpdate.setPicId(null != sysFile ? sysFile.getId() : null);
+        if(result){
+            result = this.updateById(userUpdate);
         }
         if (result) {
             sysUserRoleService.delete(new EntityWrapper<SysUserRole>().eq("user_id", userUpdate.getUserId()));
             if (!ComUtil.isEmpty(roleIds)) {
                 List<SysUserRole> sysUserRoles = new ArrayList<>();
-                roleIds.stream().forEach(roleId->{
+                roleIds.stream().forEach(roleId -> {
                     sysUserRoles.add(new SysUserRole(userUpdate.getUserId(), roleId));
                 });
                 result = sysUserRoleService.insertBatch(sysUserRoles);
@@ -110,6 +115,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         Map<String, Object> result = new HashMap<>();
         result.put("token", JWTUtil.sign(user.getUsername(), user.getPassword()));
         user.setPassword(null);
+        SysFile sysFile = sysFileService.selectById(user.getPicId());
+        user.setSysFile(sysFile);
         result.put("user", user);
         //根据用户主键查询启用的菜单权限
         List<SysMenu> menuList = sysMenuService.findMenuByUserId(user.getUserId());

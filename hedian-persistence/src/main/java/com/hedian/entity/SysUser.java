@@ -149,6 +149,17 @@ public class SysUser extends Model<SysUser> {
     private Integer delflag;
 
     @TableField(exist = false)
+    private SysFile sysFile;
+
+    public SysFile getSysFile() {
+        return sysFile;
+    }
+
+    public void setSysFile(SysFile sysFile) {
+        this.sysFile = sysFile;
+    }
+
+    @TableField(exist = false)
     private List<Long> roleIds;
 
     @TableField(exist = false)

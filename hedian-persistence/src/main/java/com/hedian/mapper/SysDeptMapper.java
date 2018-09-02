@@ -22,4 +22,5 @@ public interface SysDeptMapper extends BaseMapper<SysDept> {
      */
     List<SysDept> getChildList(Long deptId);
 
+    List<SysDept> getParentList(Long deptId);
 }

@@ -4,20 +4,20 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.hedian.entity.SysDept">
-        <id column="dept_id" property="deptId" />
-        <result column="parent_id" property="parentId" />
-        <result column="org_type" property="orgType" />
-        <result column="org_code" property="orgCode" />
-        <result column="name" property="name" />
-        <result column="short_name" property="shortName" />
-        <result column="org_desc" property="orgDesc" />
-        <result column="order_num" property="orderNum" />
-        <result column="delflag" property="delflag" />
-        <result column="useflag" property="useflag" />
-        <result column="user_id_create" property="userIdCreate" />
-        <result column="gmt_create" property="gmtCreate" />
-        <result column="gmt_modified" property="gmtModified" />
-        <result column="user_id_mod" property="userIdMod" />
+        <id column="dept_id" property="deptId"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="org_type" property="orgType"/>
+        <result column="org_code" property="orgCode"/>
+        <result column="name" property="name"/>
+        <result column="short_name" property="shortName"/>
+        <result column="org_desc" property="orgDesc"/>
+        <result column="order_num" property="orderNum"/>
+        <result column="delflag" property="delflag"/>
+        <result column="useflag" property="useflag"/>
+        <result column="user_id_create" property="userIdCreate"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="user_id_mod" property="userIdMod"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -26,10 +26,21 @@
     </sql>
 
     <select id="getChildList" resultType="com.hedian.entity.SysDept">
-		select `dept_id`,`parent_id`,`name`,`order_num`,`del_flag` from
-		sys_dept
-		where dept_id IN (
-		select dept_id from sys_dept where FIND_IN_SET(dept_id,getChildList(#{value}))
-		)
-	</select>
+        select
+        <include refid="Base_Column_List"/>
+        from
+        sys_dept
+        where dept_id IN (
+        select dept_id from sys_dept where FIND_IN_SET(dept_id,getChildList(#{value}))
+        )
+    </select>
+    <select id="getParentList" resultType="com.hedian.entity.SysDept">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        sys_dept
+        where dept_id IN (
+        select dept_id from sys_dept where FIND_IN_SET(dept_id,getParentList(#{value}))
+        )
+    </select>
 </mapper>

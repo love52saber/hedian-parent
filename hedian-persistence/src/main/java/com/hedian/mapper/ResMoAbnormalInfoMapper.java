@@ -25,13 +25,13 @@ public interface ResMoAbnormalInfoMapper extends BaseMapper<ResMoAbnormalInfo> {
      * @param map
      * @return
      */
-    ResMoAbnormalInfo selectByResIdAndkpiId(Map<String, Object> map);
+    ResMoAbnormalInfo selectByResIdAndkpiId(Map<String, Integer> map);
 
     /**
      * 告警列表  等同于编写一个普通 list 查询，mybatis-plus 自动替你分页
      */
 
-    List<AlarmInfoModel> selectAlarmByResId(Page<AlarmInfoModel> page, @Param("resId") String resId);
+    List<AlarmInfoModel> selectAlarmByResId(@Param("resId") String resId);
 
     /**
      * top 故障设备统计

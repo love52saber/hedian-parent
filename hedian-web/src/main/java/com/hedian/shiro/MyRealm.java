@@ -33,6 +33,7 @@ public class MyRealm extends AuthorizingRealm {
     private ISysUserRoleService userToRoleService;
     private ISysMenuService menuService;
     private ISysRoleService roleService;
+
     /**
      * 大坑！，必须重写此方法，不然Shiro会报错
      */
@@ -72,9 +73,9 @@ public class MyRealm extends AuthorizingRealm {
 //        ArrayList<String> pers = new ArrayList<>();
         List<SysMenu> menuList = menuService.findMenuByUserId(user.getUserId());
         for (SysMenu per : menuList) {
-             if (!ComUtil.isEmpty(per.getPerms())) {
-                  pers.add(per.getPerms());
-              }
+            if (!ComUtil.isEmpty(per.getPerms())) {
+                pers.add(per.getPerms());
+            }
         }
         Set<String> permission = new HashSet<>(pers);
         simpleAuthorizationInfo.addStringPermissions(permission);
@@ -92,7 +93,7 @@ public class MyRealm extends AuthorizingRealm {
             this.userService = SpringContextBean.getBean(ISysUserService.class);
         }
         String token = (String) auth.getCredentials();
-        if(Constant.isPass){
+        if (Constant.isPass) {
             return new SimpleAuthenticationInfo(token, token, this.getName());
         }
         // 解密获得username，用于和数据库进行对比
@@ -104,7 +105,7 @@ public class MyRealm extends AuthorizingRealm {
         if (userBean == null) {
             throw new UnauthorizedException("User didn't existed!");
         }
-        if (! JWTUtil.verify(token, userNo, userBean.getPassword())) {
+        if (!JWTUtil.verify(token, userNo, userBean.getPassword())) {
             throw new UnauthorizedException("Username or password error");
         }
         return new SimpleAuthenticationInfo(token, token, this.getName());

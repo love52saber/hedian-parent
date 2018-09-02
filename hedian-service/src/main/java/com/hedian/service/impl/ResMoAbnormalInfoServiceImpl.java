@@ -1,16 +1,15 @@
 package com.hedian.service.impl;
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hedian.entity.MoAbnormalDef;
 import com.hedian.entity.ResMoAbnormalInfo;
 import com.hedian.mapper.ResMoAbnormalInfoMapper;
 import com.hedian.model.AlarmInfoModel;
 import com.hedian.service.IResMoAbnormalInfoService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,13 +29,13 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
 
 
     @Override
-    public ResMoAbnormalInfo selectByResIdAndkpiId(HashMap<String, Object> map) {
+    public ResMoAbnormalInfo selectByResIdAndkpiId(Map<String, Integer> map) {
         return resMoAbnormalInfoMapper.selectByResIdAndkpiId(map);
     }
 
     @Override
-    public Page<AlarmInfoModel> selectAlarmByResId(Page<AlarmInfoModel> alarmInfoModelPage, String resId) {
-        return alarmInfoModelPage.setRecords(resMoAbnormalInfoMapper.selectAlarmByResId(alarmInfoModelPage, resId));
+    public List<AlarmInfoModel> selectAlarmByResId(String resId) {
+        return resMoAbnormalInfoMapper.selectAlarmByResId(resId);
     }
 
     @Override

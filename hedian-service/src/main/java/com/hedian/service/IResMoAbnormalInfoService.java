@@ -20,9 +20,9 @@ import java.util.Map;
  */
 public interface IResMoAbnormalInfoService extends IService<ResMoAbnormalInfo> {
 
-    ResMoAbnormalInfo selectByResIdAndkpiId(HashMap<String,Object> map);
+    ResMoAbnormalInfo selectByResIdAndkpiId(Map<String,Integer> map);
 
-    Page<AlarmInfoModel> selectAlarmByResId(Page<AlarmInfoModel> alarmInfoModelPage, String resId);
+    List<AlarmInfoModel> selectAlarmByResId(String resId);
 
     List<MoAbnormalDef> getTopAbnormal(Map<String,Object> map);
 }

@@ -1,12 +1,13 @@
 package com.hedian.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hedian.base.QuatzConstants;
 import com.hedian.entity.*;
 import com.hedian.mapper.ResBaseMapper;
 import com.hedian.model.Tree;
 import com.hedian.service.*;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hedian.util.ComUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,14 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
     private ISysDeptService sysDeptService;
     @Autowired
     private IMdResService mdResService;
+
+
+    @Override
+    public Page<ResBase> selectPageByConditionResBase(Page<ResBase> page, String resName, String resStypeName, String resIPV4, String resSerialNum,
+                                                      String resAddress, String resMtypeName) {
+        //注意！！ 分页 total 是经过插件自动 回写 到传入 page 对象
+        return page.setRecords(resBaseMapper.selectPageByConditionResBase(page, resName, resStypeName, resIPV4, resSerialNum, resAddress, resMtypeName));
+    }
 
     @Override
     public List<ResBase> findByMap(Map<String, Object> map) {
@@ -117,7 +126,8 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
         return tree;
     }
 
-    /**0
+    /**
+     * 0
      * 递归方式将资源插入部门tree中
      *
      * @param tree
@@ -132,18 +142,18 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
         Map<String, Object> attributes = new HashMap<>(16);
         Map<String, Object> map = new HashMap<String, Object>(16);
         List<ResBase> resBaseList = null;
-        if (null != orgMap.get(Integer.valueOf(tree.getId()))) {
+        if (null != orgMap.get(Long.valueOf(tree.getId()))) {
             //获取管理域id对应的资产id
             int[] resIds = new int[resMap.size()];
             int index = 0;
             for (Map.Entry<Integer, Integer> entry : resMap.entrySet()) {
-                if (orgMap.get(Integer.valueOf(tree.getId())).equals(entry.getValue())) {
+                if (orgMap.get(Long.valueOf(tree.getId())).equals(entry.getValue())) {
                     resIds[index] = entry.getKey();
                     index++;
                 }
             }
             map.put("resIds", resIds);
-            map.put("resMtypeId", QuatzConstants.ZD_MAIN_TYPE);
+            map.put("resMtypeId",1001);
             //根据管理域对应的资源ids获取资源列表
             resBaseList = this.findByMap(map);
             //将资源数据放入tree中
@@ -152,13 +162,19 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
         }
         //如果部门数有子节点，继续添加
         if (!ComUtil.isEmpty(tree.getChildren())) {
-                tree.getChildren().stream().forEach(treeChild ->{
-                    recursionFn(treeChild, orgMap, resMap);
-                });
-        } else {
-            //如果该部门没有子节点，且该部门没有对应的资产，则删除该部门
-            tree = null;
+            tree.getChildren().stream().forEach(treeChild -> {
+                recursionFn(treeChild, orgMap, resMap);
+            });
         }
+//        else {
+//            //如果该部门没有子节点，且该部门没有对应的资产，则删除该部门
+//            tree = null;
+//        }
         return tree;
+    }
+
+    @Override
+    public List<ResBase> selectByResMtypeId(Integer resMtypeId) {
+        return resBaseMapper.selectByResMtypeId(resMtypeId);
     }
 }

@@ -29,7 +29,7 @@ public class SysGrpRoleServiceImpl extends ServiceImpl<SysGrpRoleMapper, SysGrpR
         if (!ComUtil.isEmpty(roleIds)) {
             List<SysGrpRole> modelList = new ArrayList<>();
             for (Long roleId : roleIds) {
-                modelList.add(new SysGrpRole(grpId, roleId, 1));
+                modelList.add(new SysGrpRole(grpId, roleId));
             }
             result = this.insertBatch(modelList);
         }

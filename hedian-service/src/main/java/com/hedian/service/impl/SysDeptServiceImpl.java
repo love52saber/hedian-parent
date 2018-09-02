@@ -56,7 +56,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     public Tree<SysDept> getParentList(List<Long> deptIds) {
         List<SysDept> sysDepts = new ArrayList<>();
         for (Long deptId : deptIds){
-            List<SysDept> temp = sysDeptMapper.getChildList(deptId);
+            List<SysDept> temp = sysDeptMapper.getParentList(deptId);
             sysDepts.removeAll(temp);
             sysDepts.addAll(temp);
         }

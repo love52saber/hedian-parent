@@ -29,7 +29,7 @@ public class SysGrpUserServiceImpl extends ServiceImpl<SysGrpUserMapper, SysGrpU
         if (!ComUtil.isEmpty(userIds)) {
             List<SysGrpUser> userIdList = new ArrayList<>();
             for (Long userId : userIds) {
-                userIdList.add(new SysGrpUser(grpId, userId, 1, 1));
+                userIdList.add(new SysGrpUser(grpId, userId, 1));
             }
             result = this.insertBatch(userIdList);
         }

@@ -4,6 +4,7 @@ package com.hedian.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.annotation.CurrentUser;
+import com.hedian.annotation.Pass;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
@@ -13,6 +14,8 @@ import com.hedian.service.IResMoAbnormalInfoService;
 import com.hedian.util.ComUtil;
 import com.hedian.utils.HdywUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,18 +43,6 @@ public class ResMoAbnormalInfoController {
 
 
     /**
-     * 故障信息列表
-     */
-    @GetMapping("/pageAlarmList")
-    public PublicResult getPageAlarmList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
-                                         @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-                                         @RequestParam(name = "resId", defaultValue = "", required = false) String resId) {
-        Page<AlarmInfoModel> rolePage = resMoAbnormalInfoService.selectAlarmByResId(new Page<>(pageIndex, pageSize), resId);
-        return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(rolePage.getTotal(), pageIndex, pageSize, rolePage.getRecords()));
-    }
-
-
-    /**
      * 获得TOP故障统计
      *
      * @return
@@ -63,6 +54,13 @@ public class ResMoAbnormalInfoController {
         map.put("resIds", resIds);
         List<MoAbnormalDef> moAbnormalDefs = resMoAbnormalInfoService.getTopAbnormal(map);
         return new PublicResult(PublicResultConstant.SUCCESS, moAbnormalDefs);
+    }
+
+    @GetMapping("/selectAlarmByResid/{resId}")
+    @Pass
+    public PublicResult selectAlarmByResid(@PathVariable String resId) {
+        List<AlarmInfoModel> alarmInfoModelList = resMoAbnormalInfoService.selectAlarmByResId(resId);
+        return new PublicResult(PublicResultConstant.SUCCESS,alarmInfoModelList);
     }
 
 

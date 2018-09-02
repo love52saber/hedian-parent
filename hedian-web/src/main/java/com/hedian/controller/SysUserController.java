@@ -93,7 +93,8 @@ public class SysUserController {
         page.getRecords().stream().forEach(sysUser -> {
             List<SysUserRole> sysUserRoleList = userRoleService.selectList(new EntityWrapper<SysUserRole>().eq("user_id", sysUser.getUserId()));
             sysUser.setRoleIds(sysUserRoleList.stream().map(SysUserRole::getRoleId).collect(Collectors.toList()));
-            sysUser.setSysDept(sysDeptService.selectById(sysUser.getDeptId()));
+            sysUser.setSysDept(ComUtil.isEmpty(sysUser.getDeptId()) ? null : sysDeptService.selectById(sysUser.getDeptId()));
+            sysUser.setSysFile(ComUtil.isEmpty(sysUser.getPicId()) ? null : sysFileService.selectById(sysUser.getPicId()));
         });
         return new PublicResult<PageResult>(PublicResultConstant.SUCCESS, new PageResult<>(
                 page.getTotal(), pageIndex, pageSize, page.getRecords()));
