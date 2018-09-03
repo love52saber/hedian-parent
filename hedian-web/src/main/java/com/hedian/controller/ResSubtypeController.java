@@ -8,6 +8,9 @@ import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.ResSubtype;
 import com.hedian.service.IResSubtypeService;
 import com.hedian.util.ComUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,16 +29,19 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/resSubtype")
+@Api(description = "子类型资源管理")
 public class ResSubtypeController {
 
     @Autowired
     private IResSubtypeService resSubtypeService;
 
     /**
-     * 获取所有组织  树形结构
+     * 获取所有子类型  树形结构
      */
     @GetMapping("/treeAll")
-    @Pass
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "resMtype", value = "主类型", dataType = "String", paramType = "query")
+    })
     public PublicResult getTreeAllSubtype(@RequestParam(name = "resMtype", defaultValue = "", required = false) String resMtype) {
         EntityWrapper ew = new EntityWrapper<ResSubtype>();
         if (!ComUtil.isEmpty(resMtype)) {

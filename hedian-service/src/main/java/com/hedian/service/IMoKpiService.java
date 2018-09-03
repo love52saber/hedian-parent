@@ -3,6 +3,8 @@ package com.hedian.service;
 import com.hedian.entity.MoKpi;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 监控指标 服务类
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IMoKpiService extends IService<MoKpi> {
 
+    List<MoKpi> selectMokpiByStype(String resStype);
 }

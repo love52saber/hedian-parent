@@ -6,6 +6,7 @@ import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.ResMaintype;
 import com.hedian.service.IResMaintypeService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/resMaintype")
+@Api(description = "主类型资源管理")
 public class ResMaintypeController {
 
     @Autowired
