@@ -1,6 +1,5 @@
 package com.hedian.service;
 
-import com.hedian.entity.Menu;
 import com.hedian.entity.SysMenu;
 import com.baomidou.mybatisplus.service.IService;
 

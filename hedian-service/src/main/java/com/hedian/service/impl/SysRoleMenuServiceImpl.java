@@ -1,6 +1,5 @@
 package com.hedian.service.impl;
 
-import com.hedian.entity.RoleToMenu;
 import com.hedian.entity.SysRoleMenu;
 import com.hedian.mapper.SysRoleMenuMapper;
 import com.hedian.service.ISysRoleMenuService;
