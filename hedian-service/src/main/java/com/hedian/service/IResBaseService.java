@@ -28,6 +28,6 @@ public interface IResBaseService extends IService<ResBase> {
 
     List<ResBase> selectByResMtypeId(Integer resMtypeId);
 
-    Page<ResBase> selectPageByConditionResBase(Page<ResBase> page, String resName, String resStypeName, String resIPV4, String resSerialNum,
-                                               String resAddress, String resMtypeName);
+    Page<ResBase> selectPageByConditionResBase(Page<ResBase> page, String resName, String resStype, String resIPV4, String resSerialNum,
+                                               String resAddress, String resMtype);
 }

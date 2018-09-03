@@ -42,10 +42,10 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
 
 
     @Override
-    public Page<ResBase> selectPageByConditionResBase(Page<ResBase> page, String resName, String resStypeName, String resIPV4, String resSerialNum,
-                                                      String resAddress, String resMtypeName) {
+    public Page<ResBase> selectPageByConditionResBase(Page<ResBase> page, String resName, String resStype, String resIPV4, String resSerialNum,
+                                                      String resAddress, String resMtype) {
         //注意！！ 分页 total 是经过插件自动 回写 到传入 page 对象
-        return page.setRecords(resBaseMapper.selectPageByConditionResBase(page, resName, resStypeName, resIPV4, resSerialNum, resAddress, resMtypeName));
+        return page.setRecords(resBaseMapper.selectPageByConditionResBase(page, resName, resStype, resIPV4, resSerialNum, resAddress, resMtype));
     }
 
     @Override

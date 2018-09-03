@@ -83,28 +83,6 @@ public class SysRoleController {
 
     }
 
-    /**
-     * 角色列表
-     */
-    @GetMapping("/pageList1")
-    public PublicResult getPageList1(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
-                                     @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-                                     //info-->用户名或者电话号码
-                                     @RequestParam(name = "info", defaultValue = "", required = false) String info) {
-        Page<SysRole> rolePage = roleService.selectPage(new Page<>(pageIndex, pageSize));
-
-
-        List<SysRole> sysRoleList = rolePage.getRecords();
-        for(SysRole sysRole:sysRoleList){
-            List<SysRoleMenu> sysRoleMenuList = sysRoleMenuService.selectList(new EntityWrapper<SysRoleMenu>().eq("role_id", sysRole.getRoleId()));
-            sysRole.setMenuIds(sysRoleMenuList.stream().map(SysRoleMenu::getMenuId).collect(Collectors.toList()));
-        }
-
-
-        return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(rolePage.getTotal(), pageIndex, pageSize, rolePage.getRecords()));
-
-    }
-
 
     /**
      * 获取所有角色

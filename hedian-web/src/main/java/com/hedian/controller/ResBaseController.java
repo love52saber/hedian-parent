@@ -3,6 +3,7 @@ package com.hedian.controller;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.annotation.CurrentUser;
+import com.hedian.annotation.Pass;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
@@ -51,29 +52,29 @@ public class ResBaseController {
                     , dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "resName", value = "设备名字"
                     , dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "resStypeName", value = "开始时间"
+            @ApiImplicitParam(name = "resStype", value = "设备子类型"
                     , dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "resIPV4", value = "结束时间"
+            @ApiImplicitParam(name = "resIPV4", value = "设备IP地址"
                     , dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "resSerialNum", value = "会员名称或者电话"
+            @ApiImplicitParam(name = "resSerialNum", value = "设备序列号"
                     , dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "resAddress", value = "开始时间"
+            @ApiImplicitParam(name = "resAddress", value = "设备地址"
                     , dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "resMtypeName", value = "结束时间"
+            @ApiImplicitParam(name = "resMtype", value = "设备主类型"
                     , dataType = "String", paramType = "query")
     })
     public PublicResult getPageList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
                                     @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                                     @RequestParam(name = "resName", defaultValue = "", required = false) String resName,
-                                    @RequestParam(name = "resStypeName", defaultValue = "", required = false) String resStypeName,
+                                    @RequestParam(name = "resStype", defaultValue = "", required = false) String resStype,
                                     @RequestParam(name = "resIPV4", defaultValue = "", required = false) String resIPV4,
                                     @RequestParam(name = "resSerialNum", defaultValue = "", required = false) String resSerialNum,
                                     @RequestParam(name = "resAddress", defaultValue = "", required = false) String resAddress,
-                                    @RequestParam(name = "resMtypeName", defaultValue = "", required = false) String resMtypeName) {
+                                    @RequestParam(name = "resMtype", defaultValue = "", required = false) String resMtype) {
 
         //自定义分页关联查询列表
-        Page<ResBase> resBasePage = resBaseService.selectPageByConditionResBase(new Page<>(pageIndex, pageSize), resName, resStypeName,
-                resIPV4, resSerialNum, resAddress, resMtypeName);
+        Page<ResBase> resBasePage = resBaseService.selectPageByConditionResBase(new Page<>(pageIndex, pageSize), resName, resStype,
+                resIPV4, resSerialNum, resAddress, resMtype);
         return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(resBasePage.getTotal(), pageIndex, pageSize, resBasePage.getRecords()));
 
     }

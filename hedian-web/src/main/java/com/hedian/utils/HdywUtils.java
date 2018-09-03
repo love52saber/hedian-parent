@@ -5,6 +5,7 @@ import com.hedian.base.QuatzConstants;
 import com.hedian.entity.*;
 import com.hedian.service.*;
 import com.hedian.util.ComUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -131,8 +132,8 @@ public class HdywUtils {
         if (flag == 0) {
             ResMoAbnormalInfo rootResMoAbnormalInfo = hdywUtils.resMoAbnormalInfoService.selectOne(
                     new EntityWrapper<ResMoAbnormalInfo>()
-                    .where("res_abnormalstatus ={0} and res_id= {1} and mo_kpi_id = {2}",
-                            1,rootBase.getResId(),QuatzConstants.OFFLINE_KEY));
+                            .where("res_abnormalstatus ={0} and res_id= {1} and mo_kpi_id = {2}",
+                                    1, rootBase.getResId(), QuatzConstants.OFFLINE_KEY));
             if (null != rootResMoAbnormalInfo) {
                 rootBase.getTerminalErrInfos().put(QuatzConstants.OFFLINE_KEY, rootResMoAbnormalInfo);
             }
@@ -144,8 +145,8 @@ public class HdywUtils {
                 if (null != moKpi) {
                     ResMoAbnormalInfo resMoAbnormalInfo = hdywUtils.resMoAbnormalInfoService.selectOne(
                             new EntityWrapper<ResMoAbnormalInfo>()
-                            .where("res_abnormalstatus ={0} and res_id= {1} and mo_kpi_id = {2}",
-                                    1,rootBase.getResId(),moKpi.getMoKpiId()));
+                                    .where("res_abnormalstatus ={0} and res_id= {1} and mo_kpi_id = {2}",
+                                            1, rootBase.getResId(), moKpi.getMoKpiId()));
                     if (null != resMoAbnormalInfo) {
                         rootBase.getTerminalErrInfos().put(moKpi.getMoKpiId(), resMoAbnormalInfo);
                     }
@@ -161,7 +162,9 @@ public class HdywUtils {
                         }
                     }
                     rootBase.getKpiKeyMap().put(moKpi.getMoKpiKey(), moKpi);
-                    rootBase.getKpiIdMap().put(moKpi.getMoKpiId(), moKpi);
+                    MoKpi mokpiCopy = new MoKpi();
+                    BeanUtils.copyProperties(moKpi, mokpiCopy);
+                    rootBase.getKpiIdMap().put(moKpi.getMoKpiId(), mokpiCopy);
                 }
             }
         }

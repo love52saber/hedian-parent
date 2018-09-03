@@ -3,6 +3,8 @@ package com.hedian.entity;
 import java.io.Serializable;
 
 import java.util.Date;
+import java.util.Objects;
+
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
@@ -187,5 +189,31 @@ public class MoKpi extends Model<MoKpi> {
         ", userIdMod=" + userIdMod +
         ", gmtModified=" + gmtModified +
         "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MoKpi moKpi = (MoKpi) o;
+        return Objects.equals(moKpiId, moKpi.moKpiId) &&
+                Objects.equals(moKpiName, moKpi.moKpiName) &&
+                Objects.equals(moKpiKey, moKpi.moKpiKey) &&
+                Objects.equals(moKpiDesc, moKpi.moKpiDesc) &&
+                Objects.equals(unitCh, moKpi.unitCh) &&
+                Objects.equals(unitEn, moKpi.unitEn) &&
+                Objects.equals(showorder, moKpi.showorder) &&
+                Objects.equals(useflag, moKpi.useflag) &&
+                Objects.equals(userIdCreate, moKpi.userIdCreate) &&
+                Objects.equals(gmtCreate, moKpi.gmtCreate) &&
+                Objects.equals(userIdMod, moKpi.userIdMod) &&
+                Objects.equals(gmtModified, moKpi.gmtModified) &&
+                Objects.equals(dataValue, moKpi.dataValue);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(moKpiId, moKpiName, moKpiKey, moKpiDesc, unitCh, unitEn, showorder, useflag, userIdCreate, gmtCreate, userIdMod, gmtModified, dataValue);
     }
 }

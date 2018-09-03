@@ -51,8 +51,21 @@ public class LoginController {
         if (ComUtil.isEmpty(user)) {
             return new PublicResult<>(PublicResultConstant.INVALID_USERNAME_PASSWORD, null);
         }
+        if (user.getStatus().equals(0)) {
+            return new PublicResult<>("该用户已被禁用请联系管理员", null);
+        }
+        if (user.getLockflag().equals(1) && user.getLocktype().equals(1)
+                && user.getUnlocktime().getTime() > System.currentTimeMillis()) {
+            return new PublicResult<>("该用户已经锁定，请稍后从试或者联系管理员解锁", null);
+        } else {
+            //更新用户信息
+        }
+        if (user.getLockflag().equals(1) && user.getLocktype().equals(2)) {
+            return new PublicResult<>("该用户已经锁定，请稍后从试或者联系管理员解锁", null);
+        }
+
         if (!BCrypt.checkpw(requestJson.getString("password"), user.getPassword())) {
-            if (user.getLastwrongTime().getTime() < System.currentTimeMillis() + (30 * 60 * 1000)) {
+            if (null != user.getLastwrongTime() && user.getLastwrongTime().getTime() < System.currentTimeMillis() + (30 * 60 * 1000)) {
                 user.setWrongTimes((ComUtil.isEmpty(user.getWrongTimes())) ? 1 : user.getWrongTimes() + 1);
             } else {
                 user.setWrongTimes(1);
@@ -68,18 +81,6 @@ public class LoginController {
             }
             userService.updateAllColumnById(user);
             return new PublicResult<>(PublicResultConstant.INVALID_USERNAME_PASSWORD, null);
-        }
-        if (user.getStatus().equals(0)) {
-            return new PublicResult<>("该用户已被禁用请联系管理员", null);
-        }
-        if (user.getLockflag().equals(1) && user.getLocktype().equals(1)
-                && user.getUnlocktime().getTime() > System.currentTimeMillis()) {
-            return new PublicResult<>("该用户已经锁定，请稍后从试或者联系管理员解锁", null);
-        } else {
-            //更新用户信息
-        }
-        if (user.getLockflag().equals(1) && user.getLocktype().equals(2)) {
-            return new PublicResult<>("该用户已经锁定，请稍后从试或者联系管理员解锁", null);
         }
         Map<String, Object> result = userService.getLoginUserAndMenuInfo(user);
 

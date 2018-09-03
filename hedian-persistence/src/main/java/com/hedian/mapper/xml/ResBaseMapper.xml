@@ -161,22 +161,22 @@
           INNER JOIN tbl_res_maintype rm ON rb.res_mtype_id = rm.res_mtype_id
         <where>
             <if test="resName != null and resName != '' ">
-                and rb.res_name like concat('%',#{info},'%')
+                and rb.res_name like concat('%',#{resName},'%')
             </if>
             <if test="resIPV4 != null and resIPV4 != '' ">
-                and rb.res_ipv4 like concat('%',#{info},'%')
+                and rb.res_ipv4 like concat('%',#{resIPV4},'%')
             </if>
             <if test="resSerialNum != null and resSerialNum != '' ">
-                and rb.res_serialnumber like concat('%',#{info},'%')
+                and rb.res_serialnumber like concat('%',#{resSerialNum},'%')
             </if>
             <if test="resAddress != null and resAddress != '' ">
-                and rb.res_address like concat('%',#{info},'%')
+                and rb.res_address like concat('%',#{resAddress},'%')
             </if>
-            <if test="resStypeName != null and resStypeName != '' ">
-                and rs.res_stype_name like concat('%',#{info},'%')
+            <if test="resStype != null and resStype != '' ">
+                and rs.res_stype_id = #{resStype}
             </if>
-            <if test="resMtypeName != null and resMtypeName != '' ">
-                and rm.res_mtype_name like concat('%',#{info},'%')
+            <if test="resMtype != null and resMtype != '' ">
+                and rm.res_mtype_id = #{resMtype}
             </if>
         </where>
         ORDER BY rb.gmt_create DESC

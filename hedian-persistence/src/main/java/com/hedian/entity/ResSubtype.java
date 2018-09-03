@@ -1,6 +1,7 @@
 package com.hedian.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
@@ -34,6 +35,16 @@ public class ResSubtype extends Model<ResSubtype> {
     private Integer delflag;
     private Integer useflag;
 
+    @TableField(exist = false)
+    private List<ResSubtype> children;
+
+    public List<ResSubtype> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<ResSubtype> children) {
+        this.children = children;
+    }
 
     public Integer getResStypeId() {
         return resStypeId;
@@ -107,14 +118,14 @@ public class ResSubtype extends Model<ResSubtype> {
     @Override
     public String toString() {
         return "ResSubtype{" +
-        "resStypeId=" + resStypeId +
-        ", resMtypeId=" + resMtypeId +
-        ", parentId=" + parentId +
-        ", resStypeName=" + resStypeName +
-        ", resStypeDesc=" + resStypeDesc +
-        ", showorder=" + showorder +
-        ", delflag=" + delflag +
-        ", useflag=" + useflag +
-        "}";
+                "resStypeId=" + resStypeId +
+                ", resMtypeId=" + resMtypeId +
+                ", parentId=" + parentId +
+                ", resStypeName=" + resStypeName +
+                ", resStypeDesc=" + resStypeDesc +
+                ", showorder=" + showorder +
+                ", delflag=" + delflag +
+                ", useflag=" + useflag +
+                "}";
     }
 }
