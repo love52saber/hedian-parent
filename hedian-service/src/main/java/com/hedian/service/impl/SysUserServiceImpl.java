@@ -114,7 +114,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public Map<String, Object> getLoginUserAndMenuInfo(SysUser user) {
         Map<String, Object> result = new HashMap<>();
         result.put("token", JWTUtil.sign(user.getUsername(), user.getPassword()));
-        user.setPassword(null);
         SysFile sysFile = sysFileService.selectById(user.getPicId());
         user.setSysFile(sysFile);
         result.put("user", user);

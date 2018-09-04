@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -61,6 +62,36 @@ public class Md extends Model<Md> {
     @TableField(value = "gmt_modified",fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
+    @TableField(exist = false)
+    private List<Integer> userIds;
+    @TableField(exist = false)
+    private List<Integer> resIds;
+    @TableField(exist = false)
+    private List<Long> deptIds;
+
+    public List<Integer> getUserIds() {
+        return userIds;
+    }
+
+    public void setUserIds(List<Integer> userIds) {
+        this.userIds = userIds;
+    }
+
+    public List<Integer> getResIds() {
+        return resIds;
+    }
+
+    public void setResIds(List<Integer> resIds) {
+        this.resIds = resIds;
+    }
+
+    public List<Long> getDeptIds() {
+        return deptIds;
+    }
+
+    public void setDeptIds(List<Long> deptIds) {
+        this.deptIds = deptIds;
+    }
 
     public Integer getMdId() {
         return mdId;

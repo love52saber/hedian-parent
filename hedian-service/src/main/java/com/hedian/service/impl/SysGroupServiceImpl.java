@@ -7,16 +7,12 @@ import com.hedian.entity.SysGroup;
 import com.hedian.entity.SysGrpRole;
 import com.hedian.entity.SysGrpUser;
 import com.hedian.mapper.SysGroupMapper;
-import com.hedian.model.SysGroupModel;
 import com.hedian.service.ISysGroupService;
 import com.hedian.service.ISysGrpRoleService;
 import com.hedian.service.ISysGrpUserService;
 import com.hedian.util.ComUtil;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 /**
  * <p>

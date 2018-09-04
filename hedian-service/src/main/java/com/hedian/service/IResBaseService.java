@@ -6,6 +6,7 @@ import com.hedian.entity.ResBase;
 import com.hedian.entity.SysDept;
 import com.hedian.entity.SysUser;
 import com.hedian.model.Tree;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -30,4 +31,6 @@ public interface IResBaseService extends IService<ResBase> {
 
     Page<ResBase> selectPageByConditionResBase(Page<ResBase> page, String resName, String resStype, String resIPV4, String resSerialNum,
                                                String resAddress, String resMtype);
+
+    List<Integer> selectByUserId(@Param("userId") String userId);
 }

@@ -49,6 +49,11 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
     }
 
     @Override
+    public List<Integer> selectByUserId(String userId) {
+        return resBaseMapper.selectByUserId(userId);
+    }
+
+    @Override
     public List<ResBase> findByMap(Map<String, Object> map) {
         return resBaseMapper.findByMap(map);
     }

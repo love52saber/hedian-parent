@@ -9,13 +9,20 @@ import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.Md;
+import com.hedian.entity.MdDept;
+import com.hedian.entity.MdRes;
+import com.hedian.entity.MdUser;
+import com.hedian.service.IMdDeptService;
+import com.hedian.service.IMdResService;
 import com.hedian.service.IMdService;
+import com.hedian.service.IMdUserService;
 import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -32,6 +39,12 @@ public class MdController {
 
     @Autowired
     private IMdService mdService;
+    @Autowired
+    private IMdResService mdResService;
+    @Autowired
+    private IMdUserService mdUserService;
+    @Autowired
+    private IMdDeptService mdDeptService;
 
 
     /**
@@ -47,6 +60,14 @@ public class MdController {
             ew.like("md_name", info);
         }
         Page<Md> mdPage = mdService.selectPage(new Page<>(pageIndex, pageSize), ew);
+        mdPage.getRecords().stream().forEach(md -> {
+            List<MdUser> mdUsers = mdUserService.selectList(new EntityWrapper<MdUser>().eq("md_id", md.getMdId()));
+            md.setUserIds(mdUsers.stream().map(MdUser::getUserId).collect(Collectors.toList()));
+            List<MdRes> mdResList = mdResService.selectList(new EntityWrapper<MdRes>().eq("md_id", md.getMdId()));
+            md.setResIds(mdResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
+            List<MdDept> mdDepts = mdDeptService.selectList(new EntityWrapper<MdDept>().eq("md_id", md.getMdId()));
+            md.setDeptIds(mdDepts.stream().map(MdDept::getDeptId).collect(Collectors.toList()));
+        });
         return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(mdPage.getTotal(), pageIndex, pageSize, mdPage.getRecords()));
     }
 

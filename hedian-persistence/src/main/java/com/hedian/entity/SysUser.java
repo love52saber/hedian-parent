@@ -23,7 +23,7 @@ import java.util.List;
  * @since 2018-08-23
  */
 @TableName("sys_user")
-public class SysUser extends Model<SysUser> {
+public class SysUser extends Model<SysUser>{
 
     private static final long serialVersionUID = 1L;
 
@@ -37,6 +37,7 @@ public class SysUser extends Model<SysUser> {
     /**
      * 密码
      */
+    @JSONField(serialize=false)
     private String password;
     @TableField("dept_id")
     private Long deptId;

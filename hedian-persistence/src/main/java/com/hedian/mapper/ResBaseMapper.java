@@ -31,4 +31,7 @@ public interface ResBaseMapper extends BaseMapper<ResBase> {
                                                @Param("resIPV4") String resIPV4, @Param("resSerialNum") String resSerialNum,
                                                @Param("resAddress") String resAddress, @Param("resMtypeName") String resMtype);
 
+    List<Integer> selectByUserId(@Param("userId") String userId);
+
+
 }

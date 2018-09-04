@@ -1,17 +1,20 @@
 package com.hedian.controller;
 
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.annotation.CurrentUser;
 import com.hedian.annotation.Pass;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
+import com.hedian.entity.MdRes;
 import com.hedian.entity.ResBase;
 import com.hedian.entity.SysDept;
 import com.hedian.entity.SysUser;
 import com.hedian.model.Tree;
 import com.hedian.service.IResBaseService;
+import com.hedian.util.ComUtil;
 import com.hedian.utils.HdywUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -23,6 +26,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -77,6 +81,16 @@ public class ResBaseController {
                 resIPV4, resSerialNum, resAddress, resMtype);
         return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(resBasePage.getTotal(), pageIndex, pageSize, resBasePage.getRecords()));
 
+    }
+
+
+    /**
+     * 根据设备查询管理域id
+     */
+    @GetMapping("/allResIds")
+    public PublicResult allResIds(@RequestParam(value = "userId", defaultValue = "", required = false) String userId) {
+        List<Integer> resIdList = resBaseService.selectByUserId(userId);
+        return new PublicResult(PublicResultConstant.SUCCESS, resIdList);
     }
 
 

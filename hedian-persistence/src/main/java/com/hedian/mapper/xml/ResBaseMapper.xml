@@ -124,9 +124,10 @@
         <if test="resMtypeId != null and resMtypeId != ''">and res_mtype_id = #{resMtypeId}</if>
         <if test="resStatus != null and resStatus != ''">and res_status != #{resStatus}</if>
         ) a
-        LEFT JOIN (select * from tbl_res_abnormallevel where useflag=1) b ON a.res_abnormallevel_id=b.res_abnormallevel_id
+        LEFT JOIN (select * from tbl_res_abnormallevel where useflag=1) b ON
+        a.res_abnormallevel_id=b.res_abnormallevel_id
         LEFT JOIN (select * from tbl_res_status where useflag=1) d ON a.res_status=d.res_status
-        order by  a.res_id
+        order by a.res_id
     </select>
 
     <select id="getTopRes" resultMap="TopResMap">
@@ -157,8 +158,8 @@
     <select id="selectPageByConditionResBase" resultMap="ResOtherMap">
         SELECT *
         FROM tbl_res_base rb
-          INNER JOIN tbl_res_subtype rs ON  rb.res_stype_id = rs.res_stype_id
-          INNER JOIN tbl_res_maintype rm ON rb.res_mtype_id = rm.res_mtype_id
+        INNER JOIN tbl_res_subtype rs ON rb.res_stype_id = rs.res_stype_id
+        INNER JOIN tbl_res_maintype rm ON rb.res_mtype_id = rm.res_mtype_id
         <where>
             <if test="resName != null and resName != '' ">
                 and rb.res_name like concat('%',#{resName},'%')
@@ -180,6 +181,20 @@
             </if>
         </where>
         ORDER BY rb.gmt_create DESC
+    </select>
+
+    <select id="selectByUserId" resultType="java.lang.Integer">
+        SELECT mr.res_id FROM
+        (SELECT md.md_id FROM
+        (SELECT mu.md_id FROM sys_user su INNER JOIN tbl_md_user mu ON su.user_id = mu.user_id
+        WHERE 1=1
+        <if test="userId != null and userId != '' ">
+            and su.user_id = #{userId}
+        </if>
+        ) t
+        INNER JOIN tbl_md md ON t.md_id = md.md_id) u
+        INNER JOIN tbl_md_res mr ON u.md_id = mr.md_id
+
     </select>
 
 

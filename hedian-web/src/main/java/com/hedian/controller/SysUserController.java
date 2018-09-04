@@ -255,7 +255,7 @@ public class SysUserController {
 
 
     @PutMapping("/info")
-    public PublicResult<String> resetUserInfo(@CurrentUser SysUser currentUser, @RequestBody JSONObject requestJson) throws Exception {
+    public PublicResult resetUserInfo(@CurrentUser SysUser currentUser, @RequestBody JSONObject requestJson) throws Exception {
 
         if (!ComUtil.isEmpty(requestJson.getString("email"))) {
             currentUser.setEmail(requestJson.getString("email"));
@@ -274,9 +274,10 @@ public class SysUserController {
             if (result) {
                 currentUser.setPicId(sysFile.getId());
                 userService.updateById(currentUser);
+                currentUser.setSysFile(sysFile);
             }
         }
-        return new PublicResult<>(PublicResultConstant.SUCCESS, null);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, currentUser);
     }
 //
 //
@@ -320,10 +321,6 @@ public class SysUserController {
 //        return ComUtil.isEmpty(user)?new PublicResult<>(PublicResultConstant.INVALID_USER, null): new PublicResult<>(PublicResultConstant.SUCCESS, user);
 //    }
 //
-
-    public static void main(String[] args) {
-        System.out.println(BCrypt.hashpw("123456", BCrypt.gensalt()));
-    }
 
 }
 

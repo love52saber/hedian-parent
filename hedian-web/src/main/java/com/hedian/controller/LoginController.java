@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hedian.annotation.Log;
 import com.hedian.annotation.Pass;
 import com.hedian.annotation.ValidationParam;
+import com.hedian.base.Constant;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.SysUser;
@@ -13,7 +14,9 @@ import com.hedian.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.apache.tools.ant.util.DateUtils;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,14 +57,12 @@ public class LoginController {
         if (user.getStatus().equals(0)) {
             return new PublicResult<>("该用户已被禁用请联系管理员", null);
         }
-        if (user.getLockflag().equals(1) && user.getLocktype().equals(1)
+        if (user.getLockflag().equals(1) && !ComUtil.isEmpty(user.getLocktype()) && user.getLocktype().equals(1)
                 && user.getUnlocktime().getTime() > System.currentTimeMillis()) {
-            return new PublicResult<>("该用户已经锁定，请稍后从试或者联系管理员解锁", null);
-        } else {
-            //更新用户信息
+            return new PublicResult<>("用户已锁定请联系管理员", null);
         }
-        if (user.getLockflag().equals(1) && user.getLocktype().equals(2)) {
-            return new PublicResult<>("该用户已经锁定，请稍后从试或者联系管理员解锁", null);
+        if (user.getLockflag().equals(1) && !ComUtil.isEmpty(user.getLocktype()) && user.getLocktype().equals(2)) {
+            return new PublicResult<>("用户已锁定请联系管理员", null);
         }
 
         if (!BCrypt.checkpw(requestJson.getString("password"), user.getPassword())) {
@@ -72,147 +73,32 @@ public class LoginController {
             }
             user.setLastwrongTime(new Date());
             if (user.getWrongTimes().equals(5)) {
-                user.setLockreason("aaa");
+                user.setLockreason(DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss") + "密码输入错误次数超过5次");
                 user.setLocktype(1);
                 user.setLockflag(1);
-                user.setUnlocktime(new Date());
+                user.setUnlocktime(new Date(System.currentTimeMillis() + (30 * 60 * 1000)));
                 user.setLastwrongTime(null);
                 user.setWrongTimes(null);
             }
             userService.updateAllColumnById(user);
-            return new PublicResult<>(PublicResultConstant.INVALID_USERNAME_PASSWORD, null);
+            return new PublicResult<>(!ComUtil.isEmpty(user.getWrongTimes()) ? "用户名或密码错误，剩余" + (5 - user.getWrongTimes()) + "将被锁定" : "用户已锁定请联系管理员", null);
         }
         Map<String, Object> result = userService.getLoginUserAndMenuInfo(user);
-
-
+        //用户被锁定 登录完清空消息
+        if (user.getLockflag() != 0) {
+            user.setUnlocktime(null);
+            user.setLocktype(null);
+            user.setLockflag(0);
+            user.setLockreason(null);
+            user.setLastwrongTime(null);
+            userService.updateAllColumnById(user);
+        }
         return new PublicResult<>(PublicResultConstant.SUCCESS, result);
     }
 
 
-//    @ApiOperation(value="手机密码登录", notes="body体参数,不需要Authorization",produces = "application/json")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "requestJson", value = "{\"mobile\":\"17765071662\",\"passWord\":\"123456\"}"
-//                    , required = true, dataType = "String",paramType="body")
-//    })
-//    @PostMapping("/login")
-//    @Log(description="前台密码登录接口:/login")
-//    @Pass
-//    public PublicResult<Map<String, Object>> login(
-//            @ValidationParam("mobile,passWord")@RequestBody JSONObject requestJson) throws Exception{
-//        //由于 @ValidationParam注解已经验证过mobile和passWord参数，所以可以直接get使用没毛病。
-//        String mobile = requestJson.getString("mobile");
-//        if(!StringUtil.checkMobileNumber(mobile)){
-//            return new PublicResult<>(PublicResultConstant.MOBILE_ERROR, null);
-//        }
-//        User user = userService.getUserByMobile(mobile);
-//        if (ComUtil.isEmpty(user) || !BCrypt.checkpw(requestJson.getString("passWord"), user.getPassWord())) {
-//            return new PublicResult<>(PublicResultConstant.INVALID_USERNAME_PASSWORD, null);
-//        }
-//        Map<String, Object> result = userService.getLoginUserAndMenuInfo(user);
-//        return new PublicResult<>(PublicResultConstant.SUCCESS, result);
-//    }
-//
-//    @ApiOperation(value="短信验证码登录", notes="body体参数,不需要Authorization",produces = "application/json")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "requestJson", value = "{\"mobile\":\"17765071662\",\"captcha\":\"5780\"}"
-//                    , required = true, dataType = "String",paramType="body")
-//    })
-//    @PostMapping("/login/captcha")
-//    @Log(description="前台短信验证码登录接口:/login/captcha")
-//    @Pass
-//    public PublicResult<Map<String, Object>> loginBycaptcha(
-//            @ValidationParam("mobile,captcha")@RequestBody JSONObject requestJson) throws Exception{
-//        String mobile = requestJson.getString("mobile");
-//        if(!StringUtil.checkMobileNumber(mobile)){
-//            return new PublicResult<>(PublicResultConstant.MOBILE_ERROR, null);
-//        }
-//        User user = userService.getUserByMobile(mobile);
-//        if (ComUtil.isEmpty(user)) {
-//            return new PublicResult<>(PublicResultConstant.INVALID_USER, null);
-//        }
-//        List<SmsVerify> smsVerifies = smsVerifyService.getByMobileAndCaptchaAndType(mobile,
-//                requestJson.getString("captcha"), SmsSendUtil.SMSType.getType(SmsSendUtil.SMSType.AUTH.name()));
-//        if(ComUtil.isEmpty(smsVerifies)){
-//            return new PublicResult<>(PublicResultConstant.VERIFY_PARAM_ERROR, null);
-//        }
-//        if(SmsSendUtil.isCaptchaPassTime(smsVerifies.get(0).getCreateTime())){
-//            return new PublicResult<>(PublicResultConstant.VERIFY_PARAM_PASS, null);
-//        }
-//        Map<String, Object> result = userService.getLoginUserAndMenuInfo(user);
-//        return new PublicResult<>(PublicResultConstant.SUCCESS, result);
-//    }
-//
-//
-//
-//    @ApiOperation(value="手机验证码注册", notes="body体参数,不需要Authorization",produces = "application/json")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "requestJson", value = "{\"userName\":\"hedian\",\"mobile\":\"17765071662\",</br>" +
-//                    "\"captcha\":\"5780\",\"passWord\":\"123456\",</br>\"rePassWord\":\"123456\",\"job\":\"java开发\"," +
-//                    "</br>\"unit(可不传)\":\"xxx公司\"}"
-//                    , required = true, dataType = "String",paramType="body")
-//    })
-//    @PostMapping("/register")
-//    @Log(description="注册接口:/register")
-//    @Pass
-//    public PublicResult<User> register(@ValidationParam("userName,passWord,rePassWord,mobile,captcha,job")
-//                                       @RequestBody JSONObject requestJson) {
-//        //可直接转为java对象,简化操作,不用再set一个个属性
-//        User userRegister = requestJson.toJavaObject(User.class);
-//        if(!StringUtil.checkMobileNumber(userRegister.getMobile())){
-//            return new PublicResult<>(PublicResultConstant.MOBILE_ERROR, null);
-//        }
-//        if (!userRegister.getPassWord().equals(requestJson.getString("rePassWord"))) {
-//            return new PublicResult<>(PublicResultConstant.INVALID_RE_PASSWORD, null);
-//        }
-//        List<SmsVerify> smsVerifies = smsVerifyService.getByMobileAndCaptchaAndType(userRegister.getMobile(),
-//                requestJson.getString("captcha"), SmsSendUtil.SMSType.getType(SmsSendUtil.SMSType.REG.name()));
-//        if(ComUtil.isEmpty(smsVerifies)){
-//            return new PublicResult<>(PublicResultConstant.VERIFY_PARAM_ERROR, null);
-//        }
-//        //验证码是否过期
-//        if(SmsSendUtil.isCaptchaPassTime(smsVerifies.get(0).getCreateTime())){
-//            return new PublicResult<>(PublicResultConstant.VERIFY_PARAM_PASS, null);
-//        }
-//        userRegister.setPassWord(BCrypt.hashpw(requestJson.getString("passWord"), BCrypt.gensalt()));
-//        //默认注册普通用户
-//        boolean result = userService.register(userRegister, Constant.RoleType.USER);
-//        return result? new PublicResult<>(PublicResultConstant.SUCCESS, null):
-//                new PublicResult<>("注册失败，请联系管理员！",null);
-//    }
-//
-//
-//    @ApiOperation(value="忘记密码", notes="body体参数,不需要Authorization",produces = "application/json")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "requestJson", value = "{\"mobile\":\"17765071662\",\"captcha\":\"5780\",</br>" +
-//                    "\"passWord\":\"123456\",\"rePassWord\":\"123456\"}"
-//                    , required = true, dataType = "String",paramType="body")
-//    })
-//    @PostMapping("/forget/password")
-//    @Pass
-//    public PublicResult<String> resetPassWord (@ValidationParam("mobile,captcha,passWord,rePassWord")
-//                                               @RequestBody JSONObject requestJson ) throws Exception{
-//        String mobile = requestJson.getString("mobile");
-//        if(!StringUtil.checkMobileNumber(mobile)){
-//            return new PublicResult<>(PublicResultConstant.MOBILE_ERROR, null);
-//        }
-//        if (!requestJson.getString("passWord").equals(requestJson.getString("rePassWord"))) {
-//            return new PublicResult<>(PublicResultConstant.INVALID_RE_PASSWORD, null);
-//        }
-//        User user = userService.getUserByMobile(mobile);
-//        if(ComUtil.isEmpty(user)){
-//            return new PublicResult<>(PublicResultConstant.INVALID_USER, null);
-//        }
-//        List<SmsVerify> smsVerifies = smsVerifyService.getByMobileAndCaptchaAndType(mobile,
-//                requestJson.getString("captcha"), SmsSendUtil.SMSType.getType(SmsSendUtil.SMSType.FINDPASSWORD.name()));
-//        if(ComUtil.isEmpty(smsVerifies)){
-//            return new PublicResult<>(PublicResultConstant.VERIFY_PARAM_ERROR, null);
-//        }
-//        if(SmsSendUtil.isCaptchaPassTime(smsVerifies.get(0).getCreateTime())){
-//            return new PublicResult<>(PublicResultConstant.VERIFY_PARAM_PASS, null);
-//        }
-//        user.setPassWord(BCrypt.hashpw(requestJson.getString("passWord"),BCrypt.gensalt()));
-//        userService.updateById(user);
-//        return  new PublicResult<String>(PublicResultConstant.SUCCESS, null);
-//    }
+    public static void main(String[] args) {
+        System.out.println(BCrypt.hashpw("12345678", BCrypt.gensalt()));
+    }
 
 }
