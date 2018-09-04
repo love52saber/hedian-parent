@@ -1,7 +1,9 @@
 package com.hedian.service;
 
-import com.hedian.entity.Md;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.hedian.entity.Md;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -13,4 +15,9 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IMdService extends IService<Md> {
 
+    boolean addAllNodes(Md md) throws Exception;
+
+    boolean updateMd(Md md) throws Exception;
+
+    Page<Md> selectPageList(Page<Md> page, @Param("mdName") String mdName);
 }

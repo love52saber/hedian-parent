@@ -4,7 +4,11 @@ import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.FieldFill;
+import com.baomidou.mybatisplus.enums.IdType;
+
 import java.io.Serializable;
 
 /**
@@ -19,14 +23,23 @@ import java.io.Serializable;
 public class MdRes extends Model<MdRes> {
 
     private static final long serialVersionUID = 1L;
-
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
     @TableField("md_id")
     private Integer mdId;
     @TableField("res_id")
     private Integer resId;
+    @TableField(fill = FieldFill.INSERT)
     private Integer useflag;
 
+
+    public MdRes(Integer mdId, Integer resId) {
+        this.mdId = mdId;
+        this.resId = resId;
+    }
+
+    public MdRes() {
+    }
 
     public Integer getId() {
         return id;

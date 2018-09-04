@@ -69,6 +69,39 @@ public class Md extends Model<Md> {
     @TableField(exist = false)
     private List<Long> deptIds;
 
+    @TableField(exist = false)
+    private List<SysDept> sysDepts;
+
+    @TableField(exist = false)
+    private List<SysUser> sysUsers;
+
+    @TableField(exist = false)
+    private List<ResBase> resBases;
+
+    public List<SysDept> getSysDepts() {
+        return sysDepts;
+    }
+
+    public void setSysDepts(List<SysDept> sysDepts) {
+        this.sysDepts = sysDepts;
+    }
+
+    public List<SysUser> getSysUsers() {
+        return sysUsers;
+    }
+
+    public void setSysUsers(List<SysUser> sysUsers) {
+        this.sysUsers = sysUsers;
+    }
+
+    public List<ResBase> getResBases() {
+        return resBases;
+    }
+
+    public void setResBases(List<ResBase> resBases) {
+        this.resBases = resBases;
+    }
+
     public List<Integer> getUserIds() {
         return userIds;
     }

@@ -12,10 +12,7 @@ import com.hedian.entity.Md;
 import com.hedian.entity.MdDept;
 import com.hedian.entity.MdRes;
 import com.hedian.entity.MdUser;
-import com.hedian.service.IMdDeptService;
-import com.hedian.service.IMdResService;
-import com.hedian.service.IMdService;
-import com.hedian.service.IMdUserService;
+import com.hedian.service.*;
 import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +42,8 @@ public class MdController {
     private IMdUserService mdUserService;
     @Autowired
     private IMdDeptService mdDeptService;
+    @Autowired
+    private ISysDeptService sysDeptService;
 
 
     /**
@@ -55,18 +54,13 @@ public class MdController {
                                     @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                                     //info-->管理域名
                                     @RequestParam(name = "info", defaultValue = "", required = false) String info) {
-        EntityWrapper<Md> ew = new EntityWrapper<>();
-        if (!ComUtil.isEmpty(info)) {
-            ew.like("md_name", info);
-        }
-        Page<Md> mdPage = mdService.selectPage(new Page<>(pageIndex, pageSize), ew);
+        Page<Md> mdPage = mdService.selectPageList(new Page<>(pageIndex, pageSize), info);
         mdPage.getRecords().stream().forEach(md -> {
-            List<MdUser> mdUsers = mdUserService.selectList(new EntityWrapper<MdUser>().eq("md_id", md.getMdId()));
-            md.setUserIds(mdUsers.stream().map(MdUser::getUserId).collect(Collectors.toList()));
-            List<MdRes> mdResList = mdResService.selectList(new EntityWrapper<MdRes>().eq("md_id", md.getMdId()));
-            md.setResIds(mdResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
-            List<MdDept> mdDepts = mdDeptService.selectList(new EntityWrapper<MdDept>().eq("md_id", md.getMdId()));
-            md.setDeptIds(mdDepts.stream().map(MdDept::getDeptId).collect(Collectors.toList()));
+            if(!ComUtil.isEmpty(md.getSysUsers())){
+                md.getSysUsers().stream().forEach(sysUser -> {
+                    sysUser.setSysDept(sysDeptService.selectById(sysUser.getDeptId()));
+                });
+            }
         });
         return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(mdPage.getTotal(), pageIndex, pageSize, mdPage.getRecords()));
     }
@@ -92,7 +86,7 @@ public class MdController {
                                       @RequestBody JSONObject requestJson) throws Exception {
         //可直接转为java对象,简化操作,不用再set一个个属性
         Md md = requestJson.toJavaObject(Md.class);
-        boolean result = mdService.insert(md);
+        boolean result = mdService.addAllNodes(md);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 
@@ -103,7 +97,7 @@ public class MdController {
     public PublicResult<String> updateMd(@ValidationParam("mdName,mdDesc,mdId,showorder")
                                          @RequestBody JSONObject requestJson) throws Exception {
         Md md = requestJson.toJavaObject(Md.class);
-        boolean result = mdService.updateById(md);
+        boolean result = mdService.updateMd(md);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 
@@ -114,6 +108,15 @@ public class MdController {
     public PublicResult deleteMd(@PathVariable("mdId") Long mdId) {
         if (ComUtil.isEmpty(mdService.selectById(mdId))) {
             return new PublicResult<>(PublicResultConstant.ERROR, null);
+        }
+        if (ComUtil.isEmpty(mdDeptService.selectCount(new EntityWrapper<MdDept>().eq("md_id", mdId)))) {
+            return new PublicResult<>("管理域下有部门，不能删除", null);
+        }
+        if (ComUtil.isEmpty(mdResService.selectCount(new EntityWrapper<MdRes>().eq("md_id", mdId)))) {
+            return new PublicResult<>("管理域下面有设备，不能删除", null);
+        }
+        if (ComUtil.isEmpty(mdUserService.selectCount(new EntityWrapper<MdUser>().eq("md_id", mdId)))) {
+            return new PublicResult<>("管理域下面有用户，不能删除", null);
         }
         boolean result = mdService.deleteById(mdId);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);

@@ -4,21 +4,56 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.hedian.entity.Md">
-        <id column="md_id" property="mdId" />
-        <result column="md_name" property="mdName" />
-        <result column="md_desc" property="mdDesc" />
-        <result column="showorder" property="showorder" />
-        <result column="delflag" property="delflag" />
-        <result column="useflag" property="useflag" />
-        <result column="user_id_create" property="userIdCreate" />
-        <result column="gmt_create" property="gmtCreate" />
-        <result column="user_id_mod" property="userIdMod" />
-        <result column="gmt_modified" property="gmtModified" />
+        <id column="md_id" property="mdId"/>
+        <result column="md_name" property="mdName"/>
+        <result column="md_desc" property="mdDesc"/>
+        <result column="showorder" property="showorder"/>
+        <result column="delflag" property="delflag"/>
+        <result column="useflag" property="useflag"/>
+        <result column="user_id_create" property="userIdCreate"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="user_id_mod" property="userIdMod"/>
+        <result column="gmt_modified" property="gmtModified"/>
+    </resultMap>
+    <resultMap id="CustomMap" type="com.hedian.entity.Md">
+        <id column="md_id" property="mdId"/>
+        <result column="md_name" property="mdName"/>
+        <result column="md_desc" property="mdDesc"/>
+        <result column="showorder" property="showorder"/>
+        <result column="delflag" property="delflag"/>
+        <result column="useflag" property="useflag"/>
+        <result column="user_id_create" property="userIdCreate"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="user_id_mod" property="userIdMod"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <collection property="resBases" ofType="com.hedian.entity.ResBase"
+                    resultMap="com.hedian.mapper.ResBaseMapper.BaseResultMap"></collection>
+        <collection property="sysDepts" ofType="com.hedian.entity.SysDept">
+            <id column="dept_id" property="deptId"/>
+        </collection>
+        <collection property="sysUsers" ofType="com.hedian.entity.SysUser"
+                    resultMap="com.hedian.mapper.SysUserMapper.BaseResultMap"></collection>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         md_id AS mdId, md_name AS mdName, md_desc AS mdDesc, showorder, delflag, useflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
     </sql>
+
+    <select id="selectPageList" resultMap="CustomMap">
+        select t.*,rb.*,sd.dept_id,su.*  from (select md.*,mres.res_id,mdt.dept_id,mu.user_id from tbl_md md
+        LEFT JOIN  (select md_id,res_id from tbl_md_res  GROUP BY md_id)  mres on md.md_id = mres.md_id
+        LEFT JOIN  (select md_id,dept_id from tbl_md_dept  GROUP BY md_id) mdt on md.md_id = mdt.md_id
+        LEFT JOIN  (select md_id,user_id from tbl_md_user  GROUP BY md_id)  mu on md.md_id = mu.md_id
+        <where>
+            <if test="mdName != null and mdName != ''">
+                and md.md_name like concat('%',#{mdName},'%')
+            </if>
+        </where>
+        )t
+        LEFT JOIN tbl_res_base rb on t.res_id = rb.res_id
+        LEFT JOIN sys_dept sd on t.dept_id = sd.dept_id
+        LEFT JOIN sys_user su on t.user_id = su.user_id
+    </select>
 
 </mapper>

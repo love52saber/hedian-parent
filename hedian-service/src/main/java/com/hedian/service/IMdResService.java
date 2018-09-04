@@ -18,4 +18,5 @@ public interface IMdResService extends IService<MdRes> {
 
     List<MdRes> findByMap(Map<String,Object> map);
 
+    boolean saveAll(Integer mdId, List<Integer> resIds);
 }

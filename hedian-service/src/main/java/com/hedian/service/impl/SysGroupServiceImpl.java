@@ -44,6 +44,9 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupMapper, SysGroup> i
         }
         //插入用户组用户信息
         result = sysGrpUserService.saveAll(sysGroup.getGrpId(), sysGroup.getUserIds());
+        if (!result) {
+            throw new BusinessException("插入用户组用户信息失败");
+        }
         return result;
     }
 

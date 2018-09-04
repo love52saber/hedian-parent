@@ -3,7 +3,6 @@ package com.hedian.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.hedian.base.QuatzConstants;
 import com.hedian.entity.*;
 import com.hedian.mapper.ResBaseMapper;
 import com.hedian.model.Tree;

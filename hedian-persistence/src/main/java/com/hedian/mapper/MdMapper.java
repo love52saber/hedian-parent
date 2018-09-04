@@ -1,7 +1,11 @@
 package com.hedian.mapper;
 
-import com.hedian.entity.Md;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.hedian.entity.Md;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +16,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @since 2018-08-27
  */
 public interface MdMapper extends BaseMapper<Md> {
+
+    List<Md> selectPageList(Page<Md> page, @Param("mdName") String mdName);
 
 }

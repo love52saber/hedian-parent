@@ -13,6 +13,8 @@ public class ComUtil {
             return isEmpty((String) aObj);
         } else if (aObj instanceof Long) {
             return isEmpty((Long) aObj);
+        } else if (aObj instanceof Integer) {
+            return isEmpty((Integer) aObj);
         } else if (aObj instanceof java.util.Date) {
             return isEmpty((java.util.Date) aObj);
         } else if (aObj instanceof Collection) {
@@ -70,6 +72,14 @@ public class ComUtil {
         }
     }
 
+    public static boolean isEmpty(Integer aInteger) {
+        if (aInteger == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     public static boolean isEmpty(Map m) {
         if (m == null || m.size() == 0) {
@@ -92,7 +102,6 @@ public class ComUtil {
             return false;
         }
     }
-
 
 
     public static String trim(String aStr) {

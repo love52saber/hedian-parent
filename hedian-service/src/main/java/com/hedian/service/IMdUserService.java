@@ -3,6 +3,8 @@ package com.hedian.service;
 import com.hedian.entity.MdUser;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 维护域和维护人员关系 服务类
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IMdUserService extends IService<MdUser> {
 
+    boolean saveAll(Integer mdId, List<Integer> userIds);
 }

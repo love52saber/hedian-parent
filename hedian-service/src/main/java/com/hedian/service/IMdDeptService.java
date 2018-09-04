@@ -18,4 +18,6 @@ import java.util.Map;
 public interface IMdDeptService extends IService<MdDept> {
 
     List<MdDept> findByMap(Map<String,Object> map);
+
+    boolean saveAll(Integer mdId, List<Long> deptIds);
 }
