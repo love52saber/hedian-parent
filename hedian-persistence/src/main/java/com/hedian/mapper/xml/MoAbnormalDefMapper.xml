@@ -4,23 +4,67 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.hedian.entity.MoAbnormalDef">
-        <id column="mo_abnormal_id" property="moAbnormalId" />
-        <result column="mo_abnormalcode" property="moAbnormalcode" />
-        <result column="mo_abnormal_name" property="moAbnormalName" />
-        <result column="res_abnormallevel_id" property="resAbnormallevelId" />
-        <result column="mo_abnormal_desc" property="moAbnormalDesc" />
-        <result column="mo_abnormal_showtemplate" property="moAbnormalShowtemplate" />
-        <result column="showorder" property="showorder" />
-        <result column="useflag" property="useflag" />
-        <result column="user_id_create" property="userIdCreate" />
-        <result column="gmt_create" property="gmtCreate" />
-        <result column="user_id_mod" property="userIdMod" />
-        <result column="gmt_modified" property="gmtModified" />
+        <id column="mo_abnormal_id" property="moAbnormalId"/>
+        <result column="mo_abnormalcode" property="moAbnormalcode"/>
+        <result column="mo_abnormal_name" property="moAbnormalName"/>
+        <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
+        <result column="abnormal_type_id" property="abnormalTypeId"/>
+        <result column="mo_abnormal_desc" property="moAbnormalDesc"/>
+        <result column="mo_abnormal_showtemplate" property="moAbnormalShowtemplate"/>
+        <result column="showorder" property="showorder"/>
+        <result column="useflag" property="useflag"/>
+        <result column="user_id_create" property="userIdCreate"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="user_id_mod" property="userIdMod"/>
+        <result column="gmt_modified" property="gmtModified"/>
+    </resultMap>
+    <resultMap id="CustomMap" type="com.hedian.entity.MoAbnormalDef">
+        <id column="mo_abnormal_id" property="moAbnormalId"/>
+        <result column="mo_abnormalcode" property="moAbnormalcode"/>
+        <result column="mo_abnormal_name" property="moAbnormalName"/>
+        <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
+        <result column="abnormal_type_id" property="abnormalTypeId"/>
+        <result column="mo_abnormal_desc" property="moAbnormalDesc"/>
+        <result column="mo_abnormal_showtemplate" property="moAbnormalShowtemplate"/>
+        <result column="showorder" property="showorder"/>
+        <result column="useflag" property="useflag"/>
+        <result column="user_id_create" property="userIdCreate"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="user_id_mod" property="userIdMod"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <association property="abnormalType" javaType="com.hedian.entity.AbnormalType">
+            <result column="abnormal_type_name" property="abnormalTypeName" />
+        </association>
+        <association property="resAbnormallevel" javaType="com.hedian.entity.ResAbnormallevel">
+            <result column="res_abnormallevel_name" property="resAbnormallevelName"/>
+        </association>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        mo_abnormal_id AS moAbnormalId, mo_abnormalcode AS moAbnormalcode, mo_abnormal_name AS moAbnormalName, res_abnormallevel_id AS resAbnormallevelId, mo_abnormal_desc AS moAbnormalDesc, mo_abnormal_showtemplate AS moAbnormalShowtemplate, showorder, useflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
+        mo_abnormal_id AS moAbnormalId, mo_abnormalcode AS moAbnormalcode,abnormal_type_id AS abnormalTypeId, mo_abnormal_name AS moAbnormalName, res_abnormallevel_id AS resAbnormallevelId, mo_abnormal_desc AS moAbnormalDesc, mo_abnormal_showtemplate AS moAbnormalShowtemplate, showorder, useflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
     </sql>
+
+    <!---->
+    <select id="selectAbnormalDefPageList" resultMap="CustomMap">
+    SELECT mad.*,tat.abnormal_type_name,ra.res_abnormallevel_name FROM `tbl_mo_abnormal_def` mad
+    INNER JOIN tbl_abnormal_type tat on mad.abnormal_type_id =  tat.abnormal_type_id
+    INNER JOIN tbl_res_abnormallevel ra on mad.res_abnormallevel_id = ra.res_abnormallevel_id
+    <where>
+        <if test="abnormalCode != null and abnormalCode != '' ">
+            and mad.mo_abnormalcode like concat('%',#{abnormalCode},'%')
+        </if>
+        <if test="abnormalName != null and abnormalName != '' ">
+            and mad.mo_abnormal_name like concat('%',#{abnormalName},'%')
+        </if>
+        <if test="abnormalType != null and abnormalType != '' ">
+            and tat.abnormal_type_name like concat('%',#{abnormalType},'%')
+        </if>
+        <if test="abnormalLevel != null and abnormalLevel != '' ">
+            and ra.res_abnormallevel_name like concat('%',#{abnormalLevel},'%')
+        </if>
+    </where>
+</select>
+
 
 </mapper>

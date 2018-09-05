@@ -1,5 +1,6 @@
 package com.hedian.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.entity.MoAbnormalDef;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -12,5 +13,9 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-08-17
  */
 public interface IMoAbnormalDefService extends IService<MoAbnormalDef> {
+
+    Page<MoAbnormalDef> selectAbnormalDefPageList(Page<MoAbnormalDef> page, String abnormalCode, String abnormalName,
+                                                  String abnormalType, String abnormalLevel);
+
 
 }

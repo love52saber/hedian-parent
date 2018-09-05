@@ -32,6 +32,8 @@ public class MoAbnormalDef extends Model<MoAbnormalDef> {
     private String moAbnormalName;
     @TableField("res_abnormallevel_id")
     private Integer resAbnormallevelId;
+    @TableField("abnormal_type_id")
+    private Integer abnormalTypeId;
     @TableField("mo_abnormal_desc")
     private String moAbnormalDesc;
     @TableField("mo_abnormal_showtemplate")
@@ -52,6 +54,35 @@ public class MoAbnormalDef extends Model<MoAbnormalDef> {
      */
     @TableField(exist = false)
     private Integer countNum;
+
+    @TableField(exist = false)
+    private AbnormalType abnormalType;
+    @TableField(exist = false)
+    private ResAbnormallevel resAbnormallevel;
+
+    public AbnormalType getAbnormalType() {
+        return abnormalType;
+    }
+
+    public void setAbnormalType(AbnormalType abnormalType) {
+        this.abnormalType = abnormalType;
+    }
+
+    public ResAbnormallevel getResAbnormallevel() {
+        return resAbnormallevel;
+    }
+
+    public void setResAbnormallevel(ResAbnormallevel resAbnormallevel) {
+        this.resAbnormallevel = resAbnormallevel;
+    }
+
+    public Integer getAbnormalTypeId() {
+        return abnormalTypeId;
+    }
+
+    public void setAbnormalTypeId(Integer abnormalTypeId) {
+        this.abnormalTypeId = abnormalTypeId;
+    }
 
     public Integer getCountNum() {
         return countNum;
@@ -165,18 +196,20 @@ public class MoAbnormalDef extends Model<MoAbnormalDef> {
     @Override
     public String toString() {
         return "MoAbnormalDef{" +
-        "moAbnormalId=" + moAbnormalId +
-        ", moAbnormalcode=" + moAbnormalcode +
-        ", moAbnormalName=" + moAbnormalName +
-        ", resAbnormallevelId=" + resAbnormallevelId +
-        ", moAbnormalDesc=" + moAbnormalDesc +
-        ", moAbnormalShowtemplate=" + moAbnormalShowtemplate +
-        ", showorder=" + showorder +
-        ", useflag=" + useflag +
-        ", userIdCreate=" + userIdCreate +
-        ", gmtCreate=" + gmtCreate +
-        ", userIdMod=" + userIdMod +
-        ", gmtModified=" + gmtModified +
-        "}";
+                "moAbnormalId=" + moAbnormalId +
+                ", moAbnormalcode=" + moAbnormalcode +
+                ", moAbnormalName='" + moAbnormalName + '\'' +
+                ", resAbnormallevelId=" + resAbnormallevelId +
+                ", abnormalTypeId=" + abnormalTypeId +
+                ", moAbnormalDesc='" + moAbnormalDesc + '\'' +
+                ", moAbnormalShowtemplate='" + moAbnormalShowtemplate + '\'' +
+                ", showorder=" + showorder +
+                ", useflag=" + useflag +
+                ", userIdCreate=" + userIdCreate +
+                ", gmtCreate=" + gmtCreate +
+                ", userIdMod=" + userIdMod +
+                ", gmtModified=" + gmtModified +
+                ", countNum=" + countNum +
+                '}';
     }
 }
