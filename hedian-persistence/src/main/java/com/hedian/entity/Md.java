@@ -1,16 +1,15 @@
 package com.hedian.entity;
 
-import java.io.Serializable;
-
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
+import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,7 +25,7 @@ public class Md extends Model<Md> {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId("md_id")
+    @TableId(value = "md_id", type = IdType.AUTO)
     private Integer mdId;
     /**
      * 管理域名称
@@ -68,13 +67,10 @@ public class Md extends Model<Md> {
     private List<Integer> resIds;
     @TableField(exist = false)
     private List<Long> deptIds;
-
-    @TableField(exist = false)
-    private List<SysDept> sysDepts;
-
     @TableField(exist = false)
     private List<SysUser> sysUsers;
-
+    @TableField(exist = false)
+    private List<SysDept> sysDepts;
     @TableField(exist = false)
     private List<ResBase> resBases;
 
@@ -86,20 +82,20 @@ public class Md extends Model<Md> {
         this.sysDepts = sysDepts;
     }
 
-    public List<SysUser> getSysUsers() {
-        return sysUsers;
-    }
-
-    public void setSysUsers(List<SysUser> sysUsers) {
-        this.sysUsers = sysUsers;
-    }
-
     public List<ResBase> getResBases() {
         return resBases;
     }
 
     public void setResBases(List<ResBase> resBases) {
         this.resBases = resBases;
+    }
+
+    public List<SysUser> getSysUsers() {
+        return sysUsers;
+    }
+
+    public void setSysUsers(List<SysUser> sysUsers) {
+        this.sysUsers = sysUsers;
     }
 
     public List<Integer> getUserIds() {

@@ -42,7 +42,7 @@ public class ResSubtypeController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "resMtype", value = "主类型", dataType = "String", paramType = "query")
     })
-    public PublicResult getTreeAllSubtype(@RequestParam(name = "resMtype", defaultValue = "", required = false) String resMtype) {
+    public PublicResult getTreeAllSubtype(@RequestParam(name = "resMtype", defaultValue = "", required = false) Integer resMtype) {
         EntityWrapper ew = new EntityWrapper<ResSubtype>();
         if (!ComUtil.isEmpty(resMtype)) {
             ew.eq("res_mtype_id", resMtype);

@@ -1,10 +1,10 @@
 package com.hedian.service.impl;
 
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hedian.entity.MoKpi;
 import com.hedian.entity.ResSubtype;
 import com.hedian.mapper.MoKpiMapper;
 import com.hedian.service.IMoKpiService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hedian.service.IResSubtypeService;
 import com.hedian.util.ComUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,21 +30,24 @@ public class MoKpiServiceImpl extends ServiceImpl<MoKpiMapper, MoKpi> implements
     private MoKpiMapper moKpiMapper;
 
     @Override
-    public List<MoKpi> selectMokpiByStype(String resStype) {
+    public List<MoKpi> selectMokpiByStype(Integer resStype) {
+        List<MoKpi> moKpiList = null;
         List<Integer> stypeIds = getAllResStypeIds(resStype);
-        List<MoKpi> moKpiList = moKpiMapper.selectMoKpiByStype(stypeIds);
+        if (!ComUtil.isEmpty(stypeIds)) {
+            moKpiList = moKpiMapper.selectMoKpiByStype(stypeIds);
+        }
         return moKpiList;
     }
 
 
-    private List<Integer> getAllResStypeIds(String resStype) {
+    private List<Integer> getAllResStypeIds(Integer resStype) {
         List<Integer> resStypeIds = new ArrayList<>();
         ResSubtype resSubtype = resSubtypeService.selectById(resStype);
         if (!ComUtil.isEmpty(resSubtype)) {
             resStypeIds.add(resSubtype.getResStypeId());
             if (!resSubtype.getParentId().equals(0)) {
                 ResSubtype resSubtypeParent = resSubtypeService.selectById(resSubtype.getParentId());
-                getAllResStypeIds(String.valueOf(resSubtypeParent.getParentId()));
+                getAllResStypeIds(resSubtypeParent.getParentId());
                 resStypeIds.add(resSubtype.getResStypeId());
             }
         }

@@ -27,9 +27,9 @@ public interface ResBaseMapper extends BaseMapper<ResBase> {
     /**
      *  等同于编写一个普通 list 查询，mybatis-plus 自动替你分页
      */
-    List<ResBase> selectPageByConditionResBase(Page<ResBase> page, @Param("resName") String resName, @Param("resStypeName") String resStype,
-                                               @Param("resIPV4") String resIPV4, @Param("resSerialNum") String resSerialNum,
-                                               @Param("resAddress") String resAddress, @Param("resMtypeName") String resMtype);
+    List<ResBase> selectPageByConditionResBase(Page<ResBase> page, @Param("resName") String resName, @Param("resStype") Integer resStype,
+                                               @Param("resIpv4") String resIpv4, @Param("resSerialNum") String resSerialNum,
+                                               @Param("resAddress") String resAddress, @Param("resMtype") Integer resMtype);
 
     List<Integer> selectByUserId(@Param("userId") String userId);
 

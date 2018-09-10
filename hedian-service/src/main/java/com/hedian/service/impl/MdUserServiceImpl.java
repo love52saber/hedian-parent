@@ -23,7 +23,7 @@ public class MdUserServiceImpl extends ServiceImpl<MdUserMapper, MdUser> impleme
 
     @Override
     public boolean saveAll(Integer mdId, List<Integer> userIds) {
-        boolean result = false;
+        boolean result = true;
         if (!ComUtil.isEmpty(userIds)) {
             List<MdUser> mdUsers = new ArrayList<>();
             userIds.stream().forEach(userId -> {
@@ -31,7 +31,6 @@ public class MdUserServiceImpl extends ServiceImpl<MdUserMapper, MdUser> impleme
             });
             result = this.insertBatch(mdUsers);
         }
-
         return result;
     }
 }

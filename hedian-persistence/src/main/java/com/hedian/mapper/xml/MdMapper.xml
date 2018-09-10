@@ -41,15 +41,27 @@
     </sql>
 
     <select id="selectPageList" resultMap="CustomMap">
-        select t.*,rb.*,sd.dept_id,su.*  from (select md.*,mres.res_id,mdt.dept_id,mu.user_id from tbl_md md
-        LEFT JOIN  (select md_id,res_id from tbl_md_res  GROUP BY md_id)  mres on md.md_id = mres.md_id
-        LEFT JOIN  (select md_id,dept_id from tbl_md_dept  GROUP BY md_id) mdt on md.md_id = mdt.md_id
-        LEFT JOIN  (select md_id,user_id from tbl_md_user  GROUP BY md_id)  mu on md.md_id = mu.md_id
-        <where>
-            <if test="mdName != null and mdName != ''">
-                and md.md_name like concat('%',#{mdName},'%')
-            </if>
-        </where>
+        <!--select t.*,rb.*,sd.dept_id,su.* from (select md.*,mres.res_id,mdt.dept_id,mu.user_id from tbl_md md-->
+        <!--LEFT JOIN (select md_id,res_id from tbl_md_res GROUP BY md_id) mres on md.md_id = mres.md_id-->
+        <!--LEFT JOIN (select md_id,dept_id from tbl_md_dept GROUP BY md_id) mdt on md.md_id = mdt.md_id-->
+        <!--LEFT JOIN (select md_id,user_id from tbl_md_user GROUP BY md_id) mu on md.md_id = mu.md_id-->
+        <!--where md.useflag = 1-->
+        <!--<if test="mdName != null and mdName != ''">-->
+        <!--and md.md_name like concat('%',#{mdName},'%')-->
+        <!--</if>-->
+        <!--)t-->
+        <!--LEFT JOIN tbl_res_base rb on t.res_id = rb.res_id-->
+        <!--LEFT JOIN sys_dept sd on t.dept_id = sd.dept_id-->
+        <!--LEFT JOIN sys_user su on t.user_id = su.user_id-->
+        select t.*,rb.*,sd.dept_id,su.* from (select md.*,mres.res_id,mdt.dept_id,mu.user_id from tbl_md md
+        LEFT JOIN tbl_md_res mres on md.md_id = mres.md_id
+        LEFT JOIN tbl_md_dept mdt on md.md_id = mdt.md_id
+        LEFT JOIN tbl_md_user mu on md.md_id = mu.md_id
+        where md.useflag = 1
+        <if test="mdName != null and mdName != ''">
+            and md.md_name like concat('%',#{mdName},'%')
+        </if>
+        and  md.md_id =9
         )t
         LEFT JOIN tbl_res_base rb on t.res_id = rb.res_id
         LEFT JOIN sys_dept sd on t.dept_id = sd.dept_id

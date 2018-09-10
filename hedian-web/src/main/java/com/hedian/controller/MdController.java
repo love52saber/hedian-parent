@@ -8,16 +8,14 @@ import com.hedian.annotation.ValidationParam;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
-import com.hedian.entity.Md;
-import com.hedian.entity.MdDept;
-import com.hedian.entity.MdRes;
-import com.hedian.entity.MdUser;
+import com.hedian.entity.*;
 import com.hedian.service.*;
 import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +42,8 @@ public class MdController {
     private IMdDeptService mdDeptService;
     @Autowired
     private ISysDeptService sysDeptService;
+    @Autowired
+    private ISysUserService sysUserService;
 
 
     /**
@@ -54,13 +54,26 @@ public class MdController {
                                     @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                                     //info-->管理域名
                                     @RequestParam(name = "info", defaultValue = "", required = false) String info) {
-        Page<Md> mdPage = mdService.selectPageList(new Page<>(pageIndex, pageSize), info);
+        EntityWrapper ew = new EntityWrapper();
+        if (!ComUtil.isEmpty(info)) {
+            ew.eq("md_name", info);
+        }
+        Page<Md> mdPage = mdService.selectPage(new Page<>(pageIndex, pageSize), ew);
+//        Page<Md> mdPage1 = mdService.selectPageList(new Page<>(pageIndex, pageSize),info);
         mdPage.getRecords().stream().forEach(md -> {
-            if(!ComUtil.isEmpty(md.getSysUsers())){
-                md.getSysUsers().stream().forEach(sysUser -> {
-                    sysUser.setSysDept(sysDeptService.selectById(sysUser.getDeptId()));
-                });
-            }
+            List<MdRes> mdResList = mdResService.selectList(new EntityWrapper<MdRes>().eq("md_id", md.getMdId()));
+            md.setResIds(mdResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
+            List<MdDept> mdDeptList = mdDeptService.selectList(new EntityWrapper<MdDept>().eq("md_id", md.getMdId()));
+            md.setDeptIds(mdDeptList.stream().map(MdDept::getDeptId).collect(Collectors.toList()));
+            List<SysUser> userList = new ArrayList<>();
+            List<MdUser> mdUserList = mdUserService.selectList(new EntityWrapper<MdUser>().eq("md_id", md.getMdId()));
+            md.setUserIds(mdUserList.stream().map(MdUser::getUserId).collect(Collectors.toList()));
+            mdUserList.stream().forEach(mdUser -> {
+                SysUser sysUser = sysUserService.selectById(mdUser.getUserId());
+                sysUser.setSysDept(sysDeptService.selectById(sysUser.getDeptId()));
+                userList.add(sysUser);
+            });
+            md.setSysUsers(userList);
         });
         return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(mdPage.getTotal(), pageIndex, pageSize, mdPage.getRecords()));
     }
@@ -94,7 +107,7 @@ public class MdController {
      * 修改管理域信息
      */
     @PutMapping
-    public PublicResult<String> updateMd(@ValidationParam("mdName,mdDesc,mdId,showorder")
+    public PublicResult<String> updateMd(@ValidationParam("mdName,mdId,showorder")
                                          @RequestBody JSONObject requestJson) throws Exception {
         Md md = requestJson.toJavaObject(Md.class);
         boolean result = mdService.updateMd(md);
@@ -105,7 +118,7 @@ public class MdController {
      * 删除管理域
      */
     @DeleteMapping(value = "/{mdId}")
-    public PublicResult deleteMd(@PathVariable("mdId") Long mdId) {
+    public PublicResult deleteMd(@PathVariable("mdId") Integer mdId) {
         if (ComUtil.isEmpty(mdService.selectById(mdId))) {
             return new PublicResult<>(PublicResultConstant.ERROR, null);
         }

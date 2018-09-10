@@ -33,7 +33,7 @@ public class MdDeptServiceImpl extends ServiceImpl<MdDeptMapper, MdDept> impleme
 
     @Override
     public boolean saveAll(Integer mdId, List<Long> deptIds) {
-        boolean result = false;
+        boolean result = true;
         if (!ComUtil.isEmpty(deptIds)) {
             List<MdDept> mdDepts = new ArrayList<>();
             deptIds.stream().forEach(deptId -> {

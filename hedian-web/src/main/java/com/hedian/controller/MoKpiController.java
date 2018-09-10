@@ -43,8 +43,7 @@ public class MoKpiController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "resStype", value = "子类型", dataType = "String", paramType = "query")
     })
-    @Pass
-    public PublicResult getAllMoKpi(@RequestParam(name = "resStype", defaultValue = "", required = false) String resStype) {
+    public PublicResult getAllMoKpi(@RequestParam(name = "resStype", defaultValue = "", required = false) Integer resStype) {
         List<MoKpi> moKpiList = moKpiService.selectMokpiByStype(resStype);
         return new PublicResult(PublicResultConstant.SUCCESS, moKpiList);
     }

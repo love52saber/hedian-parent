@@ -70,15 +70,15 @@ public class ResBaseController {
     public PublicResult getPageList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
                                     @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                                     @RequestParam(name = "resName", defaultValue = "", required = false) String resName,
-                                    @RequestParam(name = "resStype", defaultValue = "", required = false) String resStype,
-                                    @RequestParam(name = "resIPV4", defaultValue = "", required = false) String resIPV4,
+                                    @RequestParam(name = "resStype", defaultValue = "", required = false) Integer resStype,
+                                    @RequestParam(name = "resIpv4", defaultValue = "", required = false) String resIpv4,
                                     @RequestParam(name = "resSerialNum", defaultValue = "", required = false) String resSerialNum,
                                     @RequestParam(name = "resAddress", defaultValue = "", required = false) String resAddress,
-                                    @RequestParam(name = "resMtype", defaultValue = "", required = false) String resMtype) {
+                                    @RequestParam(name = "resMtype", defaultValue = "", required = false) Integer resMtype) {
 
         //自定义分页关联查询列表
         Page<ResBase> resBasePage = resBaseService.selectPageByConditionResBase(new Page<>(pageIndex, pageSize), resName, resStype,
-                resIPV4, resSerialNum, resAddress, resMtype);
+                resIpv4, resSerialNum, resAddress, resMtype);
         return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(resBasePage.getTotal(), pageIndex, pageSize, resBasePage.getRecords()));
 
     }

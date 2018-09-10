@@ -26,17 +26,16 @@
     <select id="selectMoKpiByStype" resultMap="BaseResultMap">
         SELECT mk.*
         FROM tbl_res_stype_kpi sk
-        INNER JOIN `tbl_mo_kpi` mk
+        INNER JOIN tbl_mo_kpi mk
         ON sk.mo_kpi_id = mk.mo_kpi_id
         WHERE
         1=1
-        <if test="stypeIds != null">and sk.res_stype_id IN
+        <if test="stypeIds != null and stypeIds.size()>0">and sk.res_stype_id IN
             <foreach item="stypeId" collection="stypeIds" open="(" separator=","
                      close=")">
                 #{stypeId}
             </foreach>
         </if>
     </select>
-
 
 </mapper>

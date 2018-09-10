@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
@@ -30,6 +31,7 @@ public class MdDept extends Model<MdDept> {
     private Long deptId;
     @TableField("md_id")
     private Integer mdId;
+    @TableLogic
     @TableField(fill = FieldFill.INSERT)
     private Integer useflag;
 

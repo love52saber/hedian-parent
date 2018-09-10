@@ -11,7 +11,6 @@ import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.SysGroup;
 import com.hedian.entity.SysGrpRole;
 import com.hedian.entity.SysGrpUser;
-import com.hedian.model.SysGroupModel;
 import com.hedian.service.*;
 import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;

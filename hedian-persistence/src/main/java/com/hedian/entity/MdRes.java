@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
@@ -29,6 +30,7 @@ public class MdRes extends Model<MdRes> {
     private Integer mdId;
     @TableField("res_id")
     private Integer resId;
+    @TableLogic
     @TableField(fill = FieldFill.INSERT)
     private Integer useflag;
 

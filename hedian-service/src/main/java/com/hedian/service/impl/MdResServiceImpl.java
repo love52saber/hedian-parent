@@ -33,7 +33,7 @@ public class MdResServiceImpl extends ServiceImpl<MdResMapper, MdRes> implements
 
     @Override
     public boolean saveAll(Integer mdId, List<Integer> resIds) {
-        boolean result = false;
+        boolean result = true;
         if (!ComUtil.isEmpty(resIds)) {
             List<MdRes> mdResList = new ArrayList<>();
             resIds.stream().forEach(resId -> {

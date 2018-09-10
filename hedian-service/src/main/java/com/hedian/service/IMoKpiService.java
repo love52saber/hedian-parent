@@ -15,5 +15,5 @@ import java.util.List;
  */
 public interface IMoKpiService extends IService<MoKpi> {
 
-    List<MoKpi> selectMokpiByStype(String resStype);
+    List<MoKpi> selectMokpiByStype(Integer resStype);
 }

@@ -29,8 +29,8 @@ public interface IResBaseService extends IService<ResBase> {
 
     List<ResBase> selectByResMtypeId(Integer resMtypeId);
 
-    Page<ResBase> selectPageByConditionResBase(Page<ResBase> page, String resName, String resStype, String resIPV4, String resSerialNum,
-                                               String resAddress, String resMtype);
+    Page<ResBase> selectPageByConditionResBase(Page<ResBase> page, String resName, Integer resStype, String resIpv4, String resSerialNum,
+                                               String resAddress, Integer resMtype);
 
     List<Integer> selectByUserId(@Param("userId") String userId);
 }
