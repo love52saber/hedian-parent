@@ -42,12 +42,24 @@ public class ResAbnormallevelController {
      */
     @GetMapping("/getCountByLevel")
     public PublicResult getCountByLevel(@CurrentUser SysUser sysUser) {
-            Map<String, Object> map = new HashMap<>(16);
-            List<Integer> redIds = HdywUtils.getResidsByUserid(sysUser);
-            map.put("resIds", redIds);
-            List<ResAbnormallevel> resAbnormallevels = resAbnormallevelService.getCountByLevelMap(map);
-            return new PublicResult(PublicResultConstant.SUCCESS, resAbnormallevels);
-        }
-
+        Map<String, Object> map = new HashMap<>(16);
+        List<Integer> redIds = HdywUtils.getResidsByUserid(sysUser);
+        map.put("resIds", redIds);
+        List<ResAbnormallevel> resAbnormallevels = resAbnormallevelService.getCountByLevelMap(map);
+        return new PublicResult(PublicResultConstant.SUCCESS, resAbnormallevels);
     }
+
+
+    /**
+     * 故障等级列表
+     *
+     * @return
+     */
+    @GetMapping("/all")
+    public PublicResult getAll() {
+        List<ResAbnormallevel> resAbnormallevels = resAbnormallevelService.selectList(null);
+        return new PublicResult(PublicResultConstant.SUCCESS, resAbnormallevels);
+    }
+
+}
 
