@@ -1,11 +1,4 @@
-package com.hedian.entity;
-
-import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableLogic;
-import com.baomidou.mybatisplus.annotations.TableName;
-import com.baomidou.mybatisplus.enums.FieldFill;
+package com.hedian.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -19,72 +12,98 @@ import java.util.Date;
  * @author hedian123
  * @since 2018-08-17
  */
-@TableName("tbl_mo_threshold")
-public class MoThreshold extends Model<MoThreshold> {
+public class MoThresholdModel {
 
-    private static final long serialVersionUID = 1L;
 
-    @TableId("mo_th_id")
     private Integer moThId;
     /**
      * 阈值类型： 1 上下限监控，2  百分比监控(区间)，3  基准值百分比上下限监控 ，4 基准值百分比监控（区间），对于上下限 如果有配置上限或者下限则按照大于上限小于下限为异常，若只配置了上限或者下限则按照有配置的比较, 5 判断获取到到的值是否等于mo_th_value
      */
-    @TableField("mo_th_type")
     private Integer moThType;
     /**
      * 基准值
      */
-    @TableField("mo_th_base")
     private BigDecimal moThBase;
     /**
      * 上限
      */
-    @TableField("mo_th_up")
     private BigDecimal moThUp;
     /**
      * 下限
      */
-    @TableField("mo_th_down")
     private BigDecimal moThDown;
     /**
      * 上下限包含标记 ：1 包含上下限，0 不包含上下限 默认0
      */
-    @TableField("mo_th_inupdown")
     private Integer moThInupdown;
     /**
      * 做等于比较时和该值进行比较
      */
-    @TableField("mo_th_value")
     private String moThValue;
     /**
      * 当同一个对象的同一监控指标 匹配出多个故障时 按照该优先级展示优先级高的故障，该数值越小优先级越高
      */
-    @TableField("mo_th_priority")
     private Integer moThPriority;
-    @TableField("res_stype_id")
     private Integer resStypeId;
     /**
      * 子类型标记：1 该规则应用于该类型下所有子类型， 2 该规则只应用于该类型本身
      */
-    @TableField("mo_th_stype_flag")
+
     private Integer moThStypeFlag;
-    @TableField("mo_kpi_id")
+
     private Integer moKpiId;
-    @TableField("mo_abnormal_id")
+
     private Integer moAbnormalId;
     private Integer showorder;
-    @TableLogic
-    @TableField(value = "useflag", fill = FieldFill.INSERT)
     private Integer useflag;
-    @TableField(value = "user_id_create", fill = FieldFill.INSERT)
+
     private Long userIdCreate;
-    @TableField(value = "gmt_create", fill = FieldFill.INSERT)
+
     private Date gmtCreate;
-    @TableField(value = "user_id_mod", fill = FieldFill.INSERT_UPDATE)
+
     private Long userIdMod;
-    @TableField(value = "gmt_modified", fill = FieldFill.INSERT_UPDATE)
+
     private Date gmtModified;
 
+    private String resMtypeName;
+
+    private String resStypeName;
+
+    private String moAbnormalName;
+
+    private String moKpiName;
+
+    public String getResMtypeName() {
+        return resMtypeName;
+    }
+
+    public void setResMtypeName(String resMtypeName) {
+        this.resMtypeName = resMtypeName;
+    }
+
+    public String getResStypeName() {
+        return resStypeName;
+    }
+
+    public void setResStypeName(String resStypeName) {
+        this.resStypeName = resStypeName;
+    }
+
+    public String getMoAbnormalName() {
+        return moAbnormalName;
+    }
+
+    public void setMoAbnormalName(String moAbnormalName) {
+        this.moAbnormalName = moAbnormalName;
+    }
+
+    public String getMoKpiName() {
+        return moKpiName;
+    }
+
+    public void setMoKpiName(String moKpiName) {
+        this.moKpiName = moKpiName;
+    }
 
     public Integer getMoThId() {
         return moThId;
@@ -230,21 +249,17 @@ public class MoThreshold extends Model<MoThreshold> {
         this.gmtModified = gmtModified;
     }
 
-    @Override
-    protected Serializable pkVal() {
-        return this.moThId;
-    }
 
     @Override
     public String toString() {
-        return "MoThreshold{" +
+        return "MoThresholdModel{" +
                 "moThId=" + moThId +
                 ", moThType=" + moThType +
                 ", moThBase=" + moThBase +
                 ", moThUp=" + moThUp +
                 ", moThDown=" + moThDown +
                 ", moThInupdown=" + moThInupdown +
-                ", moThValue=" + moThValue +
+                ", moThValue='" + moThValue + '\'' +
                 ", moThPriority=" + moThPriority +
                 ", resStypeId=" + resStypeId +
                 ", moThStypeFlag=" + moThStypeFlag +
@@ -256,6 +271,10 @@ public class MoThreshold extends Model<MoThreshold> {
                 ", gmtCreate=" + gmtCreate +
                 ", userIdMod=" + userIdMod +
                 ", gmtModified=" + gmtModified +
-                "}";
+                ", resMtypeName='" + resMtypeName + '\'' +
+                ", resStypeName='" + resStypeName + '\'' +
+                ", moAbnormalName='" + moAbnormalName + '\'' +
+                ", moKpiName='" + moKpiName + '\'' +
+                '}';
     }
 }

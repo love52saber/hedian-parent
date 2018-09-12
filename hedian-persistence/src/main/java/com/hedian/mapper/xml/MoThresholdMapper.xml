@@ -4,29 +4,73 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.hedian.entity.MoThreshold">
-        <id column="mo_th_id" property="moThId" />
-        <result column="mo_th_type" property="moThType" />
-        <result column="mo_th_base" property="moThBase" />
-        <result column="mo_th_up" property="moThUp" />
-        <result column="mo_th_down" property="moThDown" />
-        <result column="mo_th_inupdown" property="moThInupdown" />
-        <result column="mo_th_value" property="moThValue" />
-        <result column="mo_th_priority" property="moThPriority" />
-        <result column="res_stype_id" property="resStypeId" />
-        <result column="mo_th_stype_flag" property="moThStypeFlag" />
-        <result column="mo_kpi_id" property="moKpiId" />
-        <result column="mo_abnormal_id" property="moAbnormalId" />
-        <result column="showorder" property="showorder" />
-        <result column="useflag" property="useflag" />
-        <result column="user_id_create" property="userIdCreate" />
-        <result column="gmt_create" property="gmtCreate" />
-        <result column="user_id_mod" property="userIdMod" />
-        <result column="gmt_modified" property="gmtModified" />
+        <id column="mo_th_id" property="moThId"/>
+        <result column="mo_th_type" property="moThType"/>
+        <result column="mo_th_base" property="moThBase"/>
+        <result column="mo_th_up" property="moThUp"/>
+        <result column="mo_th_down" property="moThDown"/>
+        <result column="mo_th_inupdown" property="moThInupdown"/>
+        <result column="mo_th_value" property="moThValue"/>
+        <result column="mo_th_priority" property="moThPriority"/>
+        <result column="res_stype_id" property="resStypeId"/>
+        <result column="mo_th_stype_flag" property="moThStypeFlag"/>
+        <result column="mo_kpi_id" property="moKpiId"/>
+        <result column="mo_abnormal_id" property="moAbnormalId"/>
+        <result column="showorder" property="showorder"/>
+        <result column="useflag" property="useflag"/>
+        <result column="user_id_create" property="userIdCreate"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="user_id_mod" property="userIdMod"/>
+        <result column="gmt_modified" property="gmtModified"/>
+    </resultMap>
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="CustomMap" type="com.hedian.model.MoThresholdModel">
+        <id column="mo_th_id" property="moThId"/>
+        <result column="mo_th_type" property="moThType"/>
+        <result column="mo_th_base" property="moThBase"/>
+        <result column="mo_th_up" property="moThUp"/>
+        <result column="mo_th_down" property="moThDown"/>
+        <result column="mo_th_inupdown" property="moThInupdown"/>
+        <result column="mo_th_value" property="moThValue"/>
+        <result column="mo_th_priority" property="moThPriority"/>
+        <result column="res_stype_id" property="resStypeId"/>
+        <result column="mo_th_stype_flag" property="moThStypeFlag"/>
+        <result column="mo_kpi_id" property="moKpiId"/>
+        <result column="mo_abnormal_id" property="moAbnormalId"/>
+        <result column="showorder" property="showorder"/>
+        <result column="useflag" property="useflag"/>
+        <result column="user_id_create" property="userIdCreate"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="user_id_mod" property="userIdMod"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="res_mtype_name" property="resMtypeName"/>
+        <result column="res_stype_name" property="resStypeName"/>
+        <result column="mo_abnormal_name" property="moAbnormalName"/>
+        <result column="mo_kpi_name" property="moKpiName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         mo_th_id AS moThId, mo_th_type AS moThType, mo_th_base AS moThBase, mo_th_up AS moThUp, mo_th_down AS moThDown, mo_th_inupdown AS moThInupdown, mo_th_value AS moThValue, mo_th_priority AS moThPriority, res_stype_id AS resStypeId, mo_th_stype_flag AS moThStypeFlag, mo_kpi_id AS moKpiId, mo_abnormal_id AS moAbnormalId, showorder, useflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
     </sql>
+
+
+    <!--阀值规则定义-->
+    <select id="selectPageMoThreshold" resultMap="CustomMap">
+        SELECT aa.*,rm.res_mtype_name FROM (SELECT
+        mt.*,rs.res_stype_name,rs.res_mtype_id,ra.mo_abnormal_name,mk.mo_kpi_name
+        FROM tbl_mo_threshold mt
+        INNER JOIN tbl_mo_kpi mk ON mt.mo_kpi_id=mk.mo_kpi_id
+        INNER JOIN tbl_res_subtype rs ON mt.res_stype_id=rs.res_stype_id
+        INNER JOIN tbl_mo_abnormal_def ra ON mt.mo_abnormal_id=ra.mo_abnormal_id
+        ) aa
+        INNER JOIN tbl_res_maintype rm ON aa.res_mtype_id = rm.res_mtype_id
+        WHERE aa.useflag=1
+        <if test="moKpiName != null and moKpiName != ''">AND aa.mo_kpi_name like concat('%',#{moKpiName},'%')</if>
+        <if test="moAbnormalName != null and moAbnormalName != ''">AND aa.mo_abnormal_name like concat('%',#{moAbnormalName},'%')</if>
+        <if test="resStypeName != null and resStypeName != ''">AND aa.res_stype_name like concat('%',#{resStypeName},'%')</if>
+        <if test="resMtypeName != null and resMtypeName != ''">AND rm.res_mtype_name like concat('%',#{resMtypeName},'%')</if>
+    </select>
 
 </mapper>

@@ -3,10 +3,13 @@ package com.hedian.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.annotation.ValidationParam;
+import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.MoKpi;
+import com.hedian.model.MokpiModel;
 import com.hedian.service.IMoKpiService;
 import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
@@ -48,16 +51,32 @@ public class MoKpiController {
     /**
      * 获取所有mokpi
      */
-    @GetMapping("/allMokpi")
+    @GetMapping("/pageList")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageIndex", value = "第几页", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "每页多少条", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "info", value = "名称", dataType = "String", paramType = "query")
     })
-    public PublicResult getAllMokpi(@RequestParam(name = "info", defaultValue = "", required = false) Integer info) {
+    public PublicResult getAllMokpi(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
+                                    @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+                                    @RequestParam(name = "info", defaultValue = "", required = false) String info) {
         EntityWrapper ew = new EntityWrapper();
         if (!ComUtil.isEmpty(info)) {
-            ew.eq("mo_kpi_name", info);
+            ew.like("mo_kpi_name", info);
         }
-        List<MoKpi> moKpiList = moKpiService.selectList(ew);
+        Page<MoKpi> moKpiPage = moKpiService.selectPage(new Page<>(pageIndex, pageSize), ew);
+        return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(moKpiPage.getTotal(), pageIndex, pageSize, moKpiPage.getRecords()));
+    }
+
+    /**
+     * 获取所有mokpi
+     */
+    @GetMapping("/allMokpiObject")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "resStype", value = "子类型", dataType = "String", paramType = "query")
+    })
+    public PublicResult allMokpiObject(@RequestParam(name = "resStype", defaultValue = "", required = false) Integer resStype) {
+        List<MokpiModel> moKpiList = moKpiService.selectMokpiObject(resStype);
         return new PublicResult(PublicResultConstant.SUCCESS, moKpiList);
     }
 
@@ -68,7 +87,7 @@ public class MoKpiController {
      * @return
      */
     @PostMapping
-    public PublicResult<String> addMokpi(@ValidationParam("moKpiName,moKpiKey,unitCh,unitEn,showorder")
+    public PublicResult<String> addMokpi(@ValidationParam("moKpiName,moKpiKey,showorder")
                                          @RequestBody JSONObject requestJson) throws Exception {
         //可直接转为java对象,简化操作,不用再set一个个属性
         MoKpi moKpi = requestJson.toJavaObject(MoKpi.class);
@@ -80,7 +99,7 @@ public class MoKpiController {
      * 修改mokpi信息
      */
     @PutMapping
-    public PublicResult<String> updateDept(@ValidationParam("moKpiName,moKpiKey,unitCh,unitEn,showorder,moKpiId")
+    public PublicResult<String> updateMokpi(@ValidationParam("moKpiName,moKpiKey,showorder,moKpiId")
                                            @RequestBody JSONObject requestJson) throws Exception {
         MoKpi moKpi = requestJson.toJavaObject(MoKpi.class);
         boolean result = moKpiService.updateById(moKpi);
@@ -91,7 +110,7 @@ public class MoKpiController {
      * 删除mokpi
      */
     @DeleteMapping(value = "/{mokpiId}")
-    public PublicResult deleteDept(@PathVariable("mokpiId") Long mokpiId) {
+    public PublicResult deleteMokpi(@PathVariable("mokpiId") Integer mokpiId) {
         if (ComUtil.isEmpty(moKpiService.selectById(mokpiId))) {
             return new PublicResult<>(PublicResultConstant.ERROR, null);
         }

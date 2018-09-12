@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hedian.entity.MoKpi;
 import com.hedian.entity.ResSubtype;
 import com.hedian.mapper.MoKpiMapper;
+import com.hedian.model.MokpiModel;
 import com.hedian.service.IMoKpiService;
 import com.hedian.service.IResSubtypeService;
 import com.hedian.util.ComUtil;
@@ -11,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -31,20 +34,17 @@ public class MoKpiServiceImpl extends ServiceImpl<MoKpiMapper, MoKpi> implements
 
     @Override
     public List<MoKpi> selectMokpiByStype(Integer resStype) {
-        List<MoKpi> moKpiList = null;
-        List<Integer> stypeIds = getAllResStypeIds(resStype);
-        if (!ComUtil.isEmpty(stypeIds)) {
-            moKpiList = moKpiMapper.selectMoKpiByStype(stypeIds);
-        }
+        List<Integer> stypeIds = this.getAllResStypeIds(resStype);
+        stypeIds.add(resStype);
+        List<MoKpi> moKpiList = moKpiMapper.selectMoKpiByStype(stypeIds);
         return moKpiList;
     }
 
-
-    private List<Integer> getAllResStypeIds(Integer resStype) {
+    @Override
+    public List<Integer> getAllResStypeIds(Integer resStype) {
         List<Integer> resStypeIds = new ArrayList<>();
         ResSubtype resSubtype = resSubtypeService.selectById(resStype);
         if (!ComUtil.isEmpty(resSubtype)) {
-            resStypeIds.add(resSubtype.getResStypeId());
             if (!resSubtype.getParentId().equals(0)) {
                 ResSubtype resSubtypeParent = resSubtypeService.selectById(resSubtype.getParentId());
                 getAllResStypeIds(resSubtypeParent.getParentId());
@@ -52,5 +52,27 @@ public class MoKpiServiceImpl extends ServiceImpl<MoKpiMapper, MoKpi> implements
             }
         }
         return resStypeIds;
+    }
+
+    @Override
+    public List<MokpiModel> selectMokpiObject(Integer resStype) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("stypeId", resStype);
+        //查询本节点下的mokpi
+        List<MokpiModel> mokpiModels = moKpiMapper.selectMokpiObject(params);
+        List<Integer> stypeIds = this.getAllResStypeIds(resStype);
+        if (!ComUtil.isEmpty(stypeIds)) {
+            params.clear();
+            params.put("stypeFlag", 1);
+            params.put("stypePIds", stypeIds);
+            List<MokpiModel> mokpiModelParents = moKpiMapper.selectMokpiObject(params);
+            if (!ComUtil.isEmpty(mokpiModelParents)) {
+                mokpiModelParents.stream().forEach(mokpiModel -> {
+                  mokpiModel.setResCurStypeName(mokpiModels.get(0).getResStypeName());
+                });
+                mokpiModels.addAll(mokpiModelParents);
+            }
+        }
+        return mokpiModels;
     }
 }

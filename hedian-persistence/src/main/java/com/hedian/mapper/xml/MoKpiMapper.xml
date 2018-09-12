@@ -18,6 +18,25 @@
         <result column="gmt_modified" property="gmtModified"/>
     </resultMap>
 
+    <resultMap id="CuntomMap" type="com.hedian.model.MokpiModel">
+        <id column="mo_kpi_id" property="moKpiId"/>
+        <result column="mo_kpi_name" property="moKpiName"/>
+        <result column="mo_kpi_key" property="moKpiKey"/>
+        <result column="mo_kpi_desc" property="moKpiDesc"/>
+        <result column="unit_ch" property="unitCh"/>
+        <result column="unit_en" property="unitEn"/>
+        <result column="showorder" property="showorder"/>
+        <result column="useflag" property="useflag"/>
+        <result column="user_id_create" property="userIdCreate"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="user_id_mod" property="userIdMod"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="skId" property="skId"/>
+        <result column="res_mtype_name" property="resMtypeName"/>
+        <result column="stype_flag" property="stypeFlag"/>
+        <result column="res_stype_name" property="resStypeName"/>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         mo_kpi_id AS moKpiId, mo_kpi_name AS moKpiName, mo_kpi_key AS moKpiKey, mo_kpi_desc AS moKpiDesc, unit_ch AS unitCh, unit_en AS unitEn, showorder, useflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
@@ -36,6 +55,26 @@
                 #{stypeId}
             </foreach>
         </if>
+    </select>
+    <!--查询mokpi object-->
+    <select id="selectMokpiObject" resultMap="CuntomMap">
+        SELECT bb.*,rm.res_mtype_name FROM
+        (SELECT aa.*,rs.res_stype_name,rs.res_mtype_id FROM
+        (SELECT mk.*,rsk.res_stype_id,rsk.id AS skId,rsk.mo_kpi_id AS mokpiId,rsk.stype_flag
+        FROM tbl_mo_kpi mk INNER JOIN tbl_res_stype_kpi rsk ON mk.mo_kpi_id = rsk.mo_kpi_id
+        WHERE rsk.useflag = 1
+        <if test="stypePIds != null and stypePIds.size()>0">
+            AND res_stype_id IN
+            <foreach item="pId" collection="stypePIds" open="(" separator=","
+                     close=")">
+                #{pId}
+            </foreach>
+        </if>
+        <if test="stypeId != null and stypeId != ''">AND rsk.res_stype_id = #{stypeId}</if>
+        <if test="stypeFlag != null and stypeFlag != ''">AND rsk.stype_flag = #{stypeFlag}</if>
+        ) aa
+        INNER JOIN tbl_res_subtype rs ON aa.res_stype_id = rs.res_stype_id) bb
+        INNER JOIN tbl_res_maintype rm ON bb.res_mtype_id=rm.res_mtype_id
     </select>
 
 </mapper>

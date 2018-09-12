@@ -1,11 +1,15 @@
 package com.hedian.entity;
 
-import java.io.Serializable;
-
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.FieldFill;
+import com.baomidou.mybatisplus.enums.IdType;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -19,7 +23,7 @@ import com.baomidou.mybatisplus.annotations.TableName;
 public class ResStypeKpi extends Model<ResStypeKpi> {
 
     private static final long serialVersionUID = 1L;
-
+    @TableId(type = IdType.AUTO)
     private Integer id;
     @TableField("res_stype_id")
     private Integer resStypeId;
@@ -30,14 +34,16 @@ public class ResStypeKpi extends Model<ResStypeKpi> {
      */
     @TableField("stype_flag")
     private Integer stypeFlag;
+    @TableLogic
+    @TableField(value = "useflag", fill = FieldFill.INSERT)
     private Integer useflag;
-    @TableField("user_id_create")
+    @TableField(value = "user_id_create", fill = FieldFill.INSERT)
     private Long userIdCreate;
-    @TableField("gmt_create")
+    @TableField(value = "gmt_create", fill = FieldFill.INSERT)
     private Date gmtCreate;
-    @TableField("user_id_mod")
+    @TableField(value = "user_id_mod", fill = FieldFill.INSERT_UPDATE)
     private Long userIdMod;
-    @TableField("gmt_modified")
+    @TableField(value = "gmt_modified", fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
     /**
@@ -46,6 +52,14 @@ public class ResStypeKpi extends Model<ResStypeKpi> {
     @TableField(exist = false)
     private MoKpi moKpi;
 
+    public ResStypeKpi(Integer resStypeId, Integer moKpiId, Integer stypeFlag) {
+        this.resStypeId = resStypeId;
+        this.moKpiId = moKpiId;
+        this.stypeFlag = stypeFlag;
+    }
+
+    public ResStypeKpi() {
+    }
 
     public MoKpi getMoKpi() {
         return moKpi;
@@ -136,15 +150,15 @@ public class ResStypeKpi extends Model<ResStypeKpi> {
     @Override
     public String toString() {
         return "ResStypeKpi{" +
-        "id=" + id +
-        ", resStypeId=" + resStypeId +
-        ", moKpiId=" + moKpiId +
-        ", stypeFlag=" + stypeFlag +
-        ", useflag=" + useflag +
-        ", userIdCreate=" + userIdCreate +
-        ", gmtCreate=" + gmtCreate +
-        ", userIdMod=" + userIdMod +
-        ", gmtModified=" + gmtModified +
-        "}";
+                "id=" + id +
+                ", resStypeId=" + resStypeId +
+                ", moKpiId=" + moKpiId +
+                ", stypeFlag=" + stypeFlag +
+                ", useflag=" + useflag +
+                ", userIdCreate=" + userIdCreate +
+                ", gmtCreate=" + gmtCreate +
+                ", userIdMod=" + userIdMod +
+                ", gmtModified=" + gmtModified +
+                "}";
     }
 }

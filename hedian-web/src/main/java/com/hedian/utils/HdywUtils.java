@@ -35,7 +35,7 @@ public class HdywUtils {
     @Autowired
     private ISysDeptService sysDeptService;
     @Autowired
-
+    private IResSubtypeService resSubtypeService;
 
     public static HdywUtils hdywUtils;
 
