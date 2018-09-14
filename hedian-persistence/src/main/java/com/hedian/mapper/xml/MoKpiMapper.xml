@@ -48,7 +48,7 @@
         INNER JOIN tbl_mo_kpi mk
         ON sk.mo_kpi_id = mk.mo_kpi_id
         WHERE
-        1=1
+        mk.useflag=1 and sk.useflag=1
         <if test="stypeIds != null and stypeIds.size()>0">and sk.res_stype_id IN
             <foreach item="stypeId" collection="stypeIds" open="(" separator=","
                      close=")">

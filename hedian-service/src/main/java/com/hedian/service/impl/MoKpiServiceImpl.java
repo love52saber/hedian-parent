@@ -47,8 +47,9 @@ public class MoKpiServiceImpl extends ServiceImpl<MoKpiMapper, MoKpi> implements
         if (!ComUtil.isEmpty(resSubtype)) {
             if (!resSubtype.getParentId().equals(0)) {
                 ResSubtype resSubtypeParent = resSubtypeService.selectById(resSubtype.getParentId());
+                resStypeIds.add(resSubtypeParent.getResStypeId());
                 getAllResStypeIds(resSubtypeParent.getParentId());
-                resStypeIds.add(resSubtype.getResStypeId());
+
             }
         }
         return resStypeIds;
@@ -68,7 +69,12 @@ public class MoKpiServiceImpl extends ServiceImpl<MoKpiMapper, MoKpi> implements
             List<MokpiModel> mokpiModelParents = moKpiMapper.selectMokpiObject(params);
             if (!ComUtil.isEmpty(mokpiModelParents)) {
                 mokpiModelParents.stream().forEach(mokpiModel -> {
-                  mokpiModel.setResCurStypeName(mokpiModels.get(0).getResStypeName());
+                    if(!ComUtil.isEmpty(mokpiModels)){
+                        mokpiModel.setResCurStypeName(mokpiModels.get(0).getResStypeName());
+                    }else{
+                        mokpiModel.setResCurStypeName(resSubtypeService.selectById(resStype).getResStypeName());
+                    }
+
                 });
                 mokpiModels.addAll(mokpiModelParents);
             }

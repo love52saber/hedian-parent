@@ -3,10 +3,11 @@ package com.hedian.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hedian.annotation.ValidationParam;
-import com.hedian.base.BusinessException;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
+import com.hedian.entity.MoKpi;
 import com.hedian.entity.ResStypeKpi;
+import com.hedian.service.IMoKpiService;
 import com.hedian.service.IResStypeKpiService;
 import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
@@ -31,6 +32,9 @@ public class ResStypeKpiController {
     @Autowired
     private IResStypeKpiService resStypeKpiService;
 
+    @Autowired
+    private IMoKpiService moKpiService;
+
     /**
      * 添加mokpi对象
      *
@@ -38,18 +42,19 @@ public class ResStypeKpiController {
      * @return
      */
     @PostMapping
-    public PublicResult<String> addMokpiObject(@ValidationParam("moKpiIds,resStypeId,stypeFlag")
+    public PublicResult<String> addMokpiObject(@ValidationParam("moKpiId,resStypeId,stypeFlag")
                                                @RequestBody JSONObject requestJson) throws Exception {
         //可直接转为java对象,简化操作,不用再set一个个属性
-        boolean result = false;
-        List<Integer> moKpiIds = requestJson.getJSONArray("moKpiIds").toJavaList(Integer.class);
-        for (Integer moKpiId : moKpiIds) {
-            ResStypeKpi resStypeKpi = new ResStypeKpi(requestJson.getInteger("resStypeId"), moKpiId, requestJson.getInteger("stypeFlag"));
-            result = resStypeKpiService.insert(resStypeKpi);
-            if (!result) {
-                throw new BusinessException("添加mokpi对象失败");
+        ResStypeKpi resStypeKpi = requestJson.toJavaObject(ResStypeKpi.class);
+        List<MoKpi> moKpiList = moKpiService.selectMokpiByStype(resStypeKpi.getResStypeId());
+        if (!ComUtil.isEmpty(moKpiList)) {
+            for (MoKpi moKpi : moKpiList) {
+                if (moKpi.getMoKpiId().equals(resStypeKpi.getMoKpiId())) {
+                    return new PublicResult<>("已有当前规则，不能重复添加", null);
+                }
             }
         }
+        boolean result = resStypeKpiService.insert(resStypeKpi);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 
@@ -57,21 +62,12 @@ public class ResStypeKpiController {
      * 修改mokpid对象
      */
     @PutMapping
-    public PublicResult<String> updateMokpiObject(@ValidationParam("skId,moKpiId,resStypeId,stypeFlag")
+    public PublicResult<String> updateMokpiObject(@ValidationParam("skId,stypeFlag")
                                                   @RequestBody JSONObject requestJson) throws Exception {
         //先删除，在添加
-        Integer skId = requestJson.getInteger("skId");
-        boolean result = resStypeKpiService.deleteById(skId);
-        if (result) {
-            List<Integer> moKpiIds = requestJson.getJSONArray("moKpiIds").toJavaList(Integer.class);
-            for (Integer moKpiId : moKpiIds) {
-                ResStypeKpi resStypeKpi = new ResStypeKpi(requestJson.getInteger("resStypeId"), moKpiId, requestJson.getInteger("stypeFlag"));
-                result = resStypeKpiService.insert(resStypeKpi);
-                if (!result) {
-                    throw new BusinessException("修改mokpi对象失败");
-                }
-            }
-        }
+        ResStypeKpi resStypeKpi = requestJson.toJavaObject(ResStypeKpi.class);
+        resStypeKpi.setId(requestJson.getInteger("skId"));
+        boolean result = resStypeKpiService.updateById(resStypeKpi);
         return !result ? new PublicResult<>(PublicResultConstant.ERROR, null) : new PublicResult<>(PublicResultConstant.SUCCESS, null);
     }
 
