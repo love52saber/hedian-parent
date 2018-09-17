@@ -45,11 +45,6 @@ public class MoThresholdModel {
      */
     private Integer moThPriority;
     private Integer resStypeId;
-    /**
-     * 子类型标记：1 该规则应用于该类型下所有子类型， 2 该规则只应用于该类型本身
-     */
-
-    private Integer moThStypeFlag;
 
     private Integer moKpiId;
 
@@ -176,15 +171,6 @@ public class MoThresholdModel {
     public void setResStypeId(Integer resStypeId) {
         this.resStypeId = resStypeId;
     }
-
-    public Integer getMoThStypeFlag() {
-        return moThStypeFlag;
-    }
-
-    public void setMoThStypeFlag(Integer moThStypeFlag) {
-        this.moThStypeFlag = moThStypeFlag;
-    }
-
     public Integer getMoKpiId() {
         return moKpiId;
     }
@@ -262,7 +248,6 @@ public class MoThresholdModel {
                 ", moThValue='" + moThValue + '\'' +
                 ", moThPriority=" + moThPriority +
                 ", resStypeId=" + resStypeId +
-                ", moThStypeFlag=" + moThStypeFlag +
                 ", moKpiId=" + moKpiId +
                 ", moAbnormalId=" + moAbnormalId +
                 ", showorder=" + showorder +

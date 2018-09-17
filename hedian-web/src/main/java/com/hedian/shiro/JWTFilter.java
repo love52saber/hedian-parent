@@ -92,7 +92,9 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         /**
          * TODO 暂且放在全局变量里
          */
-        BeanUtils.copyProperties(CacheConstans.CACHE_USER, userBean);
+        if (!ComUtil.isEmpty(userBean)) {
+            BeanUtils.copyProperties(CacheConstans.CACHE_USER, userBean);
+        }
         request.setAttribute("currentUser", userBean);
     }
 

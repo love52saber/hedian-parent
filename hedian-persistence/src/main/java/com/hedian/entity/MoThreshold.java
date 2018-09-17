@@ -63,11 +63,7 @@ public class MoThreshold extends Model<MoThreshold> {
     private Integer moThPriority;
     @TableField("res_stype_id")
     private Integer resStypeId;
-    /**
-     * 子类型标记：1 该规则应用于该类型下所有子类型， 2 该规则只应用于该类型本身
-     */
-    @TableField("mo_th_stype_flag")
-    private Integer moThStypeFlag;
+
     @TableField("mo_kpi_id")
     private Integer moKpiId;
     @TableField("mo_abnormal_id")
@@ -158,14 +154,6 @@ public class MoThreshold extends Model<MoThreshold> {
         this.resStypeId = resStypeId;
     }
 
-    public Integer getMoThStypeFlag() {
-        return moThStypeFlag;
-    }
-
-    public void setMoThStypeFlag(Integer moThStypeFlag) {
-        this.moThStypeFlag = moThStypeFlag;
-    }
-
     public Integer getMoKpiId() {
         return moKpiId;
     }
@@ -247,7 +235,6 @@ public class MoThreshold extends Model<MoThreshold> {
                 ", moThValue=" + moThValue +
                 ", moThPriority=" + moThPriority +
                 ", resStypeId=" + resStypeId +
-                ", moThStypeFlag=" + moThStypeFlag +
                 ", moKpiId=" + moKpiId +
                 ", moAbnormalId=" + moAbnormalId +
                 ", showorder=" + showorder +

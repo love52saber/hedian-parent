@@ -13,7 +13,6 @@
         <result column="mo_th_value" property="moThValue"/>
         <result column="mo_th_priority" property="moThPriority"/>
         <result column="res_stype_id" property="resStypeId"/>
-        <result column="mo_th_stype_flag" property="moThStypeFlag"/>
         <result column="mo_kpi_id" property="moKpiId"/>
         <result column="mo_abnormal_id" property="moAbnormalId"/>
         <result column="showorder" property="showorder"/>
@@ -35,7 +34,6 @@
         <result column="mo_th_value" property="moThValue"/>
         <result column="mo_th_priority" property="moThPriority"/>
         <result column="res_stype_id" property="resStypeId"/>
-        <result column="mo_th_stype_flag" property="moThStypeFlag"/>
         <result column="mo_kpi_id" property="moKpiId"/>
         <result column="mo_abnormal_id" property="moAbnormalId"/>
         <result column="showorder" property="showorder"/>
@@ -52,7 +50,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        mo_th_id AS moThId, mo_th_type AS moThType, mo_th_base AS moThBase, mo_th_up AS moThUp, mo_th_down AS moThDown, mo_th_inupdown AS moThInupdown, mo_th_value AS moThValue, mo_th_priority AS moThPriority, res_stype_id AS resStypeId, mo_th_stype_flag AS moThStypeFlag, mo_kpi_id AS moKpiId, mo_abnormal_id AS moAbnormalId, showorder, useflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
+        mo_th_id AS moThId, mo_th_type AS moThType, mo_th_base AS moThBase, mo_th_up AS moThUp, mo_th_down AS moThDown, mo_th_inupdown AS moThInupdown, mo_th_value AS moThValue, mo_th_priority AS moThPriority, res_stype_id AS resStypeId, mo_kpi_id AS moKpiId, mo_abnormal_id AS moAbnormalId, showorder, useflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
     </sql>
 
 
@@ -67,10 +65,12 @@
         ) aa
         INNER JOIN tbl_res_maintype rm ON aa.res_mtype_id = rm.res_mtype_id
         WHERE aa.useflag=1
-        <if test="moKpiName != null and moKpiName != ''">AND aa.mo_kpi_name like concat('%',#{moKpiName},'%')</if>
-        <if test="moAbnormalName != null and moAbnormalName != ''">AND aa.mo_abnormal_name like concat('%',#{moAbnormalName},'%')</if>
-        <if test="resStypeName != null and resStypeName != ''">AND aa.res_stype_name like concat('%',#{resStypeName},'%')</if>
-        <if test="resMtypeName != null and resMtypeName != ''">AND rm.res_mtype_name like concat('%',#{resMtypeName},'%')</if>
+        <if test="moKpiName != null and moKpiName != ''">AND aa.mo_kpi_name LIKE concat('%',#{moKpiName},'%')</if>
+        <if test="moAbnormalName != null and moAbnormalName != ''">AND aa.mo_abnormal_name LIKE
+            concat('%',#{moAbnormalName},'%')
+        </if>
+        <if test="resStypeName != null and resStypeName != ''">AND aa.res_stype_name = #{resStypeName}</if>
+        <if test="resMtypeName != null and resMtypeName != ''">AND rm.res_mtype_name = #{resMtypeName}</if>
     </select>
 
 </mapper>
