@@ -4,7 +4,10 @@ import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.FieldFill;
+
 import java.io.Serializable;
 
 /**
@@ -25,6 +28,8 @@ public class MsRes extends Model<MsRes> {
     private Integer msId;
     @TableField("res_id")
     private Integer resId;
+    @TableLogic
+    @TableField(value = "useflag", fill = FieldFill.INSERT)
     private Integer useflag;
 
     public MsRes(Integer msId, Integer resId) {
@@ -75,10 +80,10 @@ public class MsRes extends Model<MsRes> {
     @Override
     public String toString() {
         return "MsRes{" +
-        "id=" + id +
-        ", msId=" + msId +
-        ", resId=" + resId +
-        ", useflag=" + useflag +
-        "}";
+                "id=" + id +
+                ", msId=" + msId +
+                ", resId=" + resId +
+                ", useflag=" + useflag +
+                "}";
     }
 }

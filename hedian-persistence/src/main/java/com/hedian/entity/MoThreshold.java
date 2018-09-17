@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
+import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -24,7 +25,7 @@ public class MoThreshold extends Model<MoThreshold> {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId("mo_th_id")
+    @TableId(value = "mo_th_id", type = IdType.AUTO)
     private Integer moThId;
     /**
      * 阈值类型： 1 上下限监控，2  百分比监控(区间)，3  基准值百分比上下限监控 ，4 基准值百分比监控（区间），对于上下限 如果有配置上限或者下限则按照大于上限小于下限为异常，若只配置了上限或者下限则按照有配置的比较, 5 判断获取到到的值是否等于mo_th_value

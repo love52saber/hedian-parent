@@ -1,13 +1,14 @@
 package com.hedian.entity;
 
-import java.io.Serializable;
-
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.FieldFill;
+
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,14 +44,16 @@ public class MaintainStrategy extends Model<MaintainStrategy> {
     private Integer msStatus;
     @TableField("ms_desc")
     private String msDesc;
+    @TableLogic
+    @TableField(value = "useflag", fill = FieldFill.INSERT)
     private Integer useflag;
-    @TableField("user_id_create")
+    @TableField(value = "user_id_create", fill = FieldFill.INSERT)
     private Long userIdCreate;
-    @TableField("gmt_create")
+    @TableField(value = "gmt_create", fill = FieldFill.INSERT)
     private Date gmtCreate;
-    @TableField("user_id_mod")
+    @TableField(value = "user_id_mod", fill = FieldFill.INSERT_UPDATE)
     private Long userIdMod;
-    @TableField("gmt_modified")
+    @TableField(value = "gmt_modified", fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
     @TableField(exist = false)
@@ -168,19 +171,19 @@ public class MaintainStrategy extends Model<MaintainStrategy> {
     @Override
     public String toString() {
         return "MaintainStrategy{" +
-        "msId=" + msId +
-        ", msName=" + msName +
-        ", msType=" + msType +
-        ", beginTime=" + beginTime +
-        ", endTime=" + endTime +
-        ", msStatus=" + msStatus +
-        ", msDesc=" + msDesc +
-        ", useflag=" + useflag +
-        ", userIdCreate=" + userIdCreate +
-        ", gmtCreate=" + gmtCreate +
-        ", userIdMod=" + userIdMod +
-        ", gmtModified=" + gmtModified +
-        "}";
+                "msId=" + msId +
+                ", msName=" + msName +
+                ", msType=" + msType +
+                ", beginTime=" + beginTime +
+                ", endTime=" + endTime +
+                ", msStatus=" + msStatus +
+                ", msDesc=" + msDesc +
+                ", useflag=" + useflag +
+                ", userIdCreate=" + userIdCreate +
+                ", gmtCreate=" + gmtCreate +
+                ", userIdMod=" + userIdMod +
+                ", gmtModified=" + gmtModified +
+                "}";
     }
 
 }

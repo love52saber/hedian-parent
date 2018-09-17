@@ -45,10 +45,19 @@ public class MaintainStrategyController {
     @GetMapping("/pageList")
     public PublicResult getPageList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
                                     @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-                                    //info-->管理域名
-                                    @RequestParam(name = "info", defaultValue = "", required = false) String info) {
+                                    @RequestParam(name = "msTitle", defaultValue = "", required = false) String msTitle,
+                                    @RequestParam(name = "msType", defaultValue = "", required = false) String msType,
+                                    @RequestParam(name = "msStatus", defaultValue = "", required = false) String msStatus) {
         EntityWrapper ew = new EntityWrapper();
-
+        if (!ComUtil.isEmpty(msTitle)) {
+            ew.like("ms_title", msType);
+        }
+        if (!ComUtil.isEmpty(msType)) {
+            ew.eq("ms_type", msType);
+        }
+        if (!ComUtil.isEmpty(msStatus)) {
+            ew.eq("ms_status", msStatus);
+        }
         Page<MaintainStrategy> msPage = maintainStrategyService.selectPage(new Page<>(pageIndex, pageSize), ew);
         return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(msPage.getTotal(), pageIndex, pageSize, msPage.getRecords()));
     }
