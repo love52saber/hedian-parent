@@ -17,8 +17,8 @@ import java.io.Serializable;
  * @author hedian123
  * @since 2018-09-17
  */
-@TableName("tbl_res_mo_abnormal_info")
-public class ResMoAbnormalInfo extends Model<ResMoAbnormalInfo> {
+@TableName("tbl_res_mo_abnormal_info_h")
+public class ResMoAbnormalInfoH extends Model<ResMoAbnormalInfoH> {
 
     private static final long serialVersionUID = 1L;
 
@@ -376,7 +376,7 @@ public class ResMoAbnormalInfo extends Model<ResMoAbnormalInfo> {
 
     @Override
     public String toString() {
-        return "ResMoAbnormalInfo{" +
+        return "ResMoAbnormalInfoH{" +
         "resAbnormalId=" + resAbnormalId +
         ", resId=" + resId +
         ", moThId=" + moThId +

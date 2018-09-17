@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hedian.mapper.ResMoAbnormalInfoMapper">
+<mapper namespace="com.hedian.mapper.ResMoAbnormalInfoHMapper">
+
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.hedian.entity.ResMoAbnormalInfo">
+    <resultMap id="BaseResultMap" type="com.hedian.entity.ResMoAbnormalInfoH">
         <id column="res_abnormal_id" property="resAbnormalId" />
         <result column="res_id" property="resId" />
         <result column="mo_th_id" property="moThId" />
@@ -36,78 +37,10 @@
         <result column="del_user_id" property="delUserId" />
         <result column="deltime" property="deltime" />
     </resultMap>
-    <resultMap id="AlarmResultMap" type="com.hedian.model.AlarmInfoModel">
-        <id column="res_id" property="resId"/>
-        <result column="res_alias" property="alarmObjectAlias"/>
-        <result column="res_abnormallevel_name" property="alarmLevel"/>
-        <result column="res_abnormallevel_color" property="alarmColor"/>
-        <result column="res_abnormal_code" property="alarmCode"/>
-        <result column="res_name" property="alarmObjectType"/>
-        <result column="res_abnormal_name" property="alarmName"/>
-        <result column="mo_abnormal_name" property="alarmObject"/>
-        <result column="res_abnormaldesc" property="alarmDesc"/>
-        <result column="res_abnomaltime" property="alarmTime"/>
-    </resultMap>
-
-
-    <resultMap id="TopAbnormalMap" type="com.hedian.entity.MoAbnormalDef">
-        <id column="mo_abnormal_id" property="moAbnormalId"/>
-        <result column="mo_abnormalcode" property="moAbnormalcode"/>
-        <result column="mo_abnormal_name" property="moAbnormalName"/>
-        <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
-        <result column="countNum" property="countNum"/>
-    </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         res_abnormal_id AS resAbnormalId, res_id AS resId, mo_th_id AS moThId, mo_kpi_id AS moKpiId, mo_abnormal_id AS moAbnormalId, res_abnormal_code AS resAbnormalCode, res_abnormal_name AS resAbnormalName, res_abnormallevel_id AS resAbnormallevelId, abnormal_type_id AS abnormalTypeId, res_abnormaldesc AS resAbnormaldesc, res_abnomaltime AS resAbnomaltime, res_recoverytime AS resRecoverytime, res_abnormalvalue AS resAbnormalvalue, res_revoveryvalue AS resRevoveryvalue, confirm_status AS confirmStatus, res_abnormalstatus AS resAbnormalstatus, confirm_type AS confirmType, confirm_user_id AS confirmUserId, confirm_time AS confirmTime, confirm_info AS confirmInfo, clean_type AS cleanType, clean_user_id AS cleanUserId, clean_time AS cleanTime, clean_info AS cleanInfo, dispatch_type AS dispatchType, dispatch_user_id AS dispatchUserId, dispatch_time AS dispatchTime, dispatch_ticket_id AS dispatchTicketId, fms_id AS fmsId, useflag, del_user_id AS delUserId, deltime
     </sql>
-
-
-    <select id="selectByResIdAndkpiId" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from tbl_res_mo_abnormal_info
-        where res_abnormalstatus=1
-        <if test="resId != null and resId != ''">
-            and res_id = #{resId}
-        </if>
-        <if test="moKpiId != null and moKpiId != ''">
-            and mo_kpi_id =#{moKpiId}
-        </if>
-    </select>
-
-    <select id="selectAlarmByResId" resultMap="AlarmResultMap">
-        select (@:=@+1) AS
-        res_id,b.res_alias,d.res_abnormallevel_name,d.res_abnormallevel_color,a.res_abnormal_code,b.res_name,a.res_abnormal_name,e.mo_abnormal_name,
-        a.res_abnormaldesc,a.res_abnomaltime
-        from
-        (select * from tbl_res_mo_abnormal_info where
-        1=1
-        <if test="resId != null and resId != ''">
-            and res_id=#{resId,jdbcType=BIGINT}
-        </if>
-        and res_abnormalstatus=1 ) a
-        left join tbl_res_base b on a.res_id=b.res_id
-        left join tbl_res_abnormallevel d on a.res_abnormallevel_id=d.res_abnormallevel_id
-        left join tbl_mo_abnormal_def e on a.mo_abnormal_id=e.mo_abnormal_id
-        join (SELECT @:=0) r
-        order by a.res_abnomaltime desc
-    </select>
-
-    <select id="getTopAbnormal" resultMap="TopAbnormalMap">
-        select b.mo_abnormal_id,b.mo_abnormalcode,b.mo_abnormal_name,b.res_abnormallevel_id,count(b.mo_abnormal_id) as
-        countNum
-        from
-        (select * from tbl_res_mo_abnormal_info where 1=1
-        <if test="resIds != null">and res_id IN
-            <foreach item="rId" collection="resIds" open="(" separator=","
-                     close=")">
-                #{rId}
-            </foreach>
-        </if>
-        ) a LEFT JOIN tbl_mo_abnormal_def b ON a.mo_abnormal_id=b.mo_abnormal_id
-        GROUP BY b.mo_abnormal_id ORDER BY countNum DESC
-    </select>
 
 </mapper>

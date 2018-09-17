@@ -4,18 +4,19 @@ package com.hedian.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 管理域 前端控制器
+ * 故障维修策略 前端控制器
  * </p>
  *
  * @author hedian123
- * @since 2018-08-17
+ * @since 2018-09-17
  */
-@Controller
-@RequestMapping("/tblMangeddomain")
-public class MangeddomainController {
+@RestController
+@RequestMapping("/api/fms")
+public class FmsController {
 
 }
 
