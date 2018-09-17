@@ -1,5 +1,6 @@
 package com.hedian.service;
 
+import com.hedian.base.BusinessException;
 import com.hedian.entity.MaintainStrategy;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -13,4 +14,7 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IMaintainStrategyService extends IService<MaintainStrategy> {
 
+    boolean addAllNodes(MaintainStrategy ms) throws Exception;
+
+    boolean updateMs(MaintainStrategy ms) throws Exception;
 }

@@ -27,6 +27,13 @@ public class MsRes extends Model<MsRes> {
     private Integer resId;
     private Integer useflag;
 
+    public MsRes(Integer msId, Integer resId) {
+        this.msId = msId;
+        this.resId = resId;
+    }
+
+    public MsRes() {
+    }
 
     public Integer getId() {
         return id;

@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -52,6 +53,16 @@ public class MaintainStrategy extends Model<MaintainStrategy> {
     @TableField("gmt_modified")
     private Date gmtModified;
 
+    @TableField(exist = false)
+    private List<Integer> resIds;
+
+    public List<Integer> getResIds() {
+        return resIds;
+    }
+
+    public void setResIds(List<Integer> resIds) {
+        this.resIds = resIds;
+    }
 
     public Integer getMsId() {
         return msId;
@@ -171,4 +182,5 @@ public class MaintainStrategy extends Model<MaintainStrategy> {
         ", gmtModified=" + gmtModified +
         "}";
     }
+
 }
