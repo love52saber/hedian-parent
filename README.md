@@ -45,13 +45,13 @@
 
 -   通过git下载源码，本项目基于JDK1.8
     
--   采用Maven项目管理，模块化，导入IDE时直接选定liugh-parent的pom导入
+-   采用Maven项目管理，模块化，导入IDE时直接选定hedian-parent的pom导入
     
--   创建数据库liugh，数据库编码为UTF-8，执行znyw.sql文件，初始化数据
+-   创建数据库znyw，数据库编码为UTF-8，执行znyw.sql文件，初始化数据
     
 -   修改application-dev.properties，更新MySQL账号和密码
     
--   Eclipse、IDEA运行SpringbootApplication.java，则可启动项目。或在liugh-parent目录下运行命令mvn clean package，然后在hedian-web/target目录下运行java -jar hedian-web.jar命令
+-   Eclipse、IDEA运行SpringbootApplication.java，则可启动项目。或在hedian-parent目录下运行命令mvn clean package，然后在hedian-web/target目录下运行java -jar hedian-web.jar命令
 
     
 -   访问登录接口：localhost:8081/api/login
