@@ -41,7 +41,7 @@ public class FmsController {
                                     @RequestParam(name = "dispatchflag", defaultValue = "", required = false) Integer dispatchflag,
                                     @RequestParam(name = "grpName", defaultValue = "", required = false) String grpName,
                                     @RequestParam(name = "fmsStatus", defaultValue = "", required = false) Integer fmsStatus) {
-        Page<FmsModel> fmsModelPage = fmsService.selectPageByConfidition(new Page<>(pageIndex, pageSize), fmsName, deptName, userName, dispatchflag, grpName, fmsStatus);
+        Page<FmsModel> fmsModelPage = fmsService.selectPageByCondition(new Page<>(pageIndex, pageSize), fmsName, deptName, userName, dispatchflag, grpName, fmsStatus);
         return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(fmsModelPage.getTotal(), pageIndex, pageSize, fmsModelPage.getRecords()));
     }
 

@@ -15,7 +15,7 @@ import com.hedian.model.FmsModel;
  */
 public interface IFmsService extends IService<Fms> {
 
-    Page<FmsModel> selectPageByConfidition(Page<FmsModel> page, String fmsName, String deptName, String userName,
+    Page<FmsModel> selectPageByCondition(Page<FmsModel> page, String fmsName, String deptName, String userName,
                                            Integer dispatchflag, String grpName, Integer fmsStatus);
 
 }

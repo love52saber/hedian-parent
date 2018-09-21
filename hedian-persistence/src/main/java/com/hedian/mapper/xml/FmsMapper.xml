@@ -53,7 +53,7 @@
     <sql id="Base_Column_List">
         fms_id AS fmsId, fms_name AS fmsName, fms_desc AS fmsDesc, dept_id AS deptId, user_id AS userId, dispatchflag, grp_id AS grpId, fms_status AS fmsStatus, begin_time AS beginTime, end_time AS endTime, showorder, useflag, delflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
     </sql>
-    <select id="selectPageByConfidition" resultMap="CustomMap">
+    <select id="selectPageByCondition" resultMap="CustomMap">
         SELECT fm.*,sd.name AS deptName,su.name AS userName,sg.grp_name FROM tbl_fms fm
         INNER JOIN sys_dept sd ON fm.dept_id = sd.dept_id
         LEFT JOIN sys_user su ON fm.user_id = su.user_id
