@@ -12,6 +12,8 @@ import com.hedian.entity.*;
 import com.hedian.service.*;
 import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -83,6 +85,22 @@ public class MdController {
     @GetMapping("/all")
     public PublicResult getAllMd() {
         List<Md> mdList = mdService.selectList(new EntityWrapper<Md>());
+        return new PublicResult(PublicResultConstant.SUCCESS, mdList);
+    }
+
+    /**
+     * 获取所有管理域（控件）
+     */
+    @GetMapping("/pageCondition")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "mdName", value = "管理域名字", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "userId", value = "用户id", dataType = "Long", paramType = "query"),
+            @ApiImplicitParam(name = "deptId", value = "部门id", dataType = "Long", paramType = "query")
+    })
+    public PublicResult getAllPageCondition(@RequestParam(name = "mdName", defaultValue = "", required = false) String mdName,
+                                            @RequestParam(name = "userId", defaultValue = "", required = false) Long userId,
+                                            @RequestParam(name = "deptId", defaultValue = "", required = false) Long deptId) {
+        List<Md> mdList = mdService.selectPageByCondition(mdName, deptId, userId);
         return new PublicResult(PublicResultConstant.SUCCESS, mdList);
     }
 

@@ -1,12 +1,13 @@
 package com.hedian.service;
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.IService;
 import com.hedian.entity.MoAbnormalDef;
 import com.hedian.entity.ResMoAbnormalInfo;
-import com.baomidou.mybatisplus.service.IService;
+import com.hedian.model.AbnormalLevelModel;
 import com.hedian.model.AlarmInfoModel;
+import com.hedian.model.ResMoAbnormalInfoModel;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,9 +21,15 @@ import java.util.Map;
  */
 public interface IResMoAbnormalInfoService extends IService<ResMoAbnormalInfo> {
 
-    ResMoAbnormalInfo selectByResIdAndkpiId(Map<String,Integer> map);
+    ResMoAbnormalInfo selectByResIdAndkpiId(Map<String, Integer> map);
 
     List<AlarmInfoModel> selectAlarmByResId(String resId);
 
-    List<MoAbnormalDef> getTopAbnormal(Map<String,Object> map);
+    List<MoAbnormalDef> getTopAbnormal(Map<String, Object> map);
+
+    Page<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, String beginTime, String endTime, String conStatus,
+                                                       String abnormalLevel, String abnormalType, String abnormalName,
+                                                       String mokpiName, String resName, String resAlias, boolean isAutoOrder);
+
+    List<AbnormalLevelModel> selectAbnormalLevelCount();
 }

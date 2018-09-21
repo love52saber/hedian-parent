@@ -1,11 +1,7 @@
-package com.hedian.entity;
+package com.hedian.model;
 
-import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableName;
+import com.alibaba.fastjson.annotation.JSONField;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -16,101 +12,164 @@ import java.util.Date;
  * @author hedian123
  * @since 2018-09-17
  */
-@TableName("tbl_res_mo_abnormal_info")
-public class ResMoAbnormalInfo extends Model<ResMoAbnormalInfo> {
+public class ResMoAbnormalInfoModel {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId("res_abnormal_id")
     private Long resAbnormalId;
-    @TableField("res_id")
+
     private Integer resId;
-    @TableField("mo_th_id")
+
     private Integer moThId;
-    @TableField("mo_kpi_id")
+
     private Integer moKpiId;
-    @TableField("mo_abnormal_id")
+
     private Integer moAbnormalId;
-    @TableField("res_abnormal_code")
+
     private Integer resAbnormalCode;
-    @TableField("res_abnormal_name")
+
     private String resAbnormalName;
-    @TableField("res_abnormallevel_id")
+
     private Integer resAbnormallevelId;
-    @TableField("abnormal_type_id")
+
     private Integer abnormalTypeId;
     /**
      * 根据mo_abnormal_showtemplate转换得到的异常描述信息
      */
-    @TableField("res_abnormaldesc")
     private String resAbnormaldesc;
-    @TableField("res_abnomaltime")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date resAbnomaltime;
-    @TableField("res_recoverytime")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date resRecoverytime;
-    @TableField("res_abnormalvalue")
     private String resAbnormalvalue;
-    @TableField("res_revoveryvalue")
     private String resRevoveryvalue;
     /**
      * 确认状态：1 未确认 2 已确认
      */
-    @TableField("confirm_status")
     private Integer confirmStatus;
     /**
      * 异常状态：1 未清除  0 已清除 2 维护期清除
      */
-    @TableField("res_abnormalstatus")
     private Integer resAbnormalstatus;
     /**
      * 确认类型：0 未确认 1 自动确认 2 手工确认
      */
-    @TableField("confirm_type")
     private Integer confirmType;
-    @TableField("confirm_user_id")
     private Long confirmUserId;
-    @TableField("confirm_time")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date confirmTime;
-    @TableField("confirm_info")
     private String confirmInfo;
     /**
      * 清除类型：0 未清除 1 自动清除 2 手工清除
      */
-    @TableField("clean_type")
     private Integer cleanType;
-    @TableField("clean_user_id")
     private Long cleanUserId;
-    @TableField("clean_time")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date cleanTime;
-    @TableField("clean_info")
     private String cleanInfo;
     /**
      * 派单类型：0 未派单 1 自动派单 2 手工派单
      */
-    @TableField("dispatch_type")
     private Integer dispatchType;
-    @TableField("dispatch_user_id")
     private Long dispatchUserId;
-    @TableField("dispatch_time")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date dispatchTime;
     /**
      * 派发的工单ID
      */
-    @TableField("dispatch_ticket_id")
     private Long dispatchTicketId;
     /**
      * 自动派单匹配的策略ID
      */
-    @TableField("fms_id")
     private Integer fmsId;
     /**
      * 使用标记： 1 正常 0删除
      */
     private Integer useflag;
-    @TableField("del_user_id")
     private Long delUserId;
     private Date deltime;
 
+    private String abnormalTypeName;
+    private String resAbnormallevelName;
+    private String resName;
+    private String resAlias;
+    private String mokpiName;
+    private String confirmUserName;
+    private String dispatchUserName;
+    private String cleanUserName;
+    private String delUserName;
+
+    public String getConfirmUserName() {
+        return confirmUserName;
+    }
+
+    public void setConfirmUserName(String confirmUserName) {
+        this.confirmUserName = confirmUserName;
+    }
+
+    public String getDispatchUserName() {
+        return dispatchUserName;
+    }
+
+    public void setDispatchUserName(String dispatchUserName) {
+        this.dispatchUserName = dispatchUserName;
+    }
+
+    public String getCleanUserName() {
+        return cleanUserName;
+    }
+
+    public void setCleanUserName(String cleanUserName) {
+        this.cleanUserName = cleanUserName;
+    }
+
+    public String getDelUserName() {
+        return delUserName;
+    }
+
+    public void setDelUserName(String delUserName) {
+        this.delUserName = delUserName;
+    }
+
+    public String getAbnormalTypeName() {
+        return abnormalTypeName;
+    }
+
+    public void setAbnormalTypeName(String abnormalTypeName) {
+        this.abnormalTypeName = abnormalTypeName;
+    }
+
+    public String getResAbnormallevelName() {
+        return resAbnormallevelName;
+    }
+
+    public void setResAbnormallevelName(String resAbnormallevelName) {
+        this.resAbnormallevelName = resAbnormallevelName;
+    }
+
+    public String getResName() {
+        return resName;
+    }
+
+    public void setResName(String resName) {
+        this.resName = resName;
+    }
+
+    public String getResAlias() {
+        return resAlias;
+    }
+
+    public void setResAlias(String resAlias) {
+        this.resAlias = resAlias;
+    }
+
+    public String getMokpiName() {
+        return mokpiName;
+    }
+
+    public void setMokpiName(String mokpiName) {
+        this.mokpiName = mokpiName;
+    }
 
     public Long getResAbnormalId() {
         return resAbnormalId;
@@ -368,46 +427,5 @@ public class ResMoAbnormalInfo extends Model<ResMoAbnormalInfo> {
         this.deltime = deltime;
     }
 
-    @Override
-    protected Serializable pkVal() {
-        return this.resAbnormalId;
-    }
 
-    @Override
-    public String toString() {
-        return "ResMoAbnormalInfo{" +
-        "resAbnormalId=" + resAbnormalId +
-        ", resId=" + resId +
-        ", moThId=" + moThId +
-        ", moKpiId=" + moKpiId +
-        ", moAbnormalId=" + moAbnormalId +
-        ", resAbnormalCode=" + resAbnormalCode +
-        ", resAbnormalName=" + resAbnormalName +
-        ", resAbnormallevelId=" + resAbnormallevelId +
-        ", abnormalTypeId=" + abnormalTypeId +
-        ", resAbnormaldesc=" + resAbnormaldesc +
-        ", resAbnomaltime=" + resAbnomaltime +
-        ", resRecoverytime=" + resRecoverytime +
-        ", resAbnormalvalue=" + resAbnormalvalue +
-        ", resRevoveryvalue=" + resRevoveryvalue +
-        ", confirmStatus=" + confirmStatus +
-        ", resAbnormalstatus=" + resAbnormalstatus +
-        ", confirmType=" + confirmType +
-        ", confirmUserId=" + confirmUserId +
-        ", confirmTime=" + confirmTime +
-        ", confirmInfo=" + confirmInfo +
-        ", cleanType=" + cleanType +
-        ", cleanUserId=" + cleanUserId +
-        ", cleanTime=" + cleanTime +
-        ", cleanInfo=" + cleanInfo +
-        ", dispatchType=" + dispatchType +
-        ", dispatchUserId=" + dispatchUserId +
-        ", dispatchTime=" + dispatchTime +
-        ", dispatchTicketId=" + dispatchTicketId +
-        ", fmsId=" + fmsId +
-        ", useflag=" + useflag +
-        ", delUserId=" + delUserId +
-        ", deltime=" + deltime +
-        "}";
-    }
 }

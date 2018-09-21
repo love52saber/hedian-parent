@@ -67,6 +67,24 @@ public class MoThresholdModel {
     private String moAbnormalName;
 
     private String moKpiName;
+    private String unitCh;
+    private String unitEn;
+
+    public String getUnitCh() {
+        return unitCh;
+    }
+
+    public void setUnitCh(String unitCh) {
+        this.unitCh = unitCh;
+    }
+
+    public String getUnitEn() {
+        return unitEn;
+    }
+
+    public void setUnitEn(String unitEn) {
+        this.unitEn = unitEn;
+    }
 
     public String getResMtypeName() {
         return resMtypeName;

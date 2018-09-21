@@ -1,10 +1,12 @@
 package com.hedian.mapper;
 
+import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.entity.MoAbnormalDef;
 import com.hedian.entity.ResMoAbnormalInfo;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.hedian.model.AbnormalLevelModel;
 import com.hedian.model.AlarmInfoModel;
+import com.hedian.model.ResMoAbnormalInfoModel;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -19,6 +21,20 @@ import java.util.Map;
  * @since 2018-08-17
  */
 public interface ResMoAbnormalInfoMapper extends BaseMapper<ResMoAbnormalInfo> {
+
+
+    List<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, @Param("beginTime") String beginTime, @Param("endTime")String endTime, @Param("conStatus")String conStatus,
+                                                       @Param("abnormalLevel")String abnormalLevel, @Param("abnormalType")String abnormalType, @Param("abnormalName")String abnormalName,
+                                                       @Param("mokpiName")String mokpiName, @Param("resName")String resName, @Param("resAlias")String resAlias,@Param("isAutoOrder")boolean isAutoOrder);
+
+
+    /**
+     * 统计告警颜色数量
+     * @return
+     */
+    List<AbnormalLevelModel> selectAbnormalLevelCount();
+
+
     /**
      * 根据res_id和mo_kpi_id查询异常数据
      *

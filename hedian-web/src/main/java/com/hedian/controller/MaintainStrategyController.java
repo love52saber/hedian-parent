@@ -17,9 +17,12 @@ import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -46,11 +49,12 @@ public class MaintainStrategyController {
     public PublicResult getPageList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
                                     @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                                     @RequestParam(name = "msTitle", defaultValue = "", required = false) String msTitle,
-                                    @RequestParam(name = "msType", defaultValue = "", required = false) String msType,
-                                    @RequestParam(name = "msStatus", defaultValue = "", required = false) String msStatus) {
+                                    @RequestParam(name = "msType", defaultValue = "", required = false) Integer msType,
+                                    @RequestParam(name = "msStatus", defaultValue = "", required = false) Integer msStatus,
+                                    @RequestParam(name = "currentTime", defaultValue = "", required = false) boolean currentTime) {
         EntityWrapper ew = new EntityWrapper();
         if (!ComUtil.isEmpty(msTitle)) {
-            ew.like("ms_title", msType);
+            ew.like("ms_name", msTitle);
         }
         if (!ComUtil.isEmpty(msType)) {
             ew.eq("ms_type", msType);
@@ -58,7 +62,15 @@ public class MaintainStrategyController {
         if (!ComUtil.isEmpty(msStatus)) {
             ew.eq("ms_status", msStatus);
         }
+        if (currentTime) {
+            String currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            ew.le("begin_time", currentDate).and().ge("end_time", currentDate);
+        }
         Page<MaintainStrategy> msPage = maintainStrategyService.selectPage(new Page<>(pageIndex, pageSize), ew);
+        msPage.getRecords().stream().forEach(md -> {
+            List<MsRes> msResList = msResService.selectList(new EntityWrapper<MsRes>().eq("ms_id", md.getMsId()));
+            md.setResIds(msResList.stream().map(MsRes::getResId).collect(Collectors.toList()));
+        });
         return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(msPage.getTotal(), pageIndex, pageSize, msPage.getRecords()));
     }
 
@@ -70,23 +82,6 @@ public class MaintainStrategyController {
         List<MaintainStrategy> mdList = maintainStrategyService.selectList(new EntityWrapper<MaintainStrategy>());
         return new PublicResult(PublicResultConstant.SUCCESS, mdList);
     }
-
-    /**
-     * 获取维护期策略详情
-     */
-    @GetMapping(value = "/{msId}")
-    public PublicResult getById(@PathVariable("msId") Integer msId) {
-        MaintainStrategy maintainStrategy = maintainStrategyService.selectById(msId);
-        if (ComUtil.isEmpty(maintainStrategy)) {
-            return new PublicResult(PublicResultConstant.ERROR, null);
-        }
-        Map<String, Object> result = new HashMap<>();
-        result.put("ms", maintainStrategy);
-        //设备信息
-        result.put("resList", msResService.selectList(new EntityWrapper<MsRes>().eq("ms_id", msId)));
-        return new PublicResult<>(PublicResultConstant.SUCCESS, result);
-    }
-
 
     /**
      * 添加维护策略

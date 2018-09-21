@@ -1,11 +1,13 @@
 package com.hedian.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
+import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -24,7 +26,7 @@ public class MaintainStrategy extends Model<MaintainStrategy> {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId("ms_id")
+    @TableId(value = "ms_id", type = IdType.AUTO)
     private Integer msId;
     @TableField("ms_name")
     private String msName;
@@ -33,9 +35,13 @@ public class MaintainStrategy extends Model<MaintainStrategy> {
      */
     @TableField("ms_type")
     private Integer msType;
+
     @TableField("begin_time")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date beginTime;
+
     @TableField("end_time")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
     /**
      * 状态：1 启用 2 停用

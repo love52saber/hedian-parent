@@ -63,7 +63,7 @@ public class MoThresholdController {
      * @return
      */
     @PostMapping
-    public PublicResult<String> addMokpi(@ValidationParam("moThType,moThDown,resStypeId,moKpiId,moAbnormalId,showorder")
+    public PublicResult<String> addMokpi(@ValidationParam("moThType,resStypeId,moKpiId,moAbnormalId,showorder")
                                          @RequestBody JSONObject requestJson) throws Exception {
         //可直接转为java对象,简化操作,不用再set一个个属性
         MoThreshold moThreshold = requestJson.toJavaObject(MoThreshold.class);
@@ -75,7 +75,7 @@ public class MoThresholdController {
      * 修改moThreshold信息
      */
     @PutMapping
-    public PublicResult<String> updateMokpi(@ValidationParam("moThType,moThId,moThDown,resStypeId,moKpiId,moAbnormalId,showorder")
+    public PublicResult<String> updateMokpi(@ValidationParam("moThType,moThId,resStypeId,moKpiId,moAbnormalId,showorder")
                                             @RequestBody JSONObject requestJson) throws Exception {
         MoThreshold moThreshold = requestJson.toJavaObject(MoThreshold.class);
         boolean result = moThresholdService.updateById(moThreshold);

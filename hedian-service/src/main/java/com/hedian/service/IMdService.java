@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.service.IService;
 import com.hedian.entity.Md;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  * 管理域 服务类
@@ -20,4 +22,6 @@ public interface IMdService extends IService<Md> {
     boolean updateMd(Md md) throws Exception;
 
     Page<Md> selectPageList(Page<Md> page, @Param("mdName") String mdName);
+
+    List<Md> selectPageByCondition(String mdName, Long deptId, Long userId);
 }

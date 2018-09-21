@@ -40,6 +40,26 @@
         md_id AS mdId, md_name AS mdName, md_desc AS mdDesc, showorder, delflag, useflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
     </sql>
 
+    <select id="selectPageByCondition" resultMap="BaseResultMap">
+        SELECT md.* FROM tbl_md md
+        <if test="deptId != null and deptId != ''">
+            INNER JOIN tbl_md_dept mdt ON md.md_id=mdt.md_id
+        </if>
+        <if test="userId != null and userId != ''">
+            INNER JOIN tbl_md_user mu ON md.md_id = mu.md_id
+        </if>
+        WHERE md.useflag = 1
+        <if test="userId != null and userId != ''">
+            AND mu.user_id = #{userId}
+        </if>
+        <if test="deptId != null and deptId != ''">
+            AND mdt.dept_id = #{deptId}
+        </if>
+        <if test="mdName != null and mdName != ''">
+            AND md.md_name LIKE concat('%',#{mdName},'%')
+        </if>
+    </select>
+
     <select id="selectPageList" resultMap="CustomMap">
         <!--select t.*,rb.*,sd.dept_id,su.* from (select md.*,mres.res_id,mdt.dept_id,mu.user_id from tbl_md md-->
         <!--LEFT JOIN (select md_id,res_id from tbl_md_res GROUP BY md_id) mres on md.md_id = mres.md_id-->
@@ -61,7 +81,7 @@
         <if test="mdName != null and mdName != ''">
             and md.md_name like concat('%',#{mdName},'%')
         </if>
-        and  md.md_id =9
+        and md.md_id =9
         )t
         LEFT JOIN tbl_res_base rb on t.res_id = rb.res_id
         LEFT JOIN sys_dept sd on t.dept_id = sd.dept_id

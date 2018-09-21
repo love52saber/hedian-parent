@@ -3,39 +3,86 @@
 <mapper namespace="com.hedian.mapper.ResMoAbnormalInfoMapper">
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.hedian.entity.ResMoAbnormalInfo">
-        <id column="res_abnormal_id" property="resAbnormalId" />
-        <result column="res_id" property="resId" />
-        <result column="mo_th_id" property="moThId" />
-        <result column="mo_kpi_id" property="moKpiId" />
-        <result column="mo_abnormal_id" property="moAbnormalId" />
-        <result column="res_abnormal_code" property="resAbnormalCode" />
-        <result column="res_abnormal_name" property="resAbnormalName" />
-        <result column="res_abnormallevel_id" property="resAbnormallevelId" />
-        <result column="abnormal_type_id" property="abnormalTypeId" />
-        <result column="res_abnormaldesc" property="resAbnormaldesc" />
-        <result column="res_abnomaltime" property="resAbnomaltime" />
-        <result column="res_recoverytime" property="resRecoverytime" />
-        <result column="res_abnormalvalue" property="resAbnormalvalue" />
-        <result column="res_revoveryvalue" property="resRevoveryvalue" />
-        <result column="confirm_status" property="confirmStatus" />
-        <result column="res_abnormalstatus" property="resAbnormalstatus" />
-        <result column="confirm_type" property="confirmType" />
-        <result column="confirm_user_id" property="confirmUserId" />
-        <result column="confirm_time" property="confirmTime" />
-        <result column="confirm_info" property="confirmInfo" />
-        <result column="clean_type" property="cleanType" />
-        <result column="clean_user_id" property="cleanUserId" />
-        <result column="clean_time" property="cleanTime" />
-        <result column="clean_info" property="cleanInfo" />
-        <result column="dispatch_type" property="dispatchType" />
-        <result column="dispatch_user_id" property="dispatchUserId" />
-        <result column="dispatch_time" property="dispatchTime" />
-        <result column="dispatch_ticket_id" property="dispatchTicketId" />
-        <result column="fms_id" property="fmsId" />
-        <result column="useflag" property="useflag" />
-        <result column="del_user_id" property="delUserId" />
-        <result column="deltime" property="deltime" />
+        <id column="res_abnormal_id" property="resAbnormalId"/>
+        <result column="res_id" property="resId"/>
+        <result column="mo_th_id" property="moThId"/>
+        <result column="mo_kpi_id" property="moKpiId"/>
+        <result column="mo_abnormal_id" property="moAbnormalId"/>
+        <result column="res_abnormal_code" property="resAbnormalCode"/>
+        <result column="res_abnormal_name" property="resAbnormalName"/>
+        <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
+        <result column="abnormal_type_id" property="abnormalTypeId"/>
+        <result column="res_abnormaldesc" property="resAbnormaldesc"/>
+        <result column="res_abnomaltime" property="resAbnomaltime"/>
+        <result column="res_recoverytime" property="resRecoverytime"/>
+        <result column="res_abnormalvalue" property="resAbnormalvalue"/>
+        <result column="res_revoveryvalue" property="resRevoveryvalue"/>
+        <result column="confirm_status" property="confirmStatus"/>
+        <result column="res_abnormalstatus" property="resAbnormalstatus"/>
+        <result column="confirm_type" property="confirmType"/>
+        <result column="confirm_user_id" property="confirmUserId"/>
+        <result column="confirm_time" property="confirmTime"/>
+        <result column="confirm_info" property="confirmInfo"/>
+        <result column="clean_type" property="cleanType"/>
+        <result column="clean_user_id" property="cleanUserId"/>
+        <result column="clean_time" property="cleanTime"/>
+        <result column="clean_info" property="cleanInfo"/>
+        <result column="dispatch_type" property="dispatchType"/>
+        <result column="dispatch_user_id" property="dispatchUserId"/>
+        <result column="dispatch_time" property="dispatchTime"/>
+        <result column="dispatch_ticket_id" property="dispatchTicketId"/>
+        <result column="fms_id" property="fmsId"/>
+        <result column="useflag" property="useflag"/>
+        <result column="del_user_id" property="delUserId"/>
+        <result column="deltime" property="deltime"/>
     </resultMap>
+
+
+    <!-- 自定义map -->
+    <resultMap id="CustomMap" type="com.hedian.model.ResMoAbnormalInfoModel">
+        <id column="res_abnormal_id" property="resAbnormalId"/>
+        <result column="res_id" property="resId"/>
+        <result column="mo_th_id" property="moThId"/>
+        <result column="mo_kpi_id" property="moKpiId"/>
+        <result column="mo_abnormal_id" property="moAbnormalId"/>
+        <result column="res_abnormal_code" property="resAbnormalCode"/>
+        <result column="res_abnormal_name" property="resAbnormalName"/>
+        <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
+        <result column="abnormal_type_id" property="abnormalTypeId"/>
+        <result column="res_abnormaldesc" property="resAbnormaldesc"/>
+        <result column="res_abnomaltime" property="resAbnomaltime"/>
+        <result column="res_recoverytime" property="resRecoverytime"/>
+        <result column="res_abnormalvalue" property="resAbnormalvalue"/>
+        <result column="res_revoveryvalue" property="resRevoveryvalue"/>
+        <result column="confirm_status" property="confirmStatus"/>
+        <result column="res_abnormalstatus" property="resAbnormalstatus"/>
+        <result column="confirm_type" property="confirmType"/>
+        <result column="confirm_user_id" property="confirmUserId"/>
+        <result column="confirm_time" property="confirmTime"/>
+        <result column="confirm_info" property="confirmInfo"/>
+        <result column="clean_type" property="cleanType"/>
+        <result column="clean_user_id" property="cleanUserId"/>
+        <result column="clean_time" property="cleanTime"/>
+        <result column="clean_info" property="cleanInfo"/>
+        <result column="dispatch_type" property="dispatchType"/>
+        <result column="dispatch_user_id" property="dispatchUserId"/>
+        <result column="dispatch_time" property="dispatchTime"/>
+        <result column="dispatch_ticket_id" property="dispatchTicketId"/>
+        <result column="fms_id" property="fmsId"/>
+        <result column="useflag" property="useflag"/>
+        <result column="del_user_id" property="delUserId"/>
+        <result column="deltime" property="deltime"/>
+        <result column="abnormal_type_name" property="abnormalTypeName"/>
+        <result column="res_name" property="resName"/>
+        <result column="res_alias" property="resAlias"/>
+        <result column="res_abnormallevel_name" property="resAbnormallevelName"/>
+        <result column="mo_kpi_name" property="mokpiName"/>
+        <result column="confirmUserName" property="confirmUserName"/>
+        <result column="dispatchUserName" property="dispatchUserName"/>
+        <result column="cleanUserName" property="cleanUserName"/>
+        <result column="mo_kpi_name" property="mokpiName"/>
+    </resultMap>
+
     <resultMap id="AlarmResultMap" type="com.hedian.model.AlarmInfoModel">
         <id column="res_id" property="resId"/>
         <result column="res_alias" property="alarmObjectAlias"/>
@@ -109,5 +156,59 @@
         ) a LEFT JOIN tbl_mo_abnormal_def b ON a.mo_abnormal_id=b.mo_abnormal_id
         GROUP BY b.mo_abnormal_id ORDER BY countNum DESC
     </select>
+    <!--分页条件查询-->
+    <select id="selectPageByCondition" resultMap="CustomMap">
+        SELECT tat.abnormal_type_name,rb.res_name, rb.res_alias, ra.res_abnormallevel_name,
+        mk.mo_kpi_name, suc.name AS confirmUserName,sud.name AS dispatchUserName,
+        rmi.* FROM
+        tbl_res_mo_abnormal_info rmi
+        INNER JOIN tbl_abnormal_type tat ON rmi.abnormal_type_id = tat.abnormal_type_id
+        INNER JOIN tbl_res_base rb ON rmi.res_id = rb.res_id
+        INNER JOIN tbl_res_abnormallevel ra ON rmi.res_abnormallevel_id = ra.res_abnormallevel_id
+        INNER JOIN tbl_mo_kpi mk ON rmi.mo_kpi_id = mk.mo_kpi_id
+        LEFT JOIN sys_user suc ON rmi.confirm_user_id = suc.user_id
+        LEFT JOIN sys_user sud ON rmi.dispatch_user_id  = sud.user_id
+        WHERE rmi.useflag = 1
+        <if test="beginTime != null and beginTime != ''">
+            AND rmi.res_abnomaltime <![CDATA[ >= ]]> #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND rmi.res_abnomaltime <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="isAutoOrder">
+            AND rmi.dispatch_type != 0
+        </if>
+        <if test="conStatus != null and conStatus != ''">
+            AND rmi.confirm_status=#{conStatus}
+        </if>
+        <if test="abnormalLevel != null and abnormalLevel != ''">
+            AND ra.res_abnormallevel_name LIKE concat('%',#{abnormalLevel},'%')
+        </if>
+        <if test="abnormalType != null and abnormalType != ''">
+            AND tat.abnormal_type_name LIKE concat('%', #{abnormalType},'%')
+        </if>
+        <if test="abnormalName != null and abnormalName != ''">
+            AND rmi.res_abnormal_name LIKE concat('%',#{abnormalName},'%')
+        </if>
+        <if test="mokpiName != null and mokpiName != ''">
+            AND mk.mo_kpi_name LIKE concat('%',#{mokpiName},'%')
+        </if>
+        <if test="resName != null and resName != ''">
+            AND rb.res_name LIKE concat('%',#{resName},'%')
+        </if>
+        <if test="resAlias != null and resAlias != ''">
+            and rb.res_alias LIKE concat('%', #{resAlias},'%')
+        </if>
+        ORDER BY rmi.res_abnomaltime
+    </select>
+    <!--统计告警级别数量-->
+    <select id="selectAbnormalLevelCount" resultType="com.hedian.model.AbnormalLevelModel">
+        SELECT COUNT(rmi.res_abnormallevel_id) AS abnormalLevelCount, ra.res_abnormallevel_color  AS abnormalLevelColor
+        FROM tbl_res_mo_abnormal_info rmi
+        INNER JOIN tbl_res_abnormallevel ra ON rmi.res_abnormallevel_id = ra.res_abnormallevel_id
+        WHERE rmi.useflag = 1
+        GROUP BY rmi.res_abnormallevel_id
+    </select>
+
 
 </mapper>

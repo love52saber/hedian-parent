@@ -1,9 +1,12 @@
 package com.hedian.service.impl;
 
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hedian.entity.ResMoAbnormalInfoH;
 import com.hedian.mapper.ResMoAbnormalInfoHMapper;
+import com.hedian.model.ResMoAbnormalInfoModel;
 import com.hedian.service.IResMoAbnormalInfoHService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,4 +20,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class ResMoAbnormalInfoHServiceImpl extends ServiceImpl<ResMoAbnormalInfoHMapper, ResMoAbnormalInfoH> implements IResMoAbnormalInfoHService {
 
+
+    @Autowired
+    private ResMoAbnormalInfoHMapper resMoAbnormalInfoHMapper;
+
+    @Override
+    public Page<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, String beginTime, String endTime, String conStatus, String abnormalLevel, String abnormalType, String abnormalName, String mokpiName, String resName, String resAlias) {
+        return page.setRecords(resMoAbnormalInfoHMapper.selectPageByCondition(page, beginTime, endTime, conStatus, abnormalLevel, abnormalType, abnormalName, mokpiName, resName, resAlias));
+    }
 }

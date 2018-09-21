@@ -14,6 +14,8 @@ import com.hedian.util.ComUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 管理域 服务实现类
@@ -96,5 +98,10 @@ public class MdServiceImpl extends ServiceImpl<MdMapper, Md> implements IMdServi
     @Override
     public Page<Md> selectPageList(Page<Md> page, String mdName) {
         return page.setRecords(mdMapper.selectPageList(page, mdName));
+    }
+
+    @Override
+    public List<Md> selectPageByCondition(String mdName, Long deptId, Long userId) {
+        return mdMapper.selectPageByCondition(mdName,deptId, userId);
     }
 }

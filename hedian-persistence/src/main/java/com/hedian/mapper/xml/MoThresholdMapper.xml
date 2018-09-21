@@ -46,6 +46,8 @@
         <result column="res_stype_name" property="resStypeName"/>
         <result column="mo_abnormal_name" property="moAbnormalName"/>
         <result column="mo_kpi_name" property="moKpiName"/>
+        <result column="unit_ch" property="unitCh"/>
+        <result column="unit_en" property="unitEn"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -57,7 +59,8 @@
     <!--阀值规则定义-->
     <select id="selectPageMoThreshold" resultMap="CustomMap">
         SELECT aa.*,rm.res_mtype_name FROM (SELECT
-        mt.*,rs.res_stype_name,rs.res_mtype_id,ra.mo_abnormal_name,mk.mo_kpi_name
+        mt.*,rs.res_stype_name,rs.res_mtype_id,ra.mo_abnormal_name,mk.mo_kpi_name,mk.unit_ch,
+        mk.unit_en
         FROM tbl_mo_threshold mt
         INNER JOIN tbl_mo_kpi mk ON mt.mo_kpi_id=mk.mo_kpi_id
         INNER JOIN tbl_res_subtype rs ON mt.res_stype_id=rs.res_stype_id
@@ -71,6 +74,7 @@
         </if>
         <if test="resStypeName != null and resStypeName != ''">AND aa.res_stype_name = #{resStypeName}</if>
         <if test="resMtypeName != null and resMtypeName != ''">AND rm.res_mtype_name = #{resMtypeName}</if>
+        ORDER BY aa.gmt_create
     </select>
 
 </mapper>

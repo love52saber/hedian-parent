@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hedian.entity.MoAbnormalDef;
 import com.hedian.entity.ResMoAbnormalInfo;
 import com.hedian.mapper.ResMoAbnormalInfoMapper;
+import com.hedian.model.AbnormalLevelModel;
 import com.hedian.model.AlarmInfoModel;
+import com.hedian.model.ResMoAbnormalInfoModel;
 import com.hedian.service.IResMoAbnormalInfoService;
 import org.springframework.stereotype.Service;
 
@@ -41,5 +43,16 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
     @Override
     public List<MoAbnormalDef> getTopAbnormal(Map<String, Object> map) {
         return resMoAbnormalInfoMapper.getTopAbnormal(map);
+    }
+
+    @Override
+    public Page<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, String beginTime, String endTime, String conStatus, String abnormalLevel, String abnormalType,
+                                                              String abnormalName, String mokpiName, String resName, String resAlias,boolean isAutoOrder) {
+        return page.setRecords(resMoAbnormalInfoMapper.selectPageByCondition(page, beginTime, endTime, conStatus, abnormalLevel, abnormalType, abnormalName, mokpiName, resName, resAlias,isAutoOrder));
+    }
+
+    @Override
+    public List<AbnormalLevelModel> selectAbnormalLevelCount() {
+        return resMoAbnormalInfoMapper.selectAbnormalLevelCount();
     }
 }

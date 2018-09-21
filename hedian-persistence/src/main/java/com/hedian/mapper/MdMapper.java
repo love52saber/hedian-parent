@@ -19,4 +19,6 @@ public interface MdMapper extends BaseMapper<Md> {
 
     List<Md> selectPageList(Page<Md> page, @Param("mdName") String mdName);
 
+    List<Md> selectPageByCondition(@Param("mdName") String mdName, @Param("deptId") Long deptId, @Param("userId") Long userId);
+
 }
