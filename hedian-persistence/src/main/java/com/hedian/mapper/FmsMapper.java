@@ -3,6 +3,7 @@ package com.hedian.mapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.entity.Fms;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.hedian.model.FmsModel;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public interface FmsMapper extends BaseMapper<Fms> {
 
-    List<Fms> selectPageByConfidition(Page<Fms> page, @Param("fmsName")String fmsName,@Param("deptName")String deptName,@Param("userName")String userName,
-                                      @Param("dispatchflag")Integer dispatchflag,@Param("grpName")String grpName,@Param("fmsStatus")Integer fmsStatus);
+    List<FmsModel> selectPageByConfidition(Page<FmsModel> page, @Param("fmsName") String fmsName, @Param("deptName") String deptName, @Param("userName") String userName,
+                                           @Param("dispatchflag") Integer dispatchflag, @Param("grpName") String grpName, @Param("fmsStatus") Integer fmsStatus);
 
 }

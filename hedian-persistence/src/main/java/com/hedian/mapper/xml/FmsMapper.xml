@@ -23,34 +23,61 @@
         <result column="gmt_modified" property="gmtModified"/>
     </resultMap>
 
+    <resultMap id="CustomMap" type="com.hedian.model.FmsModel">
+        <id column="fms_id" property="fmsId"/>
+        <result column="fms_name" property="fmsName"/>
+        <result column="fms_desc" property="fmsDesc"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="user_id" property="userId"/>
+        <result column="dispatchflag" property="dispatchflag"/>
+        <result column="grp_id" property="grpId"/>
+        <result column="fms_status" property="fmsStatus"/>
+        <result column="begin_time" property="beginTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="showorder" property="showorder"/>
+        <result column="useflag" property="useflag"/>
+        <result column="delflag" property="delflag"/>
+        <result column="user_id_create" property="userIdCreate"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="user_id_mod" property="userIdMod"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="user_id_mod" property="userIdMod"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="deptName" property="deptName"/>
+        <result column="userName" property="userName"/>
+        <result column="grp_name" property="grpName"/>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         fms_id AS fmsId, fms_name AS fmsName, fms_desc AS fmsDesc, dept_id AS deptId, user_id AS userId, dispatchflag, grp_id AS grpId, fms_status AS fmsStatus, begin_time AS beginTime, end_time AS endTime, showorder, useflag, delflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
     </sql>
-    <select id="selectPageByConfidition" resultType="com.hedian.entity.Fms">
+    <select id="selectPageByConfidition" resultMap="CustomMap">
         SELECT fm.*,sd.name AS deptName,su.name AS userName,sg.grp_name FROM tbl_fms fm
-        INNER JOIN sys_dept sd on fm.dept_id = sd.dept_id
-        INNER JOIN sys_user su on fm.user_id = su.user_id
-        INNER JOIN sys_group sg on fm.grp_id = sg.grp_id
+        INNER JOIN sys_dept sd ON fm.dept_id = sd.dept_id
+        LEFT JOIN sys_user su ON fm.user_id = su.user_id
+        INNER JOIN sys_group sg ON fm.grp_id = sg.grp_id
         WHERE fm.useflag = 1
         <if test="fmsName != null and fmsName != ''">
-            and fm.fmsName=#{beginTime}
+            AND fm.fmsName LIKE concat('%',#{fmsName},'%')
         </if>
         <if test="deptName != null and deptName != ''">
-            and sd.name=#{deptName}
+            AND sd.name LIKE concat('%',#{deptName},'%')
         </if>
         <if test="userName != null and userName != ''">
-            and su.name=#{userName}
+            AND su.name LIKE concat('%',#{userName},'%')
         </if>
         <if test="dispatchflag != null">
-            and fm.dispatchflag=#{dispatchflag}
+            AND fm.dispatchflag=#{dispatchflag}
         </if>
         <if test="grpName != null and grpName != ''">
-            and sg.grp_name=#{grpName}
+            AND sg.grp_name LIKE concat('%',#{grpName},'%')
         </if>
         <if test="fmsStatus != null">
-            and fm.fms_status=#{fmsStatus}
+            AND fm.fms_status=#{fmsStatus}
         </if>
+        ORDER BY fm.gmt_create
     </select>
 
 </mapper>
