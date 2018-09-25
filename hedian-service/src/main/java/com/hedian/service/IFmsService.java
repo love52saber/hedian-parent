@@ -16,6 +16,6 @@ import com.hedian.model.FmsModel;
 public interface IFmsService extends IService<Fms> {
 
     Page<FmsModel> selectPageByCondition(Page<FmsModel> page, String fmsName, String deptName, String userName,
-                                           Integer dispatchflag, String grpName, Integer fmsStatus);
+                                           boolean dispatchflag, String grpName, Integer fmsStatus);
 
 }

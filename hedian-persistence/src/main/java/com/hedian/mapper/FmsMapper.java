@@ -19,6 +19,6 @@ import java.util.List;
 public interface FmsMapper extends BaseMapper<Fms> {
 
     List<FmsModel> selectPageByCondition(Page<FmsModel> page, @Param("fmsName") String fmsName, @Param("deptName") String deptName, @Param("userName") String userName,
-                                           @Param("dispatchflag") Integer dispatchflag, @Param("grpName") String grpName, @Param("fmsStatus") Integer fmsStatus);
+                                           @Param("dispatchflag") boolean dispatchflag, @Param("grpName") String grpName, @Param("fmsStatus") Integer fmsStatus);
 
 }

@@ -24,7 +24,7 @@ public class FmsServiceImpl extends ServiceImpl<FmsMapper, Fms> implements IFmsS
     private FmsMapper fmsMapper;
 
     @Override
-    public Page<FmsModel> selectPageByCondition(Page<FmsModel> page, String fmsName, String deptName, String userName, Integer dispatchflag, String grpName, Integer fmsStatus) {
+    public Page<FmsModel> selectPageByCondition(Page<FmsModel> page, String fmsName, String deptName, String userName, boolean dispatchflag, String grpName, Integer fmsStatus) {
         return page.setRecords(fmsMapper.selectPageByCondition(page, fmsName, deptName, userName, dispatchflag, grpName, fmsStatus));
     }
 }

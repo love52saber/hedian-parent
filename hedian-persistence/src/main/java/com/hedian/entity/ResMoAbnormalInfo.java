@@ -3,6 +3,7 @@ package com.hedian.entity;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
 
 import java.io.Serializable;
@@ -106,6 +107,7 @@ public class ResMoAbnormalInfo extends Model<ResMoAbnormalInfo> {
     /**
      * 使用标记： 1 正常 0删除
      */
+    @TableLogic
     private Integer useflag;
     @TableField("del_user_id")
     private Long delUserId;
