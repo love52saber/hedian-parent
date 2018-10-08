@@ -4,7 +4,11 @@ import com.hedian.entity.FmsRes;
 import com.hedian.mapper.FmsResMapper;
 import com.hedian.service.IFmsResService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.hedian.util.ComUtil;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +21,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class FmsResServiceImpl extends ServiceImpl<FmsResMapper, FmsRes> implements IFmsResService {
 
+    @Override
+    public boolean saveAll(Integer fmsId, List<Integer> resIds) {
+        boolean result = true;
+        if (!ComUtil.isEmpty(resIds)) {
+            List<FmsRes> fmsResList = new ArrayList<>();
+            resIds.stream().forEach(resId -> {
+                fmsResList.add(new FmsRes(fmsId, resId));
+            });
+            result = this.insertBatch(fmsResList);
+        }
+        return result;
+    }
 }

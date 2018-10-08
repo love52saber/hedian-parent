@@ -23,7 +23,7 @@ import java.util.Map;
 public interface ResMoAbnormalInfoMapper extends BaseMapper<ResMoAbnormalInfo> {
 
 
-    List<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, @Param("beginTime") String beginTime, @Param("endTime")String endTime, @Param("conStatus")String conStatus,
+    List<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, @Param("beginTime") String beginTime, @Param("endTime")String endTime, @Param("useflag")String useflag,
                                                        @Param("abnormalLevel")String abnormalLevel, @Param("abnormalType")String abnormalType, @Param("abnormalName")String abnormalName,
                                                        @Param("mokpiName")String mokpiName, @Param("resName")String resName, @Param("resAlias")String resAlias,@Param("isAutoOrder")boolean isAutoOrder);
 

@@ -100,9 +100,10 @@ public class ResMoAbnormalInfoController {
      * 确认告警
      */
     @PutMapping(value = "/confirmAbnormal")
-    public PublicResult confirmAbnormalInfo(@ValidationParam("resAbnormalId,confirmInfo")
+    public PublicResult confirmAbnormalInfo(@ValidationParam("resAbnormalId")
                                             @RequestBody JSONObject requestJson) {
         ResMoAbnormalInfo resMoAbnormalInfo = requestJson.toJavaObject(ResMoAbnormalInfo.class);
+        resMoAbnormalInfo.setConfirmStatus(2);
         boolean result = resMoAbnormalInfoService.updateById(resMoAbnormalInfo);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
@@ -111,9 +112,10 @@ public class ResMoAbnormalInfoController {
      * 清除告警
      */
     @PutMapping(value = "/cleanAbnormal")
-    public PublicResult cleanAbnormalInfo(@ValidationParam("resAbnormalId,cleanInfo")
+    public PublicResult cleanAbnormalInfo(@ValidationParam("resAbnormalId")
                                           @RequestBody JSONObject requestJson) {
         ResMoAbnormalInfo resMoAbnormalInfo = requestJson.toJavaObject(ResMoAbnormalInfo.class);
+         resMoAbnormalInfo.setCleanType(2);
         boolean result = resMoAbnormalInfoService.updateById(resMoAbnormalInfo);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }

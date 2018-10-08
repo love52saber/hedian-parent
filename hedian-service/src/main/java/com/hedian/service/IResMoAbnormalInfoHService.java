@@ -15,8 +15,8 @@ import com.hedian.model.ResMoAbnormalInfoModel;
  */
 public interface IResMoAbnormalInfoHService extends IService<ResMoAbnormalInfoH> {
 
-    Page<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, String beginTime, String endTime, String conStatus,
+    Page<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, String beginTime, String endTime,
                                                        String abnormalLevel, String abnormalType, String abnormalName,
-                                                       String mokpiName, String resName, String resAlias);
+                                                       String mokpiName, String resName, String resAlias,boolean isAutoOrder,boolean useflag);
 
 }

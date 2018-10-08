@@ -87,7 +87,6 @@ public class QuartzUtil {
                     HdywUtils.getMainMap(mainMap, resBase.getResSerialnumber(), resBase, dataMap, 0);
                     if (mqttTerminal.getTerminalStatus().equals(QuatzConstants.TERMINAL_POWER_DOWN)) {
                         //判断掉电
-
                         if (!resBase.getResStatus().equals(QuatzConstants.OFFLINE)) {
                             offlineError(mainMap, resBase.getResSerialnumber(), 0);
                         }

@@ -1,10 +1,10 @@
 package com.hedian.entity;
 
-import java.io.Serializable;
-
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.FieldFill;
+
 import java.io.Serializable;
 
 /**
@@ -25,8 +25,16 @@ public class FmsRes extends Model<FmsRes> {
     private Integer fmsId;
     @TableField("res_id")
     private Integer resId;
+    @TableField(value = "useflag", fill = FieldFill.INSERT)
     private Integer useflag;
 
+    public FmsRes() {
+    }
+
+    public FmsRes(Integer fmsId, Integer resId) {
+        this.fmsId = fmsId;
+        this.resId = resId;
+    }
 
     public Integer getId() {
         return id;
@@ -68,10 +76,10 @@ public class FmsRes extends Model<FmsRes> {
     @Override
     public String toString() {
         return "FmsRes{" +
-        "id=" + id +
-        ", fmsId=" + fmsId +
-        ", resId=" + resId +
-        ", useflag=" + useflag +
-        "}";
+                "id=" + id +
+                ", fmsId=" + fmsId +
+                ", resId=" + resId +
+                ", useflag=" + useflag +
+                "}";
     }
 }

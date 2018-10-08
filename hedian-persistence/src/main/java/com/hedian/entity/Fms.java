@@ -3,11 +3,16 @@ package com.hedian.entity;
 import java.io.Serializable;
 
 import java.util.Date;
+
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.FieldFill;
+
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -72,17 +77,59 @@ public class Fms extends Model<Fms> {
      * 显示顺序，从小到大，如果匹配到多条则显示在前面的那条生效
      */
     private Integer showorder;
+    @TableLogic
+    @TableField(value = "useflag", fill = FieldFill.INSERT)
     private Integer useflag;
     private Integer delflag;
-    @TableField("user_id_create")
+    @TableField(value = "user_id_create", fill = FieldFill.INSERT)
     private Long userIdCreate;
-    @TableField("gmt_create")
+    @TableField(value = "gmt_create", fill = FieldFill.INSERT)
     private Date gmtCreate;
-    @TableField("user_id_mod")
+    @TableField(value = "user_id_mod", fill = FieldFill.INSERT_UPDATE)
     private Long userIdMod;
-    @TableField("gmt_modified")
+    @TableField(value = "gmt_modified", fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
+    @TableField(exist = false)
+    private List<Integer> abnormalIds;
+    @TableField(exist = false)
+    private List<Integer> abnormalTypeIds;
+    @TableField(exist = false)
+    private List<Integer> mdIds;
+    @TableField(exist = false)
+    private List<Integer> resIds;
+
+    public List<Integer> getAbnormalIds() {
+        return abnormalIds;
+    }
+
+    public void setAbnormalIds(List<Integer> abnormalIds) {
+        this.abnormalIds = abnormalIds;
+    }
+
+    public List<Integer> getAbnormalTypeIds() {
+        return abnormalTypeIds;
+    }
+
+    public void setAbnormalTypeIds(List<Integer> abnormalTypeIds) {
+        this.abnormalTypeIds = abnormalTypeIds;
+    }
+
+    public List<Integer> getMdIds() {
+        return mdIds;
+    }
+
+    public void setMdIds(List<Integer> mdIds) {
+        this.mdIds = mdIds;
+    }
+
+    public List<Integer> getResIds() {
+        return resIds;
+    }
+
+    public void setResIds(List<Integer> resIds) {
+        this.resIds = resIds;
+    }
 
     public Integer getFmsId() {
         return fmsId;
@@ -228,23 +275,23 @@ public class Fms extends Model<Fms> {
     @Override
     public String toString() {
         return "Fms{" +
-        "fmsId=" + fmsId +
-        ", fmsName=" + fmsName +
-        ", fmsDesc=" + fmsDesc +
-        ", deptId=" + deptId +
-        ", userId=" + userId +
-        ", dispatchflag=" + dispatchflag +
-        ", grpId=" + grpId +
-        ", fmsStatus=" + fmsStatus +
-        ", beginTime=" + beginTime +
-        ", endTime=" + endTime +
-        ", showorder=" + showorder +
-        ", useflag=" + useflag +
-        ", delflag=" + delflag +
-        ", userIdCreate=" + userIdCreate +
-        ", gmtCreate=" + gmtCreate +
-        ", userIdMod=" + userIdMod +
-        ", gmtModified=" + gmtModified +
-        "}";
+                "fmsId=" + fmsId +
+                ", fmsName=" + fmsName +
+                ", fmsDesc=" + fmsDesc +
+                ", deptId=" + deptId +
+                ", userId=" + userId +
+                ", dispatchflag=" + dispatchflag +
+                ", grpId=" + grpId +
+                ", fmsStatus=" + fmsStatus +
+                ", beginTime=" + beginTime +
+                ", endTime=" + endTime +
+                ", showorder=" + showorder +
+                ", useflag=" + useflag +
+                ", delflag=" + delflag +
+                ", userIdCreate=" + userIdCreate +
+                ", gmtCreate=" + gmtCreate +
+                ", userIdMod=" + userIdMod +
+                ", gmtModified=" + gmtModified +
+                "}";
     }
 }

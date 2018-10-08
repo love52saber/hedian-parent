@@ -5,6 +5,8 @@ import java.io.Serializable;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.FieldFill;
+
 import java.io.Serializable;
 
 /**
@@ -25,8 +27,16 @@ public class FmsAbnormalType extends Model<FmsAbnormalType> {
     private Integer fmsId;
     @TableField("abnormal_type_id")
     private Integer abnormalTypeId;
+    @TableField(value = "useflag", fill = FieldFill.INSERT)
     private Integer useflag;
 
+    public FmsAbnormalType(Integer fmsId, Integer abnormalTypeId) {
+        this.fmsId = fmsId;
+        this.abnormalTypeId = abnormalTypeId;
+    }
+
+    public FmsAbnormalType() {
+    }
 
     public Integer getId() {
         return id;
@@ -68,10 +78,10 @@ public class FmsAbnormalType extends Model<FmsAbnormalType> {
     @Override
     public String toString() {
         return "FmsAbnormalType{" +
-        "id=" + id +
-        ", fmsId=" + fmsId +
-        ", abnormalTypeId=" + abnormalTypeId +
-        ", useflag=" + useflag +
-        "}";
+                "id=" + id +
+                ", fmsId=" + fmsId +
+                ", abnormalTypeId=" + abnormalTypeId +
+                ", useflag=" + useflag +
+                "}";
     }
 }

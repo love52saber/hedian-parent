@@ -1,5 +1,6 @@
 package com.hedian.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -7,6 +8,7 @@ import com.baomidou.mybatisplus.annotations.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -52,10 +54,12 @@ public class FmsModel{
     /**
      * 策略生效开始时间
      */
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date beginTime;
     /**
      * 策略生效结束时间
      */
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date endTime;
     /**
      * 显示顺序，从小到大，如果匹配到多条则显示在前面的那条生效
@@ -64,13 +68,55 @@ public class FmsModel{
     private Integer useflag;
     private Integer delflag;
     private Long userIdCreate;
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date gmtCreate;
     private Long userIdMod;
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date gmtModified;
 
     private String deptName;
     private String userName;
     private String grpName;
+
+    private List<Integer> abnormalIds;
+
+    private List<Integer> abnormalTypeIds;
+
+    private List<Integer> mdIds;
+
+    private List<Integer> resIds;
+
+    public List<Integer> getAbnormalIds() {
+        return abnormalIds;
+    }
+
+    public void setAbnormalIds(List<Integer> abnormalIds) {
+        this.abnormalIds = abnormalIds;
+    }
+
+    public List<Integer> getAbnormalTypeIds() {
+        return abnormalTypeIds;
+    }
+
+    public void setAbnormalTypeIds(List<Integer> abnormalTypeIds) {
+        this.abnormalTypeIds = abnormalTypeIds;
+    }
+
+    public List<Integer> getMdIds() {
+        return mdIds;
+    }
+
+    public void setMdIds(List<Integer> mdIds) {
+        this.mdIds = mdIds;
+    }
+
+    public List<Integer> getResIds() {
+        return resIds;
+    }
+
+    public void setResIds(List<Integer> resIds) {
+        this.resIds = resIds;
+    }
 
     public String getDeptName() {
         return deptName;

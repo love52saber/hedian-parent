@@ -14,6 +14,8 @@ import com.hedian.entity.SysGrpUser;
 import com.hedian.service.*;
 import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,12 +56,22 @@ public class SysGroupController {
     private ISysDeptService sysDeptService;
 
     @GetMapping(value = "/pageList")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageIndex", value = "第几页", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "每页多少条", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "grpName", value = "用户组名称", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "grpType", value = "用户组类型", dataType = "String", paramType = "query"),
+    })
     public PublicResult findList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
                                  @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-                                 @RequestParam(value = "grpName", defaultValue = "", required = false) String grpName) {
+                                 @RequestParam(value = "grpName", defaultValue = "", required = false) String grpName,
+                                 @RequestParam(value = "grpType", defaultValue = "", required = false) String grpType) {
         EntityWrapper<SysGroup> ew = new EntityWrapper<>();
         if (!ComUtil.isEmpty(grpName)) {
             ew.like("grp_name", grpName);
+        }
+        if (!ComUtil.isEmpty(grpType)) {
+            ew.eq("grp_type", grpType);
         }
         Page<SysGroup> page = sysGroupService.selectPage(new Page<>(pageIndex, pageSize), ew);
         page.getRecords().stream().forEach(sysGroup -> {

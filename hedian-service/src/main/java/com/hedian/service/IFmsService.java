@@ -2,6 +2,7 @@ package com.hedian.service;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.hedian.base.BusinessException;
 import com.hedian.entity.Fms;
 import com.hedian.model.FmsModel;
 
@@ -16,6 +17,9 @@ import com.hedian.model.FmsModel;
 public interface IFmsService extends IService<Fms> {
 
     Page<FmsModel> selectPageByCondition(Page<FmsModel> page, String fmsName, String deptName, String userName,
-                                           boolean dispatchflag, String grpName, Integer fmsStatus);
+                                         Integer dispatchflag, String grpName, Integer fmsStatus);
 
+    boolean addAllNodes(Fms fms) throws Exception;
+
+    boolean updateFms(Fms fms) throws Exception;
 }

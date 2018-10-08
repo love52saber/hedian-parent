@@ -178,8 +178,8 @@
         <if test="isAutoOrder">
             AND rmi.dispatch_type != 0
         </if>
-        <if test="conStatus != null and conStatus != ''">
-            AND rmi.confirm_status=#{conStatus}
+        <if test="useflag != null and useflag != ''">
+            AND rmi.useflag=#{useflag}
         </if>
         <if test="abnormalLevel != null and abnormalLevel != ''">
             AND ra.res_abnormallevel_name LIKE concat('%',#{abnormalLevel},'%')

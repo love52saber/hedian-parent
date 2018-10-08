@@ -42,26 +42,29 @@ public class ResMoAbnormalInfoHController {
             @ApiImplicitParam(name = "pageSize", value = "每页多少条", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "beginTime", value = "开始时间", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "endTime", value = "结束时间", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "conStatus", value = "确认状态", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "abnormalLevel", value = "级别", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "abnormalLevel", value = "告警级别", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "abnormalType", value = "告警类型", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "abnormalName", value = "告警名称", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "mokpiName", value = "告警对象名称", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "resName", value = "告警设备名称", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "resAlias", value = "告警设备别名", dataType = "String", paramType = "query")
+            @ApiImplicitParam(name = "mokpiName", value = "告警对象类型", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "resName", value = "告警对象", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "resAlias", value = "告警对象别名", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "resName", value = "告警对象", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "resAlias", value = "告警对象别名", dataType = "String", paramType = "query"),
     })
     public PublicResult getAllMoThread(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
                                        @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                                        @RequestParam(name = "beginTime", defaultValue = "", required = false) String beginTime,
                                        @RequestParam(name = "endTime", defaultValue = "", required = false) String endTime,
-                                       @RequestParam(name = "conStatus", defaultValue = "", required = false) String conStatus,
                                        @RequestParam(name = "abnormalLevel", defaultValue = "", required = false) String abnormalLevel,
                                        @RequestParam(name = "abnormalType", defaultValue = "", required = false) String abnormalType,
                                        @RequestParam(name = "abnormalName", defaultValue = "", required = false) String abnormalName,
                                        @RequestParam(name = "mokpiName", defaultValue = "", required = false) String mokpiName,
                                        @RequestParam(name = "resName", defaultValue = "", required = false) String resName,
-                                       @RequestParam(name = "resAlias", defaultValue = "", required = false) String resAlias) {
-        Page<ResMoAbnormalInfoModel> moThresholdModelPage = resMoAbnormalInfoHService.selectPageByCondition(new Page<>(pageIndex, pageSize), beginTime, endTime, conStatus, abnormalLevel, abnormalType, abnormalName, mokpiName, resName, resAlias);
+                                       @RequestParam(name = "resAlias", defaultValue = "", required = false) String resAlias,
+                                       @RequestParam(name = "isAutoOrder", defaultValue = "", required = false) boolean isAutoOrder,
+                                       @RequestParam(name = "useflag", defaultValue = "", required = false) boolean useflag) {
+        Page<ResMoAbnormalInfoModel> moThresholdModelPage = resMoAbnormalInfoHService.selectPageByCondition(new Page<>(pageIndex, pageSize), beginTime, endTime,abnormalLevel, abnormalType, abnormalName, mokpiName,
+                resName, resAlias, isAutoOrder,useflag);
         return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(moThresholdModelPage.getTotal(), pageIndex, pageSize, moThresholdModelPage.getRecords()));
     }
 

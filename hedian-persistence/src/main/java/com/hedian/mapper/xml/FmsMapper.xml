@@ -60,15 +60,15 @@
         INNER JOIN sys_group sg ON fm.grp_id = sg.grp_id
         WHERE fm.useflag = 1
         <if test="fmsName != null and fmsName != ''">
-            AND fm.fmsName LIKE concat('%',#{fmsName},'%')
+            AND fm.fms_name LIKE concat('%',#{fmsName},'%')
         </if>
         <if test="deptName != null and deptName != ''">
-            AND sd.name LIKE concat('%',#{deptName},'%')
+            AND sd.name = #{deptName}
         </if>
         <if test="userName != null and userName != ''">
             AND su.name LIKE concat('%',#{userName},'%')
         </if>
-        <if test="dispatchflag">
+        <if test="dispatchflag != null and dispatchflag != ''">
             AND fm.dispatchflag=#{dispatchflag}
         </if>
         <if test="grpName != null and grpName != ''">
