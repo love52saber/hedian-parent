@@ -55,10 +55,10 @@
     </sql>
     <select id="selectPageByCondition" resultMap="CustomMap">
         SELECT fm.*,sd.name AS deptName,su.name AS userName,sg.grp_name FROM tbl_fms fm
-        INNER JOIN sys_dept sd ON fm.dept_id = sd.dept_id
+        LEFT JOIN sys_dept sd ON fm.dept_id = sd.dept_id
         LEFT JOIN sys_user su ON fm.user_id = su.user_id
-        INNER JOIN sys_group sg ON fm.grp_id = sg.grp_id
-        WHERE fm.useflag = 1
+        LEFT JOIN sys_group sg ON fm.grp_id = sg.grp_id
+        WHERE fm.useflag = 10
         <if test="fmsName != null and fmsName != ''">
             AND fm.fms_name LIKE concat('%',#{fmsName},'%')
         </if>

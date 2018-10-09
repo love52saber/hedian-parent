@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
+import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
 import java.util.List;
@@ -27,7 +28,7 @@ public class Fms extends Model<Fms> {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId("fms_id")
+    @TableId(value = "fms_id", type = IdType.AUTO)
     private Integer fmsId;
     /**
      * 维护策略名称
