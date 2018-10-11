@@ -11,15 +11,18 @@ import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.MoAbnormalDef;
 import com.hedian.entity.ResMoAbnormalInfo;
+import com.hedian.entity.ResMoAbnormalInfoH;
 import com.hedian.entity.SysUser;
 import com.hedian.model.AbnormalLevelModel;
 import com.hedian.model.AlarmInfoModel;
 import com.hedian.model.ResMoAbnormalInfoModel;
+import com.hedian.service.IResMoAbnormalInfoHService;
 import com.hedian.service.IResMoAbnormalInfoService;
 import com.hedian.utils.HdywUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +45,8 @@ public class ResMoAbnormalInfoController {
 
     @Autowired
     private IResMoAbnormalInfoService resMoAbnormalInfoService;
+    @Autowired
+    private IResMoAbnormalInfoHService resMoAbnormalInfoHService;
 
     /**
      * 获取所有的告警
@@ -91,8 +96,9 @@ public class ResMoAbnormalInfoController {
      * 删除告警
      */
     @DeleteMapping(value = "/{resAbnormalId}")
-    public PublicResult deleteAbnormalInfo(@PathVariable("resAbnormalId") Long resAbnormalId) {
-        boolean result = resMoAbnormalInfoService.deleteById(resAbnormalId);
+    public PublicResult deleteAbnormalInfo(@PathVariable("resAbnormalId") Long resAbnormalId) throws Exception{
+
+        boolean result = resMoAbnormalInfoService.deleteResAbnoraml(resAbnormalId);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 
@@ -115,7 +121,7 @@ public class ResMoAbnormalInfoController {
     public PublicResult cleanAbnormalInfo(@ValidationParam("resAbnormalId")
                                           @RequestBody JSONObject requestJson) {
         ResMoAbnormalInfo resMoAbnormalInfo = requestJson.toJavaObject(ResMoAbnormalInfo.class);
-         resMoAbnormalInfo.setCleanType(2);
+        resMoAbnormalInfo.setCleanType(2);
         boolean result = resMoAbnormalInfoService.updateById(resMoAbnormalInfo);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }

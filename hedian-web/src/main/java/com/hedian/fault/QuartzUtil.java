@@ -1,10 +1,14 @@
 package com.hedian.fault;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.toolkit.StringUtils;
+import com.google.gson.JsonObject;
 import com.hedian.base.QuatzConstants;
 import com.hedian.entity.*;
+import com.hedian.model.NoticeModel;
 import com.hedian.service.*;
+import com.hedian.service.impl.MyWebSocketService;
 import com.hedian.util.ComUtil;
 import com.hedian.utils.HdywUtils;
 import org.apache.commons.beanutils.BeanUtils;
@@ -13,6 +17,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.logging.Logger;
@@ -41,6 +46,8 @@ public class QuartzUtil {
     @Autowired
     private IResAbnormallevelService resAbnormallevelService;
 
+    private NoticeModel noticeModel = new NoticeModel();
+
 
     /**
      * 获取当前日期
@@ -58,9 +65,9 @@ public class QuartzUtil {
     /**
      * 20S查询一次数据库更新 设备信息，检测报警  更新日志等
      */
-//    @Scheduled(fixedDelay = QuatzConstants.ONE_MINUTE)
+    @Scheduled(fixedDelay = QuatzConstants.ONE_MINUTE)
     @Transactional(rollbackFor = Exception.class)
-    public void updateResBase() {
+    public void updateResBase() throws Exception {
         //取出系统配置时间 c_type=20000 parakey为offline_count和offline_interval的配置值
         List<SysConf> sysConfs = sysConfService.selectList(new EntityWrapper<SysConf>().where("c_type={0}", QuatzConstants.SYS_TIME_CONFIG));
         int timeFlag = 0;
@@ -73,7 +80,6 @@ public class QuartzUtil {
         }
         //根据1001查询所有系统下的终端
         List<ResBase> resBaseList = resBaseService.selectByResMtypeId(QuatzConstants.ZD_MAIN_TYPE);
-
         if (null != resBaseList && resBaseList.size() > 0) {
             for (ResBase resBase : resBaseList) {
                 //根据终端序列号  找到采集数据
@@ -123,7 +129,7 @@ public class QuartzUtil {
      * @param rootMapCache 记录终端机终端下面  异常模版定义 最小的一个 并记录颜色
      * @param flag         0 表示终端
      */
-    private String compareThresholds(Map<String, ResBase> mainMap, String resBaseKey, Map<String, Object> rootMapCache, Integer flag) {
+    private String compareThresholds(Map<String, ResBase> mainMap, String resBaseKey, Map<String, Object> rootMapCache, Integer flag) throws Exception {
         if (null != mainMap && !mainMap.isEmpty()) {
             ResBase rootResBase = mainMap.get(resBaseKey);
             Map<Integer, MoKpi> moKpiMap = rootResBase.getKpiIdMap();
@@ -207,6 +213,10 @@ public class QuartzUtil {
                                     resMoAbnormalInfoService.updateById(resMoAbnormalInfo);
                                 } else {
                                     resMoAbnormalInfoService.insert(resMoAbnormalInfo);
+                                    //TODO 消息推送
+                                    noticeModel.setNoticeInfo(resMoAbnormalInfo);
+                                    noticeModel.setType(1);
+                                    MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
                                 }
                             } else {
                                 //没有异常   判断当前kpi异常表有没有异常 有则恢复， 没有跳过
@@ -411,15 +421,13 @@ public class QuartzUtil {
     }
 
 
-
     /**
      * 离线异常记录
      *
      * @param mainMap
      * @param flag    0是掉电 1是离线
      */
-    private void offlineError(Map<String, ResBase> mainMap, String resBaseKey, Integer flag) {
-        //TODO　
+    private void offlineError(Map<String, ResBase> mainMap, String resBaseKey, Integer flag) throws Exception {
         //查询离线异常定义
         ResBase rootResBase = mainMap.get(resBaseKey);
         MoAbnormalDef moAbnormalDef = null;
@@ -429,7 +437,7 @@ public class QuartzUtil {
             moAbnormalDef = moAbnormalDefService.selectById(QuatzConstants.PD_MO_ABNORMAL_ID);
             resAbnormallevel = resAbnormallevelService.selectById(moAbnormalDef.getResAbnormallevelId());
         } else {
-            moAbnormalDef =  moAbnormalDefService.selectById(QuatzConstants.LX_MO_ABNORMAL_ID);
+            moAbnormalDef = moAbnormalDefService.selectById(QuatzConstants.LX_MO_ABNORMAL_ID);
             resAbnormallevel = resAbnormallevelService.selectById(moAbnormalDef.getResAbnormallevelId());
         }
         String errMainInfo = TranslateTemplateUtil.translateTemplate(moAbnormalDef.getMoAbnormalShowtemplate(), null, null, null, resAbnormallevel,
@@ -446,6 +454,10 @@ public class QuartzUtil {
         resMoAbnormalInfo.setResAbnomaltime(getCurrentDate());
         resMoAbnormalInfo.setResAbnormalstatus(1);
         resMoAbnormalInfoService.insert(resMoAbnormalInfo);
+        //TODO 消息推送
+        noticeModel.setNoticeInfo(resMoAbnormalInfo);
+        noticeModel.setType(1);
+        MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
         //更新base表
         rootResBase.setResStatus(QuatzConstants.OFFLINE);
         rootResBase.setResAbnormalId(moAbnormalDef.getMoAbnormalId());

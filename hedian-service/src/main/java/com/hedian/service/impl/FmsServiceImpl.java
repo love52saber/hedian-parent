@@ -92,7 +92,7 @@ public class FmsServiceImpl extends ServiceImpl<FmsMapper, Fms> implements IFmsS
         if (!result) {
             throw new BusinessException("更新故障信息失败");
         }
-        result = fmsAbnormalTypeService.delete(new EntityWrapper<FmsAbnormalType>().eq("md_id", fms.getFmsId()));
+        result = fmsAbnormalTypeService.delete(new EntityWrapper<FmsAbnormalType>().eq("fms_id", fms.getFmsId()));
         if (!result) {
             throw new BusinessException("删除故障类型信息失败");
         }
@@ -100,7 +100,7 @@ public class FmsServiceImpl extends ServiceImpl<FmsMapper, Fms> implements IFmsS
         if (!result) {
             throw new BusinessException("更新故障类型信息失败");
         }
-        result = fmsResService.delete(new EntityWrapper<FmsRes>().eq("md_id", fms.getFmsId()));
+        result = fmsResService.delete(new EntityWrapper<FmsRes>().eq("fms_id", fms.getFmsId()));
         if (!result) {
             throw new BusinessException("删除设备信息失败");
         }

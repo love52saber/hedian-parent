@@ -2,6 +2,7 @@ package com.hedian.service;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.hedian.base.BusinessException;
 import com.hedian.entity.MoAbnormalDef;
 import com.hedian.entity.ResMoAbnormalInfo;
 import com.hedian.model.AbnormalLevelModel;
@@ -32,4 +33,6 @@ public interface IResMoAbnormalInfoService extends IService<ResMoAbnormalInfo> {
                                                        String mokpiName, String resName, String resAlias, boolean isAutoOrder);
 
     List<AbnormalLevelModel> selectAbnormalLevelCount();
+
+    boolean deleteResAbnoraml(Long resAbnormalId) throws Exception;
 }

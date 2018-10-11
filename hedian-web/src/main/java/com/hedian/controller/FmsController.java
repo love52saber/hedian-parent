@@ -4,13 +4,16 @@ package com.hedian.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.google.gson.JsonObject;
 import com.hedian.annotation.ValidationParam;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.*;
 import com.hedian.model.FmsModel;
+import com.hedian.model.NoticeModel;
 import com.hedian.service.*;
+import com.hedian.service.impl.MyWebSocketService;
 import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -99,7 +102,7 @@ public class FmsController {
      * 修改故障维护策略
      */
     @PutMapping
-    public PublicResult<String> updateMs(@ValidationParam("msId,msName,msType,beginTime,endTime,msStatus")
+    public PublicResult<String> updateMs(@ValidationParam("fmsId,fmsName,dispatchflag,grpId,fmsStatus,beginTime,endTime")
                                          @RequestBody JSONObject requestJson) throws Exception {
         //可直接转为java对象,简化操作,不用再set一个个属性
         Fms fms = requestJson.toJavaObject(Fms.class);
@@ -111,7 +114,7 @@ public class FmsController {
      * 删除故障维护策略
      */
     @DeleteMapping(value = "/{fmsId}")
-    public PublicResult deleteMs(@PathVariable("fmsId") Integer fmsId) {
+    public PublicResult deleteMs(@PathVariable("fmsId") Integer fmsId) throws Exception{
         if (ComUtil.isEmpty(fmsService.selectById(fmsId))) {
             return new PublicResult<>(PublicResultConstant.ERROR, null);
         }

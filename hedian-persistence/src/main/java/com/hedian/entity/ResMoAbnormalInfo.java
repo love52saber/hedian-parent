@@ -3,8 +3,8 @@ package com.hedian.entity;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -22,7 +22,7 @@ public class ResMoAbnormalInfo extends Model<ResMoAbnormalInfo> {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId("res_abnormal_id")
+    @TableId(value = "res_abnormal_id", type = IdType.AUTO)
     private Long resAbnormalId;
     @TableField("res_id")
     private Integer resId;
@@ -107,7 +107,6 @@ public class ResMoAbnormalInfo extends Model<ResMoAbnormalInfo> {
     /**
      * 使用标记： 1 正常 0删除
      */
-    @TableLogic
     private Integer useflag;
     @TableField("del_user_id")
     private Long delUserId;
@@ -378,38 +377,38 @@ public class ResMoAbnormalInfo extends Model<ResMoAbnormalInfo> {
     @Override
     public String toString() {
         return "ResMoAbnormalInfo{" +
-        "resAbnormalId=" + resAbnormalId +
-        ", resId=" + resId +
-        ", moThId=" + moThId +
-        ", moKpiId=" + moKpiId +
-        ", moAbnormalId=" + moAbnormalId +
-        ", resAbnormalCode=" + resAbnormalCode +
-        ", resAbnormalName=" + resAbnormalName +
-        ", resAbnormallevelId=" + resAbnormallevelId +
-        ", abnormalTypeId=" + abnormalTypeId +
-        ", resAbnormaldesc=" + resAbnormaldesc +
-        ", resAbnomaltime=" + resAbnomaltime +
-        ", resRecoverytime=" + resRecoverytime +
-        ", resAbnormalvalue=" + resAbnormalvalue +
-        ", resRevoveryvalue=" + resRevoveryvalue +
-        ", confirmStatus=" + confirmStatus +
-        ", resAbnormalstatus=" + resAbnormalstatus +
-        ", confirmType=" + confirmType +
-        ", confirmUserId=" + confirmUserId +
-        ", confirmTime=" + confirmTime +
-        ", confirmInfo=" + confirmInfo +
-        ", cleanType=" + cleanType +
-        ", cleanUserId=" + cleanUserId +
-        ", cleanTime=" + cleanTime +
-        ", cleanInfo=" + cleanInfo +
-        ", dispatchType=" + dispatchType +
-        ", dispatchUserId=" + dispatchUserId +
-        ", dispatchTime=" + dispatchTime +
-        ", dispatchTicketId=" + dispatchTicketId +
-        ", fmsId=" + fmsId +
-        ", useflag=" + useflag +
-        ", delUserId=" + delUserId +
-        ", deltime=" + deltime +
-        "}";
+                "resAbnormalId=" + resAbnormalId +
+                ", resId=" + resId +
+                ", moThId=" + moThId +
+                ", moKpiId=" + moKpiId +
+                ", moAbnormalId=" + moAbnormalId +
+                ", resAbnormalCode=" + resAbnormalCode +
+                ", resAbnormalName=" + resAbnormalName +
+                ", resAbnormallevelId=" + resAbnormallevelId +
+                ", abnormalTypeId=" + abnormalTypeId +
+                ", resAbnormaldesc=" + resAbnormaldesc +
+                ", resAbnomaltime=" + resAbnomaltime +
+                ", resRecoverytime=" + resRecoverytime +
+                ", resAbnormalvalue=" + resAbnormalvalue +
+                ", resRevoveryvalue=" + resRevoveryvalue +
+                ", confirmStatus=" + confirmStatus +
+                ", resAbnormalstatus=" + resAbnormalstatus +
+                ", confirmType=" + confirmType +
+                ", confirmUserId=" + confirmUserId +
+                ", confirmTime=" + confirmTime +
+                ", confirmInfo=" + confirmInfo +
+                ", cleanType=" + cleanType +
+                ", cleanUserId=" + cleanUserId +
+                ", cleanTime=" + cleanTime +
+                ", cleanInfo=" + cleanInfo +
+                ", dispatchType=" + dispatchType +
+                ", dispatchUserId=" + dispatchUserId +
+                ", dispatchTime=" + dispatchTime +
+                ", dispatchTicketId=" + dispatchTicketId +
+                ", fmsId=" + fmsId +
+                ", useflag=" + useflag +
+                ", delUserId=" + delUserId +
+                ", deltime=" + deltime +
+                "}";
     }
 }

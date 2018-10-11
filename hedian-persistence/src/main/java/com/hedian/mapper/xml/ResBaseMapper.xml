@@ -152,7 +152,7 @@
           INNER JOIN tbl_res_subtype rs ON  rb.res_stype_id = rs.res_stype_id
           INNER JOIN tbl_res_maintype rm ON rb.res_mtype_id = rm.res_mtype_id
       WHERE
-          rb.res_mtype_id = #{res_mtype_id,jdbcType=INTEGER}
+          rb.res_mtype_id = #{resMtypeId}
     </select>
 
     <select id="selectPageByConditionResBase" resultMap="ResOtherMap">

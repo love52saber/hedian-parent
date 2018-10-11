@@ -2,13 +2,17 @@ package com.hedian.service.impl;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.hedian.base.BusinessException;
 import com.hedian.entity.MoAbnormalDef;
 import com.hedian.entity.ResMoAbnormalInfo;
+import com.hedian.entity.ResMoAbnormalInfoH;
 import com.hedian.mapper.ResMoAbnormalInfoMapper;
 import com.hedian.model.AbnormalLevelModel;
 import com.hedian.model.AlarmInfoModel;
 import com.hedian.model.ResMoAbnormalInfoModel;
+import com.hedian.service.IResMoAbnormalInfoHService;
 import com.hedian.service.IResMoAbnormalInfoService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -28,6 +32,8 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
 
     @Resource
     private ResMoAbnormalInfoMapper resMoAbnormalInfoMapper;
+    @Resource
+    private IResMoAbnormalInfoHService resMoAbnormalInfoHService;
 
 
     @Override
@@ -54,5 +60,18 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
     @Override
     public List<AbnormalLevelModel> selectAbnormalLevelCount() {
         return resMoAbnormalInfoMapper.selectAbnormalLevelCount();
+    }
+
+    @Override
+    public boolean deleteResAbnoraml(Long resAbnormalId) throws Exception {
+        ResMoAbnormalInfo resMoAbnormalInfo = this.selectById(resAbnormalId);
+        ResMoAbnormalInfoH resMoAbnormalInfoH = new ResMoAbnormalInfoH();
+        BeanUtils.copyProperties(resMoAbnormalInfo,resMoAbnormalInfoH);
+        boolean result = resMoAbnormalInfoHService.insert(resMoAbnormalInfoH);
+        if(!result){
+            throw new BusinessException("删除告警信息失败");
+        }
+        result = this.deleteById(resAbnormalId);
+        return result;
     }
 }
