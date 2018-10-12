@@ -65,7 +65,7 @@ public class ResMoAbnormalInfoController {
             @ApiImplicitParam(name = "resName", value = "告警设备名称", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "resAlias", value = "告警设备别名", dataType = "String", paramType = "query")
     })
-    public PublicResult getAllMoThread(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
+    public PublicResult getPageList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
                                        @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                                        @RequestParam(name = "beginTime", defaultValue = "", required = false) String beginTime,
                                        @RequestParam(name = "endTime", defaultValue = "", required = false) String endTime,
@@ -119,10 +119,8 @@ public class ResMoAbnormalInfoController {
      */
     @PutMapping(value = "/cleanAbnormal")
     public PublicResult cleanAbnormalInfo(@ValidationParam("resAbnormalId")
-                                          @RequestBody JSONObject requestJson) {
-        ResMoAbnormalInfo resMoAbnormalInfo = requestJson.toJavaObject(ResMoAbnormalInfo.class);
-        resMoAbnormalInfo.setCleanType(2);
-        boolean result = resMoAbnormalInfoService.updateById(resMoAbnormalInfo);
+                                          @RequestBody JSONObject requestJson) throws Exception{
+        boolean result = resMoAbnormalInfoService.cleanResAbnormal(requestJson);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 
@@ -142,12 +140,10 @@ public class ResMoAbnormalInfoController {
     }
 
     @GetMapping("/selectAlarmByResid/{resId}")
-    @Pass
     public PublicResult selectAlarmByResid(@PathVariable String resId) {
         List<AlarmInfoModel> alarmInfoModelList = resMoAbnormalInfoService.selectAlarmByResId(resId);
         return new PublicResult(PublicResultConstant.SUCCESS, alarmInfoModelList);
     }
-
 
 }
 

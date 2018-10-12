@@ -76,6 +76,7 @@
         <result column="res_name" property="resName"/>
         <result column="res_alias" property="resAlias"/>
         <result column="res_abnormallevel_name" property="resAbnormallevelName"/>
+        <result column="res_abnormallevel_color" property="resAbnormallevelColor"/>
         <result column="mo_kpi_name" property="mokpiName"/>
         <result column="confirmUserName" property="confirmUserName"/>
         <result column="dispatchUserName" property="dispatchUserName"/>
@@ -158,14 +159,14 @@
     </select>
     <!--分页条件查询-->
     <select id="selectPageByCondition" resultMap="CustomMap">
-        SELECT tat.abnormal_type_name,rb.res_name, rb.res_alias, ra.res_abnormallevel_name,
+        SELECT tat.abnormal_type_name,rb.res_name, rb.res_alias, ra.res_abnormallevel_name, ra.res_abnormallevel_color,
         mk.mo_kpi_name, suc.name AS confirmUserName,sud.name AS dispatchUserName,
         rmi.* FROM
         tbl_res_mo_abnormal_info rmi
         INNER JOIN tbl_abnormal_type tat ON rmi.abnormal_type_id = tat.abnormal_type_id
         INNER JOIN tbl_res_base rb ON rmi.res_id = rb.res_id
         INNER JOIN tbl_res_abnormallevel ra ON rmi.res_abnormallevel_id = ra.res_abnormallevel_id
-        INNER JOIN tbl_mo_kpi mk ON rmi.mo_kpi_id = mk.mo_kpi_id
+        LEFT JOIN tbl_mo_kpi mk ON rmi.mo_kpi_id = mk.mo_kpi_id
         LEFT JOIN sys_user suc ON rmi.confirm_user_id = suc.user_id
         LEFT JOIN sys_user sud ON rmi.dispatch_user_id  = sud.user_id
         WHERE rmi.useflag = 1

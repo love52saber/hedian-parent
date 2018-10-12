@@ -91,6 +91,7 @@ public class ResMoAbnormalInfoModel {
 
     private String abnormalTypeName;
     private String resAbnormallevelName;
+    private String resAbnormallevelColor;
     private String resName;
     private String resAlias;
     private String mokpiName;
@@ -98,6 +99,14 @@ public class ResMoAbnormalInfoModel {
     private String dispatchUserName;
     private String cleanUserName;
     private String delUserName;
+
+    public String getResAbnormallevelColor() {
+        return resAbnormallevelColor;
+    }
+
+    public void setResAbnormallevelColor(String resAbnormallevelColor) {
+        this.resAbnormallevelColor = resAbnormallevelColor;
+    }
 
     public String getConfirmUserName() {
         return confirmUserName;
@@ -427,5 +436,51 @@ public class ResMoAbnormalInfoModel {
         this.deltime = deltime;
     }
 
-
+    @Override
+    public String toString() {
+        return "ResMoAbnormalInfoModel{" +
+                "resAbnormalId=" + resAbnormalId +
+                ", resId=" + resId +
+                ", moThId=" + moThId +
+                ", moKpiId=" + moKpiId +
+                ", moAbnormalId=" + moAbnormalId +
+                ", resAbnormalCode=" + resAbnormalCode +
+                ", resAbnormalName='" + resAbnormalName + '\'' +
+                ", resAbnormallevelId=" + resAbnormallevelId +
+                ", abnormalTypeId=" + abnormalTypeId +
+                ", resAbnormaldesc='" + resAbnormaldesc + '\'' +
+                ", resAbnomaltime=" + resAbnomaltime +
+                ", resRecoverytime=" + resRecoverytime +
+                ", resAbnormalvalue='" + resAbnormalvalue + '\'' +
+                ", resRevoveryvalue='" + resRevoveryvalue + '\'' +
+                ", confirmStatus=" + confirmStatus +
+                ", resAbnormalstatus=" + resAbnormalstatus +
+                ", confirmType=" + confirmType +
+                ", confirmUserId=" + confirmUserId +
+                ", confirmTime=" + confirmTime +
+                ", confirmInfo='" + confirmInfo + '\'' +
+                ", cleanType=" + cleanType +
+                ", cleanUserId=" + cleanUserId +
+                ", cleanTime=" + cleanTime +
+                ", cleanInfo='" + cleanInfo + '\'' +
+                ", dispatchType=" + dispatchType +
+                ", dispatchUserId=" + dispatchUserId +
+                ", dispatchTime=" + dispatchTime +
+                ", dispatchTicketId=" + dispatchTicketId +
+                ", fmsId=" + fmsId +
+                ", useflag=" + useflag +
+                ", delUserId=" + delUserId +
+                ", deltime=" + deltime +
+                ", abnormalTypeName='" + abnormalTypeName + '\'' +
+                ", resAbnormallevelName='" + resAbnormallevelName + '\'' +
+                ", resAbnormallevelColor='" + resAbnormallevelColor + '\'' +
+                ", resName='" + resName + '\'' +
+                ", resAlias='" + resAlias + '\'' +
+                ", mokpiName='" + mokpiName + '\'' +
+                ", confirmUserName='" + confirmUserName + '\'' +
+                ", dispatchUserName='" + dispatchUserName + '\'' +
+                ", cleanUserName='" + cleanUserName + '\'' +
+                ", delUserName='" + delUserName + '\'' +
+                '}';
+    }
 }

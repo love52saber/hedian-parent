@@ -65,7 +65,7 @@ public class QuartzUtil {
     /**
      * 20S查询一次数据库更新 设备信息，检测报警  更新日志等
      */
-    @Scheduled(fixedDelay = QuatzConstants.ONE_MINUTE)
+//    @Scheduled(fixedDelay = QuatzConstants.ONE_MINUTE)
     @Transactional(rollbackFor = Exception.class)
     public void updateResBase() throws Exception {
         //取出系统配置时间 c_type=20000 parakey为offline_count和offline_interval的配置值
@@ -157,6 +157,9 @@ public class QuartzUtil {
                 resMoAbnormalInfo.setResRecoverytime(new Date());
                 //修改
                 resMoAbnormalInfoService.updateById(resMoAbnormalInfo);
+                //消息推送
+                noticeModel.setType(1);
+                MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
             }
             if (null != moKpiMap && !moKpiMap.isEmpty()) {
                 for (Integer kpiId : moKpiMap.keySet()) {
@@ -211,10 +214,12 @@ public class QuartzUtil {
                                     resMoAbnormalInfo.setResAbnormalId(tblResMoAbnormalInfos.get(kpiId).getResAbnormalId());
                                     //修改
                                     resMoAbnormalInfoService.updateById(resMoAbnormalInfo);
+                                    //消息推送
+                                    noticeModel.setType(1);
+                                    MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
                                 } else {
                                     resMoAbnormalInfoService.insert(resMoAbnormalInfo);
-                                    //TODO 消息推送
-                                    noticeModel.setNoticeInfo(resMoAbnormalInfo);
+                                    //消息推送
                                     noticeModel.setType(1);
                                     MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
                                 }
@@ -228,6 +233,9 @@ public class QuartzUtil {
                                     resMoAbnormalInfo.setResRecoverytime(getCurrentDate());
                                     //修改
                                     resMoAbnormalInfoService.updateById(resMoAbnormalInfo);
+                                    //消息推送
+                                    noticeModel.setType(1);
+                                    MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
                                 }
                             }
                         }
@@ -454,8 +462,7 @@ public class QuartzUtil {
         resMoAbnormalInfo.setResAbnomaltime(getCurrentDate());
         resMoAbnormalInfo.setResAbnormalstatus(1);
         resMoAbnormalInfoService.insert(resMoAbnormalInfo);
-        //TODO 消息推送
-        noticeModel.setNoticeInfo(resMoAbnormalInfo);
+        // 消息推送
         noticeModel.setType(1);
         MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
         //更新base表

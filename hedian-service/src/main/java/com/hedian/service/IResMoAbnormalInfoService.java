@@ -1,8 +1,8 @@
 package com.hedian.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
-import com.hedian.base.BusinessException;
 import com.hedian.entity.MoAbnormalDef;
 import com.hedian.entity.ResMoAbnormalInfo;
 import com.hedian.model.AbnormalLevelModel;
@@ -35,4 +35,12 @@ public interface IResMoAbnormalInfoService extends IService<ResMoAbnormalInfo> {
     List<AbnormalLevelModel> selectAbnormalLevelCount();
 
     boolean deleteResAbnoraml(Long resAbnormalId) throws Exception;
+
+    /**
+     * 清除告警信息
+     *
+     * @param requestJson
+     * @return
+     */
+    boolean cleanResAbnormal(JSONObject requestJson) throws Exception;
 }

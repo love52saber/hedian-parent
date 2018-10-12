@@ -1,5 +1,6 @@
 package com.hedian.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hedian.base.BusinessException;
@@ -53,8 +54,8 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
 
     @Override
     public Page<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, String beginTime, String endTime, String conStatus, String abnormalLevel, String abnormalType,
-                                                              String abnormalName, String mokpiName, String resName, String resAlias,boolean isAutoOrder) {
-        return page.setRecords(resMoAbnormalInfoMapper.selectPageByCondition(page, beginTime, endTime, conStatus, abnormalLevel, abnormalType, abnormalName, mokpiName, resName, resAlias,isAutoOrder));
+                                                              String abnormalName, String mokpiName, String resName, String resAlias, boolean isAutoOrder) {
+        return page.setRecords(resMoAbnormalInfoMapper.selectPageByCondition(page, beginTime, endTime, conStatus, abnormalLevel, abnormalType, abnormalName, mokpiName, resName, resAlias, isAutoOrder));
     }
 
     @Override
@@ -65,13 +66,33 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
     @Override
     public boolean deleteResAbnoraml(Long resAbnormalId) throws Exception {
         ResMoAbnormalInfo resMoAbnormalInfo = this.selectById(resAbnormalId);
+        boolean result = cleanOrDelete(resAbnormalId, resMoAbnormalInfo);
+        return result;
+    }
+
+    private boolean cleanOrDelete(Long resAbnormalId, ResMoAbnormalInfo resMoAbnormalInfo) throws Exception {
         ResMoAbnormalInfoH resMoAbnormalInfoH = new ResMoAbnormalInfoH();
-        BeanUtils.copyProperties(resMoAbnormalInfo,resMoAbnormalInfoH);
+        BeanUtils.copyProperties(resMoAbnormalInfo, resMoAbnormalInfoH);
         boolean result = resMoAbnormalInfoHService.insert(resMoAbnormalInfoH);
-        if(!result){
+        if (!result) {
             throw new BusinessException("删除告警信息失败");
         }
         result = this.deleteById(resAbnormalId);
+        return result;
+    }
+
+    @Override
+    public boolean cleanResAbnormal(JSONObject requestJson) throws Exception {
+        Long resAbnormalId = requestJson.getLong("resAbnormalId");
+        String cleanInfo = requestJson.getString("cleanInfo");
+        ResMoAbnormalInfo resMoAbnormalInfo = this.selectById(resAbnormalId);
+        resMoAbnormalInfo.setCleanInfo(cleanInfo);
+        resMoAbnormalInfo.setCleanType(2);
+        boolean result = this.updateById(resMoAbnormalInfo);
+        if (!result) {
+            throw new BusinessException("清除告警信息失败");
+        }
+        result = cleanOrDelete(resAbnormalId, resMoAbnormalInfo);
         return result;
     }
 }
