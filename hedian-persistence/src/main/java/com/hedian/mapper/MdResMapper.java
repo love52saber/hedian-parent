@@ -18,4 +18,6 @@ public interface MdResMapper extends BaseMapper<MdRes> {
 
     List<MdRes> findByMap(Map<String,Object> map);
 
+
+
 }

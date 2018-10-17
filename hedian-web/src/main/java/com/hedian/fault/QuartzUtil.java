@@ -78,6 +78,8 @@ public class QuartzUtil {
                 log.info("parse int failed");
             }
         }
+//        noticeModel.setType(1);
+//        MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
         //根据1001查询所有系统下的终端
         List<ResBase> resBaseList = resBaseService.selectByResMtypeId(QuatzConstants.ZD_MAIN_TYPE);
         if (null != resBaseList && resBaseList.size() > 0) {

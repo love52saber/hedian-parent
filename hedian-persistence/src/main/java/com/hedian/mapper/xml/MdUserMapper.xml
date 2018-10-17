@@ -15,5 +15,12 @@
     <sql id="Base_Column_List">
         id, md_id AS mdId, user_id AS userId, showorder, useflag
     </sql>
+    <!--根据resId找到所属用户-->
+    <select id="findMdUserByResId" resultType="com.hedian.entity.MdUser">
+        SELECT * FROM tbl_md_user
+        WHERE md_id IN (SELECT md_id FROM tbl_md_res WHERE res_id =#{resId} GROUP BY md_id)
+        AND useflag = 1
+        GROUP BY user_id
+    </select>
 
 </mapper>

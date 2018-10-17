@@ -168,10 +168,13 @@
         INNER JOIN tbl_res_abnormallevel ra ON rmi.res_abnormallevel_id = ra.res_abnormallevel_id
         LEFT JOIN tbl_mo_kpi mk ON rmi.mo_kpi_id = mk.mo_kpi_id
         LEFT JOIN sys_user suc ON rmi.confirm_user_id = suc.user_id
-        LEFT JOIN sys_user sud ON rmi.dispatch_user_id  = sud.user_id
+        LEFT JOIN sys_user sud ON rmi.dispatch_user_id = sud.user_id
         WHERE rmi.useflag = 1
         <if test="beginTime != null and beginTime != ''">
             AND rmi.res_abnomaltime <![CDATA[ >= ]]> #{beginTime}
+        </if>
+        <if test="resAbnormalId != null and resAbnormalId != ''">
+            AND rmi.res_abnormal_id = #{resAbnormalId}
         </if>
         <if test="endTime != null and endTime != ''">
             AND rmi.res_abnomaltime <![CDATA[ <= ]]> #{endTime}

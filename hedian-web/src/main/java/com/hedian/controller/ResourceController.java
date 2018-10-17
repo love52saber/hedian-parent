@@ -1,5 +1,6 @@
 package com.hedian.controller;
 
+import com.hedian.annotation.Pass;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.util.ComUtil;
@@ -11,9 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author hedian
@@ -35,12 +34,21 @@ public class ResourceController {
     @Value("${ftp.basepath}")
     private String ftpBasePath;
 
+    public final List<String> imageTypes =
+            Arrays.asList("bmp", "jpg", "png", "tif", "gif", "pcx", "tga", "exif", "fpx", "svg", "psd", "cdr", "pcd", "dxf", "ufo", "eps", "ai", "raw", "WMF", "webp");
+
     @PostMapping
+    @Pass
     public PublicResult uploadResource(@RequestParam("file") MultipartFile multipartFile) throws Exception {
         boolean result = false;
         String newFileName = null;
         if (!ComUtil.isEmpty(multipartFile)) {
-            newFileName = UUID.randomUUID() + multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+            String fileType = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+            if (imageTypes.contains(fileType)) {
+                newFileName = UUID.randomUUID() + multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+            } else {
+                newFileName = multipartFile.getOriginalFilename();
+            }
             // 上传文件以日期为单位分开存放，可以提高图片的查询速度
             String filePath = "/" + new SimpleDateFormat("yyyy").format(new Date()) + "/"
                     + new SimpleDateFormat("MM").format(new Date()) + "/"

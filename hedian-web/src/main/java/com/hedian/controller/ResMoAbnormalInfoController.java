@@ -45,8 +45,7 @@ public class ResMoAbnormalInfoController {
 
     @Autowired
     private IResMoAbnormalInfoService resMoAbnormalInfoService;
-    @Autowired
-    private IResMoAbnormalInfoHService resMoAbnormalInfoHService;
+
 
     /**
      * 获取所有的告警
@@ -63,7 +62,8 @@ public class ResMoAbnormalInfoController {
             @ApiImplicitParam(name = "abnormalName", value = "告警名称", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "mokpiName", value = "告警对象名称", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "resName", value = "告警设备名称", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "resAlias", value = "告警设备别名", dataType = "String", paramType = "query")
+            @ApiImplicitParam(name = "resAlias", value = "告警设备别名", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "resAbnormalId", value = "告警ID", dataType = "String", paramType = "query")
     })
     public PublicResult getPageList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
                                        @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
@@ -76,9 +76,10 @@ public class ResMoAbnormalInfoController {
                                        @RequestParam(name = "mokpiName", defaultValue = "", required = false) String mokpiName,
                                        @RequestParam(name = "resName", defaultValue = "", required = false) String resName,
                                        @RequestParam(name = "resAlias", defaultValue = "", required = false) String resAlias,
-                                       @RequestParam(name = "isAutoOrder", defaultValue = "", required = false) boolean isAutoOrder) {
+                                       @RequestParam(name = "isAutoOrder", defaultValue = "", required = false) boolean isAutoOrder,
+                                       @RequestParam(name = "resAbnormalId",defaultValue = "", required = false) String resAbnormalId) {
         Page<ResMoAbnormalInfoModel> moThresholdModelPage = resMoAbnormalInfoService.selectPageByCondition(new Page<>(pageIndex, pageSize), beginTime, endTime, conStatus, abnormalLevel,
-                abnormalType, abnormalName, mokpiName, resName, resAlias, isAutoOrder);
+                abnormalType, abnormalName, mokpiName, resName, resAlias, isAutoOrder,resAbnormalId);
         return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(moThresholdModelPage.getTotal(), pageIndex, pageSize, moThresholdModelPage.getRecords()));
     }
 

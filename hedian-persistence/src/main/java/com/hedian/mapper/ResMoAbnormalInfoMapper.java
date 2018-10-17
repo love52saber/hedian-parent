@@ -23,13 +23,15 @@ import java.util.Map;
 public interface ResMoAbnormalInfoMapper extends BaseMapper<ResMoAbnormalInfo> {
 
 
-    List<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, @Param("beginTime") String beginTime, @Param("endTime")String endTime, @Param("useflag")String useflag,
-                                                       @Param("abnormalLevel")String abnormalLevel, @Param("abnormalType")String abnormalType, @Param("abnormalName")String abnormalName,
-                                                       @Param("mokpiName")String mokpiName, @Param("resName")String resName, @Param("resAlias")String resAlias,@Param("isAutoOrder")boolean isAutoOrder);
+    List<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, @Param("beginTime") String beginTime, @Param("endTime") String endTime, @Param("useflag") String useflag,
+                                                       @Param("abnormalLevel") String abnormalLevel, @Param("abnormalType") String abnormalType, @Param("abnormalName") String abnormalName,
+                                                       @Param("mokpiName") String mokpiName, @Param("resName") String resName, @Param("resAlias") String resAlias,
+                                                       @Param("isAutoOrder") boolean isAutoOrder, @Param("resAbnormalId") String resAbnormalId);
 
 
     /**
      * 统计告警颜色数量
+     *
      * @return
      */
     List<AbnormalLevelModel> selectAbnormalLevelCount();
@@ -51,10 +53,11 @@ public interface ResMoAbnormalInfoMapper extends BaseMapper<ResMoAbnormalInfo> {
 
     /**
      * top 故障设备统计
+     *
      * @param map
      * @return
      */
-    List<MoAbnormalDef> getTopAbnormal(Map<String,Object> map);
+    List<MoAbnormalDef> getTopAbnormal(Map<String, Object> map);
 
 
 }

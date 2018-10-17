@@ -36,6 +36,7 @@
         <guava.version>17.0</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <spring-boot-starter-aop.version>1.5.1.RELEASE</spring-boot-starter-aop.version>
+        <spring-boot-starter-test.version>1.5.1.RELEASE</spring-boot-starter-test.version>
         <jsoup.version>1.8.1</jsoup.version>
         <velocity.version>1.7</velocity.version>
         <shiro-spring.version>1.4.0</shiro-spring.version>
@@ -51,10 +52,12 @@
         <velocity.version>1.7</velocity.version>
         <springfox-swagger2.version>2.2.2</springfox-swagger2.version>
         <commons-net.version>3.6</commons-net.version>
+        <activity.version>6.0.0</activity.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
             <dependency>
                 <groupId>commons-net</groupId>
                 <artifactId>commons-net</artifactId>
@@ -198,11 +201,18 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-test</artifactId>
+                <version>${spring-boot-starter-test.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.jayway.restassured</groupId>
                 <artifactId>rest-assured</artifactId>
                 <version>${rest-assured.version}</version>
+            </dependency>
+            <!--工作流activity6.0-->
+            <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-spring-boot-starter-basic</artifactId>
+                <version>${activity.version}</version>
             </dependency>
 
 
