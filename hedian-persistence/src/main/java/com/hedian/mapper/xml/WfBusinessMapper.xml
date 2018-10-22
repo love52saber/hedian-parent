@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.WfBusinessMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.WfBusiness">
+        <id column="business_id" property="businessId"/>
+        <result column="wf_id" property="wfId"/>
+        <result column="wf_title" property="wfTitle"/>
+        <result column="wf_type" property="wfType"/>
+        <result column="wo_sla_id" property="woSlaId"/>
+        <result column="user_id" property="userId"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="telephone" property="telephone"/>
+        <result column="res_abnormaldesc" property="resAbnormaldesc"/>
+        <result column="url" property="url"/>
+        <result column="res_abnormal_id" property="resAbnormalId"/>
+        <result column="abnormal_type_id" property="abnormalTypeId"/>
+        <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
+        <result column="res_id" property="resId"/>
+        <result column="res_stype_id" property="resStypeId"/>
+        <result column="res_mtype_id" property="resMtypeId"/>
+        <result column="wf_status" property="wfStatus"/>
+        <result column="useflag" property="useflag"/>
+        <result column="current_step" property="currentStep"/>
+        <result column="current_user" property="currentUser"/>
+        <result column="wo_eval_score" property="woEvalScore"/>
+    </resultMap>
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="CustomMap" type="com.hedian.model.WfBusinessModel">
+        <id column="business_id" property="businessId"/>
+        <result column="wf_id" property="wfId"/>
+        <result column="wf_title" property="wfTitle"/>
+        <result column="wf_type" property="wfType"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="telephone" property="telephone"/>
+        <result column="res_abnormaldesc" property="resAbnormaldesc"/>
+        <result column="url" property="url"/>
+        <result column="wf_status" property="wfStatus"/>
+        <result column="hopetime" property="hopetime"/>
+        <result column="deadtime" property="deadtime"/>
+        <result column="username" property="username"/>
+        <result column="res_abnormal_name" property="resAbnormalName"/>
+        <result column="res_abnomaltime" property="resAbnomaltime"/>
+        <result column="abnormal_type_name" property="abnormalTypeName"/>
+        <result column="res_abnormallevel_name" property="resAbnormallevelName"/>
+        <result column="res_mtype_name" property="resMtypeName"/>
+        <result column="res_stype_name" property="resStypeName"/>
+        <result column="currentUserName" property="currentUserName"/>
+        <result column="current_user" property="currentUser"/>
+        <result column="current_step" property="currentStep"/>
+        <result column="wo_eval_score" property="woEvalScore"/>
+        <association property="wfReviewInfoModel" javaType="com.hedian.model.WfReviewInfoModel">
+            <id column="review_id" property="reviewId"/>
+            <result column="bui_id" property="buiId"/>
+            <result column="deptName" property="deptName"/>
+            <result column="approveName" property="approveName"/>
+            <result column="phone" property="phone"/>
+            <result column="review_desc" property="reviewDesc"/>
+        </association>
+        <association property="resBase" javaType="com.hedian.entity.ResBase">
+            <id column="res_id" property="resId"/>
+            <result column="res_name" property="resName"/>
+            <result column="res_alias" property="resAlias"/>
+            <result column="res_ipv4" property="resIpv4"/>
+            <result column="res_address" property="resAddress"/>
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        business_id AS businessId, wf_id AS wfId, wf_title AS wfTitle, wf_type AS wfType, wo_sla_id AS woSlaId, user_id AS userId,telephone, gmt_create AS gmtCreate, res_abnormaldesc AS resAbnormaldesc, url, res_abnormal_id AS resAbnormalId, abnormal_type_id AS abnormalTypeId, res_abnormallevel_id AS resAbnormallevelId, res_id AS resId, res_stype_id AS resStypeId, res_mtype_id AS resMtypeId, wf_status AS wfStatus, useflag, current_step AS currentStep, current_user AS currentUser, wo_eval_score AS woEvalScore
+    </sql>
+
+    <select id="selectPageByCondition" resultMap="CustomMap">
+        SELECT
+        wb.business_id,wb.wf_id,wb.wf_title,wb.wf_type,wb.telephone,wb.gmt_create,wb.res_abnormaldesc,wb.url,wb.wo_eval_score,wb.current_step,wb.current_user,
+        ws.hopetime,
+        ws.deadtime,
+        su.username,
+        trb.*,
+        rmi.res_abnormal_name,
+        rmi.res_abnomaltime,
+        tat.abnormal_type_name,
+        tra.res_abnormallevel_name,
+        trm.res_mtype_name,
+        trs.res_stype_name,
+        susu.username As currentUserName,
+        twri.*
+
+        FROM
+        tbl_wf_business wb
+        LEFT JOIN tbl_wo_sla ws ON wb.wo_sla_id = ws.wo_sla_id
+        LEFT JOIN sys_user su ON wb.user_id =su.user_id
+        LEFT JOIN tbl_res_mo_abnormal_info rmi ON wb.res_abnormal_id = rmi.res_abnormal_id
+        LEFT JOIN tbl_abnormal_type tat ON wb.abnormal_type_id = tat.abnormal_type_id
+        LEFT JOIN tbl_res_abnormallevel tra ON wb.res_abnormallevel_id = tra.res_abnormallevel_id
+        LEFT JOIN tbl_res_base trb ON wb.res_id = trb.res_id
+        LEFT JOIN tbl_res_maintype trm ON wb.res_mtype_id = trm.res_mtype_id
+        LEFT JOIN tbl_res_subtype trs ON wb.res_stype_id = trs.res_stype_id
+        LEFT JOIN sys_user susu ON wb.current_user = susu.user_id
+        LEFT JOIN
+        (
+        SELECT twri.business_id,twri.review_id,twri.phone,twri.review_desc,su.username AS approveName, sd.name AS
+        deptName FROM tbl_wf_review_info twri
+        INNER JOIN sys_user su ON twri.user_id=su.user_id
+        INNER JOIN sys_dept sd ON twri.dept_id=sd.dept_id
+        ) twri
+        ON wb.business_id = twri.business_id
+        WHERE 1=1
+        <if test="wfType != null and wfType != ''">
+            AND wb.wf_type = #{wfType}
+        </if>
+        <if test="wfTitle != null and wfTitle != ''">
+            AND wb.wf_title LIKE concat('%',#{wfTitle},'%')
+        </if>
+        <if test="resAbnormallevelId != null and resAbnormallevelId != ''">
+            AND tra.res_abnormallevel_id = #{resAbnormallevelId}
+        </if>
+        <if test="userName != null and userName != ''">
+            AND su.userName LIKE concat('%',#{userName},'%')
+        </if>
+        <if test="currentUserName != null and currentUserName != ''">
+            AND susu.username LIKE concat('%',#{currentUserName},'%')
+        </if>
+        <if test="beginTime != null and beginTime != ''">
+            AND wb.gmt_create <![CDATA[ >= ]]> #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND wb.gmt_create <![CDATA[ <= ]]> #{endTime}
+        </if>
+    </select>
+
+</mapper>

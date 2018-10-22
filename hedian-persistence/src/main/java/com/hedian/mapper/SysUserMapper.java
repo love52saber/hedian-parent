@@ -24,4 +24,7 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
      * @return
      */
     List<SysUser> getUsersByGrpId(@Param("grpId") Long grpId);
+
+
+    List<SysUser> selectUserList(@Param("grpId") Long grpId);
 }

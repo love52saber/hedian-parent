@@ -71,7 +71,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             result = sysFileService.insert(sysFile);
         }
         userUpdate.setPicId(null != sysFile ? sysFile.getId() : null);
-        if(result){
+        if (result) {
             result = this.updateById(userUpdate);
         }
         if (result) {
@@ -122,5 +122,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         List<SysMenu> retMenuList = sysMenuService.treeMenuList(0L, menuList);
         result.put("menuList", retMenuList);
         return result;
+    }
+
+    @Override
+    public List<SysUser> selectUserList(Long grpId) {
+        List<SysUser> userList = sysUserMapper.selectUserList(grpId);
+        return userList;
     }
 }

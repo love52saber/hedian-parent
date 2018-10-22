@@ -35,6 +35,7 @@ public class FtpUtil {
 			String filePath, String filename, InputStream input) {
 		boolean result = false;
 		FTPClient ftp = new FTPClient();
+		ftp.setControlEncoding("UTF-8"); // 中文乱码问题
 		try {
 			int reply;
 			ftp.connect(host, port);// 连接FTP服务器

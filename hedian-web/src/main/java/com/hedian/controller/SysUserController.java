@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.annotation.CurrentUser;
+import com.hedian.annotation.Pass;
 import com.hedian.annotation.ValidationParam;
 import com.hedian.base.Constant;
 import com.hedian.base.PageResult;
@@ -78,7 +79,7 @@ public class SysUserController {
             @ApiImplicitParam(name = "deptId", value = "部门id"
                     , dataType = "String", paramType = "query"),
     })
-    public PublicResult findList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
+    public PublicResult findPageList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
                                  @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                                  @RequestParam(value = "info", defaultValue = "", required = false) String info,
                                  @RequestParam(value = "deptId", defaultValue = "", required = false) String deptId) {
@@ -99,6 +100,20 @@ public class SysUserController {
         return new PublicResult<PageResult>(PublicResultConstant.SUCCESS, new PageResult<>(
                 page.getTotal(), pageIndex, pageSize, page.getRecords()));
     }
+
+
+    @GetMapping(value = "/all")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "grpId", value = "用戶組id"
+                    , dataType = "Long", paramType = "query")
+    })
+    @Pass
+    public PublicResult findAll(@RequestParam(value = "grpId", defaultValue = "", required = false) Long grpId) {
+
+        List<SysUser> userList = userService.selectUserList(grpId);
+        return  new PublicResult<>(PublicResultConstant.SUCCESS, userList);
+    }
+
 
     /**
      * 添加用户

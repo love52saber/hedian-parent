@@ -114,7 +114,6 @@ public class ResBaseController {
         map.put("resStatus", 1);
         List<ResBase> resBaseAlarms = resBaseService.findByMap(map);
         return new PublicResult(PublicResultConstant.SUCCESS, resBaseAlarms);
-
     }
 
 
@@ -134,6 +133,7 @@ public class ResBaseController {
 
 
     @GetMapping("/getResTree")
+    @Pass
     public PublicResult getResTree(@CurrentUser SysUser sysUser) {
         Tree<SysDept> tree = resBaseService.genResTreeByUser(sysUser);
         return new PublicResult(PublicResultConstant.SUCCESS, tree);

@@ -1,7 +1,6 @@
 package com.hedian.config;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.ParameterBuilder;
@@ -26,6 +25,7 @@ import java.util.List;
 public class SwaggerConfig {
     /**
      * 可以注入多个doket，也就是多个版本的api，可以在看到有三个版本groupName不能是重复的，v1和v2是ant风格匹配，配置文件
+     *
      * @return
      */
     @Bean

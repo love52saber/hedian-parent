@@ -52,4 +52,10 @@ public interface ISysUserService extends IService<SysUser> {
     SysUser getUserByUserName(String userName);
 
     Map<String,Object> getLoginUserAndMenuInfo(SysUser user);
+
+    /**
+     * 按條件查詢所有用户
+     * @return
+     */
+    List<SysUser> selectUserList(Long grpId);
 }
