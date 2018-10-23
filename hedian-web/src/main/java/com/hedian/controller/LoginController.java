@@ -54,7 +54,8 @@ public class LoginController {
         if (user.getStatus().equals(0)) {
             return new PublicResult<>("该用户已被禁用请联系管理员", null);
         }
-        if (!ComUtil.isEmpty(user.getLocktype()) && !ComUtil.isEmpty(user.getLocktype())) {
+        //locktype和lockflag不为空
+        if (!ComUtil.isEmpty(user.getLocktype()) && !ComUtil.isEmpty(user.getLockflag())) {
             if (user.getLockflag().equals(1) && user.getLocktype().equals(1)) {
                 if (user.getUnlocktime().getTime() > System.currentTimeMillis()) {
                     return new PublicResult<>("用户已锁定请联系管理员", null);
@@ -65,8 +66,11 @@ public class LoginController {
             }
         }
 
-
         if (!BCrypt.checkpw(requestJson.getString("password"), user.getPassword())) {
+            //管理员不锁定
+            if(userName.equals("admin")){
+                return new PublicResult<>("密码错误", null);
+            }
             if (!ComUtil.isEmpty(user.getLastwrongTime()) && user.getLastwrongTime().getTime() < System.currentTimeMillis() + (30 * 60 * 1000)) {
                 user.setWrongTimes((ComUtil.isEmpty(user.getWrongTimes())) ? 1 : user.getWrongTimes() + 1);
             } else {
