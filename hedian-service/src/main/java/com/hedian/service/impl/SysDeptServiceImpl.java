@@ -57,7 +57,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         List<SysDept> sysDepts = new ArrayList<>();
         for (Long deptId : deptIds){
             List<SysDept> temp = sysDeptMapper.getParentList(deptId);
-            sysDepts.removeAll(temp);
             sysDepts.addAll(temp);
         }
         // 默认顶级菜单为０，根据数据库实际情况调整

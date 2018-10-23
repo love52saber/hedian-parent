@@ -131,7 +131,7 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
     }
 
     /**
-     * 0
+     *
      * 递归方式将资源插入部门tree中
      *
      * @param tree

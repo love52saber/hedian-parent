@@ -12,10 +12,6 @@ import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.repository.Deployment;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.tools.ant.util.DateUtils;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,16 +54,20 @@ public class LoginController {
         if (user.getStatus().equals(0)) {
             return new PublicResult<>("该用户已被禁用请联系管理员", null);
         }
-        if (user.getLockflag().equals(1) && !ComUtil.isEmpty(user.getLocktype()) && user.getLocktype().equals(1)
-                && user.getUnlocktime().getTime() > System.currentTimeMillis()) {
-            return new PublicResult<>("用户已锁定请联系管理员", null);
-        }
-        if (user.getLockflag().equals(1) && !ComUtil.isEmpty(user.getLocktype()) && user.getLocktype().equals(2)) {
-            return new PublicResult<>("用户已锁定请联系管理员", null);
+        if (!ComUtil.isEmpty(user.getLocktype()) && !ComUtil.isEmpty(user.getLocktype())) {
+            if (user.getLockflag().equals(1) && user.getLocktype().equals(1)) {
+                if (user.getUnlocktime().getTime() > System.currentTimeMillis()) {
+                    return new PublicResult<>("用户已锁定请联系管理员", null);
+                }
+            }
+            if (user.getLockflag().equals(1) && user.getLocktype().equals(2)) {
+                return new PublicResult<>("用户已锁定请联系管理员", null);
+            }
         }
 
+
         if (!BCrypt.checkpw(requestJson.getString("password"), user.getPassword())) {
-            if (null != user.getLastwrongTime() && user.getLastwrongTime().getTime() < System.currentTimeMillis() + (30 * 60 * 1000)) {
+            if (!ComUtil.isEmpty(user.getLastwrongTime()) && user.getLastwrongTime().getTime() < System.currentTimeMillis() + (30 * 60 * 1000)) {
                 user.setWrongTimes((ComUtil.isEmpty(user.getWrongTimes())) ? 1 : user.getWrongTimes() + 1);
             } else {
                 user.setWrongTimes(1);
@@ -88,7 +86,7 @@ public class LoginController {
         }
         Map<String, Object> result = userService.getLoginUserAndMenuInfo(user);
         //用户被锁定 登录完清空消息
-        if (user.getLockflag() != 0) {
+        if (!ComUtil.isEmpty(user.getLockflag()) && user.getLockflag() != 0) {
             user.setUnlocktime(null);
             user.setLocktype(null);
             user.setLockflag(0);
