@@ -1,8 +1,8 @@
 package com.hedian.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.hedian.base.BusinessException;
 import com.hedian.entity.*;
 import com.hedian.mapper.SysRoleMapper;
 import com.hedian.mapper.SysUserMapper;
@@ -15,7 +15,10 @@ import com.hedian.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -44,45 +47,54 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private ISysFileService sysFileService;
 
     @Override
-    public boolean register(SysUser user, List<Long> roleIds, String url) {
-        user.setGmtCreate(new Date());
-        boolean result = this.insert(user);
-        if (result && !ComUtil.isEmpty(url)) {
-            result = sysFileService.insert(new SysFile(0, url));
+    public boolean register(SysUser user, List<Long> roleIds, String url) throws BusinessException {
+        SysFile sysFile = null;
+        boolean result = false;
+        if (!ComUtil.isEmpty(url)) {
+            sysFile = new SysFile(0, url);
+            result = sysFileService.insert(sysFile);
         }
-        if (result) {
-            if (!ComUtil.isEmpty(roleIds)) {
-                List<SysUserRole> sysUserRoles = new ArrayList<>();
-                roleIds.stream().forEach(roleId -> {
-                    sysUserRoles.add(new SysUserRole(user.getUserId(), roleId));
-                });
-                result = sysUserRoleService.insertBatch(sysUserRoles);
-            }
+        if(!result){
+            throw new BusinessException("插入信息失败");
+        }
+        user.setPicId(sysFile.getId());
+        result = this.insert(user);
+        if (!result) {
+            throw new BusinessException("插入信息失败");
+        }
+        if (!ComUtil.isEmpty(roleIds)) {
+            List<SysUserRole> sysUserRoles = new ArrayList<>();
+            roleIds.stream().forEach(roleId -> {
+                sysUserRoles.add(new SysUserRole(user.getUserId(), roleId));
+            });
+            result = sysUserRoleService.insertBatch(sysUserRoles);
         }
         return result;
     }
 
     @Override
-    public boolean updateInfo(SysUser userUpdate, List<Long> roleIds, String url) {
+    public boolean updateInfo(SysUser userUpdate, List<Long> roleIds, String url) throws BusinessException {
         boolean result = false;
         SysFile sysFile = null;
         if (!ComUtil.isEmpty(url)) {
             sysFile = new SysFile(userUpdate.getPicId(), url);
-            result = sysFileService.insert(sysFile);
+            result = sysFileService.updateById(sysFile);
         }
-        userUpdate.setPicId(null != sysFile ? sysFile.getId() : null);
-        if (result) {
-            result = this.updateById(userUpdate);
+        if (!result) {
+            throw new BusinessException("插入信息失败");
         }
-        if (result) {
+        userUpdate.setPicId(sysFile.getId());
+        result = this.updateById(userUpdate);
+        if (!result) {
+            throw new BusinessException("插入信息失败");
+        }
+        if (!ComUtil.isEmpty(roleIds)) {
             sysUserRoleService.delete(new EntityWrapper<SysUserRole>().eq("user_id", userUpdate.getUserId()));
-            if (!ComUtil.isEmpty(roleIds)) {
-                List<SysUserRole> sysUserRoles = new ArrayList<>();
-                roleIds.stream().forEach(roleId -> {
-                    sysUserRoles.add(new SysUserRole(userUpdate.getUserId(), roleId));
-                });
-                result = sysUserRoleService.insertBatch(sysUserRoles);
-            }
+            List<SysUserRole> sysUserRoles = new ArrayList<>();
+            roleIds.stream().forEach(roleId -> {
+                sysUserRoles.add(new SysUserRole(userUpdate.getUserId(), roleId));
+            });
+            result = sysUserRoleService.insertBatch(sysUserRoles);
         }
         return result;
     }

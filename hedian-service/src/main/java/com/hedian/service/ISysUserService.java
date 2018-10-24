@@ -2,6 +2,7 @@ package com.hedian.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.service.IService;
+import com.hedian.base.BusinessException;
 import com.hedian.entity.SysUser;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param roleIds
      * @return
      */
-    boolean register(SysUser user,  List<Long> roleIds, String url);
+    boolean register(SysUser user,  List<Long> roleIds, String url) throws BusinessException;
 
     /**
      * 修改用户信息
@@ -31,7 +32,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param roleIds
      * @return
      */
-    boolean updateInfo(SysUser userUpdate, List<Long> roleIds, String url);
+    boolean updateInfo(SysUser userUpdate, List<Long> roleIds, String url) throws BusinessException;
 
     /**
      * 根据用户id 获取用户详情

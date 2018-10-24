@@ -122,6 +122,7 @@ public class SysUserController {
      * @return
      */
     @PostMapping
+    @Pass
     public PublicResult<String> addSysUser(@ValidationParam("name,username,sex,deptId,mobile,email,status")
                                            @RequestBody JSONObject requestJson) throws Exception {
 
@@ -188,6 +189,7 @@ public class SysUserController {
      * @return
      */
     @PutMapping
+    @Pass
     public PublicResult<String> updateSysUser(@ValidationParam("userId,name,username,sex,deptId,mobile,email,status,roleIds")
                                               @RequestBody JSONObject requestJson) throws Exception {
 
