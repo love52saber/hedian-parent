@@ -122,7 +122,6 @@ public class SysUserController {
      * @return
      */
     @PostMapping
-    @Pass
     public PublicResult<String> addSysUser(@ValidationParam("name,username,sex,deptId,mobile,email,status")
                                            @RequestBody JSONObject requestJson) throws Exception {
 
@@ -189,7 +188,6 @@ public class SysUserController {
      * @return
      */
     @PutMapping
-    @Pass
     public PublicResult<String> updateSysUser(@ValidationParam("userId,name,username,sex,deptId,mobile,email,status,roleIds")
                                               @RequestBody JSONObject requestJson) throws Exception {
 
@@ -262,6 +260,9 @@ public class SysUserController {
         SysUser user = userService.selectById(userId);
         if (ComUtil.isEmpty(user)) {
             return new PublicResult<>(PublicResultConstant.INVALID_USER, null);
+        }
+        if (user.getDelflag()==0) {
+            return new PublicResult<>("该用户不能被删除", null);
         }
         boolean result = userService.deleteById(userId);
         if (result) {

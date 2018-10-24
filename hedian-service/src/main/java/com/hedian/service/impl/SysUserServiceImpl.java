@@ -77,8 +77,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         boolean result = false;
         SysFile sysFile = null;
         if (!ComUtil.isEmpty(url)) {
-            sysFile = new SysFile(userUpdate.getPicId(), url);
-            result = sysFileService.updateById(sysFile);
+            sysFile = new SysFile(0, url);
+            result = sysFileService.insert(sysFile);
         }
         if (!result) {
             throw new BusinessException("插入信息失败");
