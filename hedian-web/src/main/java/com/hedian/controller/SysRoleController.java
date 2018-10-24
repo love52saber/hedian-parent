@@ -4,6 +4,7 @@ package com.hedian.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.hedian.annotation.Pass;
 import com.hedian.annotation.ValidationParam;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
@@ -131,6 +132,9 @@ public class SysRoleController {
      */
     @PostMapping
     public PublicResult<String> addRole(@ValidationParam("roleName") @RequestBody JSONObject requestJson) throws Exception {
+        if (!ComUtil.isEmpty(roleService.selectList(new EntityWrapper<SysRole>().eq("role_name",requestJson.getString("roleName"))))) {
+            return new PublicResult<>("角色名已存在", null);
+        }
         boolean result = roleService.addRoleAndPermission(requestJson);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.INVALID_USER, null);
     }
@@ -140,6 +144,10 @@ public class SysRoleController {
      */
     @PutMapping
     public PublicResult<String> updateRole(@ValidationParam("roleName,roleId") @RequestBody JSONObject requestJson) throws Exception {
+        SysRole sysRole = roleService.selectById(requestJson.getLong("roleId"));
+        if (!sysRole.getRoleName().equals(requestJson.getString("roleName")) && !ComUtil.isEmpty(roleService.selectList(new EntityWrapper<SysRole>().eq("role_name",requestJson.getString("roleName"))))) {
+            return new PublicResult<>("角色名已存在", null);
+        }
         boolean result = roleService.updateRoleInfo(requestJson);
         return !result ? new PublicResult<>(PublicResultConstant.INVALID_ROLE, null) : new PublicResult<>(PublicResultConstant.SUCCESS, null);
     }

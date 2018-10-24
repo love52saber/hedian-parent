@@ -121,6 +121,9 @@ public class SysGroupController {
     @PostMapping
     public PublicResult<String> addGroup(@ValidationParam("grpName")
                                              @RequestBody JSONObject requestJson) throws Exception {
+        if (!ComUtil.isEmpty(sysGroupService.selectList(new EntityWrapper<SysGroup>().eq("grp_name",requestJson.getString("grpName"))))) {
+            return new PublicResult<>("用户组名称已存在", null);
+        }
         SysGroup sysGroup = requestJson.toJavaObject(SysGroup.class);
         boolean result = sysGroupService.addRoleAndUsers(sysGroup);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.INVALID_USER, null);
@@ -134,6 +137,11 @@ public class SysGroupController {
     public PublicResult<String> updateGroup(@ValidationParam("grpId,grpName,roleIds,userIds")
                                                 @RequestBody JSONObject requestJson) throws Exception {
         SysGroup sysGroup = requestJson.toJavaObject(SysGroup.class);
+        SysGroup sysGroupModel = sysGroupService.selectById(sysGroup.getGrpId());
+        if (!sysGroup.getGrpName().equals(sysGroupModel.getGrpName()) && !ComUtil.isEmpty(sysGroupService.selectList(new EntityWrapper<SysGroup>().eq("grp_name",requestJson.getString("grpName"))))) {
+            return new PublicResult<>("用户组名称已存在", null);
+        }
+
         boolean result = sysGroupService.updateGroupInfo(sysGroup);
         return !result ? new PublicResult<>(PublicResultConstant.INVALID_ROLE, null) : new PublicResult<>(PublicResultConstant.SUCCESS, null);
     }

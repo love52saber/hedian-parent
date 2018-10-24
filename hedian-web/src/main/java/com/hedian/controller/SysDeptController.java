@@ -4,19 +4,18 @@ package com.hedian.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.hedian.annotation.Pass;
 import com.hedian.annotation.ValidationParam;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.SysDept;
-import com.hedian.model.Tree;
 import com.hedian.service.ISysDeptService;
 import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -85,8 +84,12 @@ public class SysDeptController {
      * @return
      */
     @PostMapping
+    @Pass
     public PublicResult<String> addDept(@ValidationParam("parentId,name,shortName,orderNum,orgType")
                                         @RequestBody JSONObject requestJson) throws Exception {
+        if (!ComUtil.isEmpty(sysDeptService.selectList(new EntityWrapper<SysDept>().eq("name",requestJson.getString("name"))))) {
+            return new PublicResult<>("部门名称已存在", null);
+        }
         //可直接转为java对象,简化操作,不用再set一个个属性
         SysDept sysDept = requestJson.toJavaObject(SysDept.class);
         boolean result = sysDeptService.insert(sysDept);
@@ -100,6 +103,10 @@ public class SysDeptController {
     public PublicResult<String> updateDept(@ValidationParam("name,shortName,orderNum,orgType,deptId")
                                                @RequestBody JSONObject requestJson) throws Exception {
         SysDept sysDept = requestJson.toJavaObject(SysDept.class);
+        SysDept dept = sysDeptService.selectById(sysDept.getDeptId());
+        if (!sysDept.getName().equals(dept.getName()) && !ComUtil.isEmpty(sysDeptService.selectList(new EntityWrapper<SysDept>().eq("name",requestJson.getString("name"))))) {
+            return new PublicResult<>("部门名称已存在", null);
+        }
         boolean result = sysDeptService.updateById(sysDept);
         return !result ? new PublicResult<>(PublicResultConstant.ERROR, null) : new PublicResult<>(PublicResultConstant.SUCCESS, null);
     }

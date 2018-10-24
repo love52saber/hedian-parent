@@ -48,17 +48,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public boolean register(SysUser user, List<Long> roleIds, String url) throws BusinessException {
-        SysFile sysFile = null;
-        boolean result = false;
         if (!ComUtil.isEmpty(url)) {
-            sysFile = new SysFile(0, url);
-            result = sysFileService.insert(sysFile);
+            SysFile sysFile = new SysFile(0, url);
+            boolean result = sysFileService.insert(sysFile);
+            if(!result){
+                throw new BusinessException("插入信息失败");
+            }
+            user.setPicId(sysFile.getId());
         }
-        if(!result){
-            throw new BusinessException("插入信息失败");
-        }
-        user.setPicId(sysFile.getId());
-        result = this.insert(user);
+
+        boolean result = this.insert(user);
         if (!result) {
             throw new BusinessException("插入信息失败");
         }
@@ -74,17 +73,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public boolean updateInfo(SysUser userUpdate, List<Long> roleIds, String url) throws BusinessException {
-        boolean result = false;
-        SysFile sysFile = null;
         if (!ComUtil.isEmpty(url)) {
-            sysFile = new SysFile(0, url);
-            result = sysFileService.insert(sysFile);
+            SysFile sysFile = new SysFile(0, url);
+            boolean result = sysFileService.insert(sysFile);
+            if (!result) {
+                throw new BusinessException("插入信息失败");
+            }
+            userUpdate.setPicId(sysFile.getId());
         }
-        if (!result) {
-            throw new BusinessException("插入信息失败");
-        }
-        userUpdate.setPicId(sysFile.getId());
-        result = this.updateById(userUpdate);
+        boolean result = this.updateById(userUpdate);
         if (!result) {
             throw new BusinessException("插入信息失败");
         }

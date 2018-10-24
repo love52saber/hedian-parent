@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -193,12 +194,18 @@ public class SysUserController {
 
         //可直接转为java对象,简化操作,不用再set一个个属性
         SysUser userUpdate = requestJson.toJavaObject(SysUser.class);
+
+        SysUser user = userService.selectById(requestJson.getString("userId"));
+        if (!user.getUsername().equals(userUpdate.getUsername()) && !ComUtil.isEmpty(userService.selectOne(new EntityWrapper<SysUser>().eq("username", userUpdate.getUsername())))) {
+            return new PublicResult<>("用户名重复", null);
+        }
         if (!StringUtil.checkMobileNumber(userUpdate.getMobile())) {
             return new PublicResult<>(PublicResultConstant.MOBILE_ERROR, null);
         }
         if (!StringUtil.checkEmail(userUpdate.getEmail())) {
             return new PublicResult<>(PublicResultConstant.EMAIL_ERROR, null);
         }
+
         boolean result = userService.updateInfo(userUpdate, userUpdate.getRoleIds(), requestJson.getString("url"));
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) :
                 new PublicResult<>(PublicResultConstant.ERROR, null);
