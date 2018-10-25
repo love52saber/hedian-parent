@@ -199,6 +199,8 @@ public class QuartzUtil {
                                 resMoAbnormalInfo.setResAbnormaldesc(errMainInfo);
                                 resMoAbnormalInfo.setResAbnormalvalue(targetValue);
                                 resMoAbnormalInfo.setResAbnormalstatus(1);
+                                resMoAbnormalInfo.setConfirmStatus(1);
+                                resMoAbnormalInfo.setCleanType(0);
                                 if (levelPriority > resAbnormalLevel.getResAbnormallevelPriority()) {
                                     levelPriority = resAbnormalLevel.getResAbnormallevelPriority();
                                     color = resAbnormalLevel.getResAbnormallevelColor();
@@ -459,6 +461,8 @@ public class QuartzUtil {
         resMoAbnormalInfo.setResAbnormalName(moAbnormalDef.getMoAbnormalName());
         resMoAbnormalInfo.setResAbnormallevelId(moAbnormalDef.getResAbnormallevelId());
         resMoAbnormalInfo.setMoKpiId(QuatzConstants.OFFLINE_KEY);
+        resMoAbnormalInfo.setConfirmStatus(1);
+        resMoAbnormalInfo.setCleanType(0);
         //异常信息翻译
         resMoAbnormalInfo.setResAbnormaldesc(errMainInfo);
         resMoAbnormalInfo.setResAbnomaltime(getCurrentDate());

@@ -95,6 +95,9 @@
         <result column="mo_abnormal_name" property="alarmObject"/>
         <result column="res_abnormaldesc" property="alarmDesc"/>
         <result column="res_abnomaltime" property="alarmTime"/>
+        <result column="clean_type" property="cleanType"/>
+        <result column="confirm_status" property="confirmStatus"/>
+        <result column="dispatch_type" property="dispatchType"/>
     </resultMap>
 
 
@@ -128,7 +131,7 @@
     <select id="selectAlarmByResId" resultMap="AlarmResultMap">
         select (@:=@+1) AS
         res_id,b.res_alias,d.res_abnormallevel_name,d.res_abnormallevel_color,a.res_abnormal_code,b.res_name,a.res_abnormal_name,e.mo_abnormal_name,
-        a.res_abnormaldesc,a.res_abnomaltime
+        a.res_abnormaldesc,a.res_abnomaltime,a.clean_type,a.confirm_status,a.dispatch_type
         from
         (select * from tbl_res_mo_abnormal_info where
         1=1

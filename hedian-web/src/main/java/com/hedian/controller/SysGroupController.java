@@ -134,7 +134,7 @@ public class SysGroupController {
      * 修改用户组信息
      */
     @PutMapping
-    public PublicResult<String> updateGroup(@ValidationParam("grpId,grpName,roleIds,userIds")
+    public PublicResult<String> updateGroup(@ValidationParam("grpId,grpName")
                                                 @RequestBody JSONObject requestJson) throws Exception {
         SysGroup sysGroup = requestJson.toJavaObject(SysGroup.class);
         SysGroup sysGroupModel = sysGroupService.selectById(sysGroup.getGrpId());

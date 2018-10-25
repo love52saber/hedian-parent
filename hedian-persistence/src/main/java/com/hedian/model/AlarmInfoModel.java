@@ -48,6 +48,36 @@ public class AlarmInfoModel {
      */
     private String alarmDesc;
 
+    private Integer cleanType;
+
+    private Integer confirmStatus;
+
+    private Integer dispatchType;
+
+    public Integer getCleanType() {
+        return cleanType;
+    }
+
+    public void setCleanType(Integer cleanType) {
+        this.cleanType = cleanType;
+    }
+
+    public Integer getConfirmStatus() {
+        return confirmStatus;
+    }
+
+    public void setConfirmStatus(Integer confirmStatus) {
+        this.confirmStatus = confirmStatus;
+    }
+
+    public Integer getDispatchType() {
+        return dispatchType;
+    }
+
+    public void setDispatchType(Integer dispatchType) {
+        this.dispatchType = dispatchType;
+    }
+
     public Integer getResId() {
         return resId;
     }
@@ -130,7 +160,7 @@ public class AlarmInfoModel {
 
     @Override
     public String toString() {
-        return "AlarmInfo{" +
+        return "AlarmInfoModel{" +
                 "resId=" + resId +
                 ", alarmLevel='" + alarmLevel + '\'' +
                 ", alarmColor='" + alarmColor + '\'' +
@@ -141,6 +171,9 @@ public class AlarmInfoModel {
                 ", alarmObjectAlias='" + alarmObjectAlias + '\'' +
                 ", alarmTime=" + alarmTime +
                 ", alarmDesc='" + alarmDesc + '\'' +
+                ", cleanType=" + cleanType +
+                ", confirmStatus=" + confirmStatus +
+                ", dispatchType=" + dispatchType +
                 '}';
     }
 }

@@ -10,7 +10,10 @@ import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.SysDept;
+import com.hedian.entity.SysUser;
+import com.hedian.exception.UnauthorizedException;
 import com.hedian.service.ISysDeptService;
+import com.hedian.service.ISysUserService;
 import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +35,15 @@ import java.util.List;
 public class SysDeptController {
     @Autowired
     private ISysDeptService sysDeptService;
+    @Autowired
+    private ISysUserService sysUserService;
 
 
     /**
      * 组织列表
      */
     @GetMapping("/pageList")
+    @Pass
     public PublicResult getPageList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
                                     @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
         Page<SysDept> rolePage = sysDeptService.selectPage(new Page<>(pageIndex, pageSize));
@@ -121,6 +127,9 @@ public class SysDeptController {
         }
         if (!ComUtil.isEmpty(sysDeptService.selectList(new EntityWrapper<SysDept>().eq("parent_id", deptId)))) {
             return new PublicResult<>("组织存在相子组织,请先删除相关组织的子组织", null);
+        }
+        if (!ComUtil.isEmpty(sysUserService.selectList(new EntityWrapper<SysUser>().eq("dept_id", deptId)))) {
+            return new PublicResult<>("组织下面存在用户,请先删除相关组织的用户", null);
         }
         boolean result = sysDeptService.deleteById(deptId);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);

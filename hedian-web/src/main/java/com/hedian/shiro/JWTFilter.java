@@ -1,9 +1,6 @@
 package com.hedian.shiro;
 
-import com.alibaba.fastjson.JSONObject;
 import com.hedian.base.Constant;
-import com.hedian.base.PublicResult;
-import com.hedian.base.PublicResultConstant;
 import com.hedian.config.SpringContextBean;
 import com.hedian.entity.SysUser;
 import com.hedian.service.ISysUserService;
@@ -22,7 +19,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
+import java.io.IOException;
 
 /**
  * @author hedian
@@ -196,19 +193,13 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      * 非法url返回身份错误信息
      */
     private void responseError(ServletRequest request, ServletResponse response) {
-        PrintWriter out = null;
+        HttpServletResponse servletResponse = (HttpServletResponse)response;
+        servletResponse.setCharacterEncoding("utf-8");
+        servletResponse.setContentType("application/json; charset=utf-8");
         try {
-            response.setCharacterEncoding("utf-8");
-            out = response.getWriter();
-            response.setContentType("application/json; charset=utf-8");
-            out.print(JSONObject.toJSONString(new PublicResult<>(PublicResultConstant.UNAUTHORIZED, null)));
-            out.flush();
-        } catch (Exception e) {
+            servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,"获取登录用户信息失败");
+        } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            if (out != null) {
-                out.close();
-            }
         }
     }
 }

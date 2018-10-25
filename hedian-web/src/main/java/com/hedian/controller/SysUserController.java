@@ -235,6 +235,7 @@ public class SysUserController {
         if (!requestJson.getString("password").equals(requestJson.getString("rePassword"))) {
             return new PublicResult<>(PublicResultConstant.INVALID_RE_PASSWORD, null);
         }
+        user.setPwdFlag(1);
         user.setPassword(BCrypt.hashpw(requestJson.getString("password"), BCrypt.gensalt()));
         userService.updateById(user);
         return new PublicResult<String>(PublicResultConstant.SUCCESS, null);

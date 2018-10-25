@@ -20,7 +20,7 @@ import org.thymeleaf.exceptions.TemplateInputException;
  * @author : hedian
  * @date : 2018/05/08
  */
-@ControllerAdvice
+@RestControllerAdvice
 public class AllControllerAdvice {
     private static Logger logger = LoggerFactory.getLogger(AllControllerAdvice.class);
 
@@ -53,8 +53,8 @@ public class AllControllerAdvice {
      * 捕捉UnauthorizedException
      * @return
      */
-    @ResponseStatus(HttpStatus.OK)
-    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(value = UnauthorizedException.class)
     @ResponseBody
     public PublicResult<String> handleUnauthorized() {
         return new PublicResult<>(PublicResultConstant.USER_NO_PERMITION, null);
