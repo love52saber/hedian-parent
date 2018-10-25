@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -78,7 +79,7 @@ public class LoginController {
             }
             user.setLastwrongTime(new Date());
             if (user.getWrongTimes().equals(5)) {
-                user.setLockreason(DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss") + "密码输入错误次数超过5次");
+                user.setLockreason(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "密码输入错误次数超过5次");
                 user.setLocktype(1);
                 user.setLockflag(1);
                 user.setUnlocktime(new Date(System.currentTimeMillis() + (30 * 60 * 1000)));
@@ -86,7 +87,7 @@ public class LoginController {
                 user.setWrongTimes(null);
             }
             userService.updateAllColumnById(user);
-            return new PublicResult<>(!ComUtil.isEmpty(user.getWrongTimes()) ? "用户名或密码错误，剩余" + (5 - user.getWrongTimes()) + "将被锁定" : "用户已锁定请联系管理员", null);
+            return new PublicResult<>(!ComUtil.isEmpty(user.getWrongTimes()) ? "用户名或密码错误，剩余" + (5 - user.getWrongTimes()) + "次后该用户将会被锁定30分钟" : "用户已锁定请联系管理员", null);
         }
         Map<String, Object> result = userService.getLoginUserAndMenuInfo(user);
         //用户被锁定 登录完清空消息
