@@ -173,7 +173,7 @@
         LEFT JOIN tbl_mo_kpi mk ON rmi.mo_kpi_id = mk.mo_kpi_id
         LEFT JOIN sys_user suc ON rmi.confirm_user_id = suc.user_id
         LEFT JOIN sys_user sud ON rmi.dispatch_user_id = sud.user_id
-        WHERE rmi.useflag = 1
+        WHERE rmi.useflag = 1 and rmi.res_abnormalstatus = 1
         <if test="beginTime != null and beginTime != ''">
             AND rmi.res_abnomaltime <![CDATA[ >= ]]> #{beginTime}
         </if>
@@ -214,7 +214,7 @@
         SELECT COUNT(rmi.res_abnormallevel_id) AS abnormalLevelCount, ra.res_abnormallevel_color  AS abnormalLevelColor
         FROM tbl_res_mo_abnormal_info rmi
         INNER JOIN tbl_res_abnormallevel ra ON rmi.res_abnormallevel_id = ra.res_abnormallevel_id
-        WHERE rmi.useflag = 1
+        WHERE rmi.useflag = 1 and rmi.res_abnormalstatus = 1
         GROUP BY rmi.res_abnormallevel_id
     </select>
 

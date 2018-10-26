@@ -112,6 +112,7 @@ public class ResBaseController {
         List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
         map.put("resIds", resIds);
         map.put("resStatus", 1);
+        map.put("resStatu", 3);
         List<ResBase> resBaseAlarms = resBaseService.findByMap(map);
         if(!ComUtil.isEmpty(resBaseAlarms)&& resBaseAlarms.size()>5){
             resBaseAlarms = resBaseAlarms.subList(0,5);

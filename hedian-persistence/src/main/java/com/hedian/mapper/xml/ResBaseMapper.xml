@@ -123,6 +123,7 @@
         </if>
         <if test="resMtypeId != null and resMtypeId != ''">and res_mtype_id = #{resMtypeId}</if>
         <if test="resStatus != null and resStatus != ''">and res_status != #{resStatus}</if>
+        <if test="resStatu != null and resStatu != ''">and res_status != #{resStatu}</if>
         ) a
         LEFT JOIN (select * from tbl_res_abnormallevel where useflag=1) b ON
         a.res_abnormallevel_id=b.res_abnormallevel_id

@@ -3,7 +3,6 @@ package com.hedian.fault;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.toolkit.StringUtils;
-import com.google.gson.JsonObject;
 import com.hedian.base.QuatzConstants;
 import com.hedian.entity.*;
 import com.hedian.model.NoticeModel;
@@ -17,7 +16,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.logging.Logger;
@@ -105,7 +103,7 @@ public class QuartzUtil {
                         Map<String, Object> rootMapCache = new HashMap<>(16);
                         //记录终端机终端下面  异常模版定义 最小的一个
                         rootMapCache.put(QuatzConstants.ROOTPRIORITY, Integer.MAX_VALUE);
-                        rootMapCache.put(QuatzConstants.ROOTCOLOR, null);
+                        rootMapCache.put(QuatzConstants.ROOTCOLOR, "#04bbb7");
                         rootMapCache.put(QuatzConstants.ROOTBASE, null);
                         compareThresholds(mainMap, resBase.getResSerialnumber(), rootMapCache, 0);
                         //更新终端显示的最终颜色
@@ -113,7 +111,10 @@ public class QuartzUtil {
                             //更新终端
                             ResBase rootbase = (ResBase) rootMapCache.get(QuatzConstants.ROOTBASE);
                             rootbase.setResColor((String) rootMapCache.get(QuatzConstants.ROOTCOLOR));
-                            resBaseService.updateById(rootbase);
+                            resBaseService.updateAllColumnById(rootbase);
+                            //消息推送
+                            noticeModel.setType(1);
+                            MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
                             log.info("update rootBase" + rootbase.getResAlias() + " Successful!");
                         }
                     }
@@ -149,7 +150,7 @@ public class QuartzUtil {
             //缓存 MoThreshold
             MoThreshold errMoThreshold = null;
             //如果有离线故障 先恢复离线故障
-            if (flag == 0 && null != tblResMoAbnormalInfos.get(QuatzConstants.OFFLINE_KEY)) {
+           if (flag == 0 && null != tblResMoAbnormalInfos.get(QuatzConstants.OFFLINE_KEY)) {
                 //恢复离线故障
                 restoreNums++;
                 ResMoAbnormalInfo resMoAbnormalInfo = tblResMoAbnormalInfos.get(10000);
