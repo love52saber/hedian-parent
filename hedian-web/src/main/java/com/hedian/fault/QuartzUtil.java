@@ -65,7 +65,7 @@ public class QuartzUtil {
     /**
      * 20S查询一次数据库更新 设备信息，检测报警  更新日志等
      */
-//    @Scheduled(fixedDelay = QuatzConstants.ONE_MINUTE)
+    @Scheduled(fixedDelay = QuatzConstants.ONE_MINUTE)
     @Transactional(rollbackFor = Exception.class)
     public void updateResBase() throws Exception {
         //取出系统配置时间 c_type=20000 parakey为offline_count和offline_interval的配置值
@@ -78,8 +78,6 @@ public class QuartzUtil {
                 log.info("parse int failed");
             }
         }
-//        noticeModel.setType(1);
-//        MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
         //根据1001查询所有系统下的终端
         List<ResBase> resBaseList = resBaseService.selectByResMtypeId(QuatzConstants.ZD_MAIN_TYPE);
         if (null != resBaseList && resBaseList.size() > 0) {

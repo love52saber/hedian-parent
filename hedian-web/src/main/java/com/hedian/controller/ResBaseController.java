@@ -113,6 +113,9 @@ public class ResBaseController {
         map.put("resIds", resIds);
         map.put("resStatus", 1);
         List<ResBase> resBaseAlarms = resBaseService.findByMap(map);
+        if(!ComUtil.isEmpty(resBaseAlarms)&& resBaseAlarms.size()>5){
+            resBaseAlarms = resBaseAlarms.subList(0,5);
+        }
         return new PublicResult(PublicResultConstant.SUCCESS, resBaseAlarms);
     }
 

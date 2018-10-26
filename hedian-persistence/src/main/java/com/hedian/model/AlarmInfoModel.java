@@ -48,11 +48,21 @@ public class AlarmInfoModel {
      */
     private String alarmDesc;
 
+    private Long resAbnormalId;
+
     private Integer cleanType;
 
     private Integer confirmStatus;
 
     private Integer dispatchType;
+
+    public Long getResAbnormalId() {
+        return resAbnormalId;
+    }
+
+    public void setResAbnormalId(Long resAbnormalId) {
+        this.resAbnormalId = resAbnormalId;
+    }
 
     public Integer getCleanType() {
         return cleanType;
@@ -171,6 +181,7 @@ public class AlarmInfoModel {
                 ", alarmObjectAlias='" + alarmObjectAlias + '\'' +
                 ", alarmTime=" + alarmTime +
                 ", alarmDesc='" + alarmDesc + '\'' +
+                ", resAbnormalId=" + resAbnormalId +
                 ", cleanType=" + cleanType +
                 ", confirmStatus=" + confirmStatus +
                 ", dispatchType=" + dispatchType +
