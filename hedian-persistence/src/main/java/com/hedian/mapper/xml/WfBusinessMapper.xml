@@ -41,6 +41,7 @@
         <result column="hopetime" property="hopetime"/>
         <result column="deadtime" property="deadtime"/>
         <result column="username" property="username"/>
+        <result column="res_abnormal_id" property="resAbnormalId"/>
         <result column="res_abnormal_name" property="resAbnormalName"/>
         <result column="res_abnomaltime" property="resAbnomaltime"/>
         <result column="abnormal_type_name" property="abnormalTypeName"/>
@@ -55,8 +56,8 @@
             <id column="review_id" property="reviewId"/>
             <result column="bui_id" property="buiId"/>
             <result column="deptName" property="deptName"/>
-            <result column="approveName" property="approveName"/>
-            <result column="phone" property="phone"/>
+            <result column="disName" property="disName"/>
+            <result column="dis_phone" property="disPhone"/>
             <result column="review_desc" property="reviewDesc"/>
         </association>
         <association property="resBase" javaType="com.hedian.entity.ResBase">
@@ -75,11 +76,15 @@
 
     <select id="selectPageByCondition" resultMap="CustomMap">
         SELECT
-        wb.business_id,wb.wf_id,wb.wf_title,wb.wf_type,wb.telephone,wb.gmt_create,wb.res_abnormaldesc,wb.url,wb.wo_eval_score,wb.current_step,wb.current_user,
+        wb.business_id,wb.wf_id,wb.wf_title,wb.wf_type,wb.telephone,wb.gmt_create,wb.res_abnormal_id,wb.res_abnormaldesc,wb.url,wb.wo_eval_score,wb.current_step,wb.current_user,
         ws.hopetime,
         ws.deadtime,
         su.username,
-        trb.*,
+        trb.res_id,
+        trb.res_name,
+        trb.res_alias,
+        trb.res_ipv4,
+        trb.res_address,
         rmi.res_abnormal_name,
         rmi.res_abnomaltime,
         tat.abnormal_type_name,
@@ -102,24 +107,36 @@
         LEFT JOIN sys_user susu ON wb.current_user = susu.user_id
         LEFT JOIN
         (
-        SELECT twri.business_id,twri.review_id,twri.phone,twri.review_desc,su.username AS approveName, sd.name AS
+        SELECT twri.business_id,twri.review_id,twri.dis_phone,twri.review_desc,su.username AS disName, sd.name AS
         deptName FROM tbl_wf_review_info twri
-        INNER JOIN sys_user su ON twri.user_id=su.user_id
+        INNER JOIN sys_user su ON twri.dis_user_id=su.user_id
         INNER JOIN sys_dept sd ON twri.dept_id=sd.dept_id
         ) twri
         ON wb.business_id = twri.business_id
-        WHERE 1=1
+        WHERE wb.useflag=1
         <if test="wfType != null and wfType != ''">
             AND wb.wf_type = #{wfType}
         </if>
         <if test="wfTitle != null and wfTitle != ''">
             AND wb.wf_title LIKE concat('%',#{wfTitle},'%')
         </if>
-        <if test="resAbnormallevelId != null and resAbnormallevelId != ''">
-            AND tra.res_abnormallevel_id = #{resAbnormallevelId}
+        <if test="resAbnormallevelName != null and resAbnormallevelName != ''">
+            AND tra.res_abnormallevel_name LIKE concat('%',#{resAbnormallevelName},'%')
+        </if>
+        <if test="resName != null and resName != ''">
+            AND trb.res_name LIKE concat('%',#{resName},'%')
         </if>
         <if test="userName != null and userName != ''">
             AND su.userName LIKE concat('%',#{userName},'%')
+        </if>
+        <if test="handleId != null and handleId != ''">
+
+        </if>
+        <if test="userId != null and userId != ''">
+            AND wb.user_id = #{userId}
+        </if>
+        <if test="currentUser != null and currentUser != ''">
+            AND wb.current_user = #{currentUser}
         </if>
         <if test="currentUserName != null and currentUserName != ''">
             AND susu.username LIKE concat('%',#{currentUserName},'%')

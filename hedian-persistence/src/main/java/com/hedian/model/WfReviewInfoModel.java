@@ -7,8 +7,8 @@ public class WfReviewInfoModel {
 
     private Integer buiId;
     private String deptName;
-    private String approveName;
-    private String phone;
+    private String disName;
+    private String disPhone;
     private String reviewDesc;
 
     public Integer getReviewId() {
@@ -35,20 +35,20 @@ public class WfReviewInfoModel {
         this.deptName = deptName;
     }
 
-    public String getApproveName() {
-        return approveName;
+    public String getDisName() {
+        return disName;
     }
 
-    public void setApproveName(String approveName) {
-        this.approveName = approveName;
+    public void setDisName(String disName) {
+        this.disName = disName;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getDisPhone() {
+        return disPhone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setDisPhone(String disPhone) {
+        this.disPhone = disPhone;
     }
 
     public String getReviewDesc() {

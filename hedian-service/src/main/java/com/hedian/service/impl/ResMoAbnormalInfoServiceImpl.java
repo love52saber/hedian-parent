@@ -53,9 +53,12 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
     }
 
     @Override
-    public Page<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, String beginTime, String endTime, String conStatus, String abnormalLevel, String abnormalType,
-                                                              String abnormalName, String mokpiName, String resName, String resAlias, boolean isAutoOrder,String resAbnormalId) {
-        return page.setRecords(resMoAbnormalInfoMapper.selectPageByCondition(page, beginTime, endTime, conStatus, abnormalLevel, abnormalType, abnormalName, mokpiName, resName, resAlias, isAutoOrder, resAbnormalId));
+    public Page<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, String beginTime, String endTime,
+                                                              String conStatus, String abnormalLevel, String abnormalType,
+                                                              String abnormalName, String mokpiName, String resName, Integer resId,
+                                                              String resAlias, boolean isAutoOrder, String resAbnormalId) {
+        return page.setRecords(resMoAbnormalInfoMapper.selectPageByCondition(page, beginTime, endTime, conStatus, abnormalLevel, abnormalType,
+                abnormalName, mokpiName, resName, resId, resAlias, isAutoOrder, resAbnormalId));
     }
 
     @Override

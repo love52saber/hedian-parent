@@ -139,7 +139,7 @@ public class HdywUtils {
             }
         }
         if (null != resStypeKpiList && resStypeKpiList.size() > 0) {
-            for (ResStypeKpi resStypeKpi : resStypeKpiList) {
+             for (ResStypeKpi resStypeKpi : resStypeKpiList) {
                 MoKpi moKpi = resStypeKpi.getMoKpi();
                 //判断当前stypeId有没有匹配到kpi
                 if (null != moKpi) {

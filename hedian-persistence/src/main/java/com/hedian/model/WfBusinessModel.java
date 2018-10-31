@@ -46,6 +46,8 @@ public class WfBusinessModel {
 
     private String url;
 
+    private Long resAbnormalId;
+
     private String resAbnormalName;
 
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
@@ -196,6 +198,14 @@ public class WfBusinessModel {
         this.url = url;
     }
 
+    public Long getResAbnormalId() {
+        return resAbnormalId;
+    }
+
+    public void setResAbnormalId(Long resAbnormalId) {
+        this.resAbnormalId = resAbnormalId;
+    }
+
     public String getResAbnormalName() {
         return resAbnormalName;
     }
@@ -299,6 +309,7 @@ public class WfBusinessModel {
     public void setWfReviewInfoModel(WfReviewInfoModel wfReviewInfoModel) {
         this.wfReviewInfoModel = wfReviewInfoModel;
     }
+
 
 
 }

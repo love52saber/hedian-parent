@@ -26,10 +26,11 @@ public class WfReviewInfo extends Model<WfReviewInfo> {
     @TableField("business_id")
     private Integer businessId;
     private Integer deptId;
-    private Integer userId;
-    private String phone;
+    private Integer reviewUserId;
     @TableField("review_desc")
     private String reviewDesc;
+    private Integer disUserId;
+    private String disPhone;
 
 
     public Integer getReviewId() {
@@ -56,20 +57,28 @@ public class WfReviewInfo extends Model<WfReviewInfo> {
         this.deptId = deptId;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public Integer getReviewUserId() {
+        return reviewUserId;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setReviewUserId(Integer reviewUserId) {
+        this.reviewUserId = reviewUserId;
     }
 
-    public String getPhone() {
-        return phone;
+    public Integer getDisUserId() {
+        return disUserId;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setDisUserId(Integer disUserId) {
+        this.disUserId = disUserId;
+    }
+
+    public String getDisPhone() {
+        return disPhone;
+    }
+
+    public void setDisPhone(String disPhone) {
+        this.disPhone = disPhone;
     }
 
     public String getReviewDesc() {
@@ -91,9 +100,10 @@ public class WfReviewInfo extends Model<WfReviewInfo> {
                 "reviewId=" + reviewId +
                 ", businessId=" + businessId +
                 ", deptId=" + deptId +
-                ", userId=" + userId +
-                ", phone=" + phone +
+                ", reviewUserId=" + reviewUserId +
                 ", reviewDesc='" + reviewDesc + '\'' +
+                ", disUserId=" + disUserId +
+                ", disPhone='" + disPhone + '\'' +
                 '}';
     }
 }

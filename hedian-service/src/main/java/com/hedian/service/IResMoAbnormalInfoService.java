@@ -30,7 +30,8 @@ public interface IResMoAbnormalInfoService extends IService<ResMoAbnormalInfo> {
 
     Page<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, String beginTime, String endTime, String conStatus,
                                                        String abnormalLevel, String abnormalType, String abnormalName,
-                                                       String mokpiName, String resName, String resAlias, boolean isAutoOrder,String resAbnormalId);
+                                                       String mokpiName, String resName, Integer resId, String resAlias, boolean isAutoOrder,
+                                                       String resAbnormalId);
 
     List<AbnormalLevelModel> selectAbnormalLevelCount();
 

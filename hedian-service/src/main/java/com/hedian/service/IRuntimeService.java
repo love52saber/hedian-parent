@@ -8,8 +8,9 @@ import com.hedian.model.WfBusinessModel;
 public interface IRuntimeService {
 
 
-    Page<WfBusinessModel> selectPageByConditionResBase(Page<WfBusinessModel> page, Integer wfType, String wfTitle, Integer resAbnormallevelId,
-                                                       String userName, String currentUserName, String beginTime, String endTime);
+    Page<WfBusinessModel> selectPageByConditionResBase(Page<WfBusinessModel> page, Integer wfType, String wfTitle, String resAbnormallevelName,String resName,
+                                                       String userName, String currentUserName, String beginTime, String endTime, Integer currentUser,
+                                                       Integer userId, Integer handleId);
 
     /**
      * 开启流程
@@ -26,4 +27,6 @@ public interface IRuntimeService {
      * @return
      */
     String saveWorkFlow(JSONObject requestJson) throws BusinessException;
+
+    String handleWorkFlow(JSONObject requestJson);
 }

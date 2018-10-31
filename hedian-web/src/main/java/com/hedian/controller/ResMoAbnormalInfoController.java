@@ -62,24 +62,26 @@ public class ResMoAbnormalInfoController {
             @ApiImplicitParam(name = "abnormalName", value = "告警名称", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "mokpiName", value = "告警对象名称", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "resName", value = "告警设备名称", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "resId", value = "设备Id", dataType = "int", paramType = "query"),
             @ApiImplicitParam(name = "resAlias", value = "告警设备别名", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "resAbnormalId", value = "告警ID", dataType = "String", paramType = "query")
     })
     public PublicResult getPageList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
-                                       @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-                                       @RequestParam(name = "beginTime", defaultValue = "", required = false) String beginTime,
-                                       @RequestParam(name = "endTime", defaultValue = "", required = false) String endTime,
-                                       @RequestParam(name = "conStatus", defaultValue = "", required = false) String conStatus,
-                                       @RequestParam(name = "abnormalLevel", defaultValue = "", required = false) String abnormalLevel,
-                                       @RequestParam(name = "abnormalType", defaultValue = "", required = false) String abnormalType,
-                                       @RequestParam(name = "abnormalName", defaultValue = "", required = false) String abnormalName,
-                                       @RequestParam(name = "mokpiName", defaultValue = "", required = false) String mokpiName,
-                                       @RequestParam(name = "resName", defaultValue = "", required = false) String resName,
-                                       @RequestParam(name = "resAlias", defaultValue = "", required = false) String resAlias,
-                                       @RequestParam(name = "isAutoOrder", defaultValue = "", required = false) boolean isAutoOrder,
-                                       @RequestParam(name = "resAbnormalId",defaultValue = "", required = false) String resAbnormalId) {
+                                    @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+                                    @RequestParam(name = "beginTime", defaultValue = "", required = false) String beginTime,
+                                    @RequestParam(name = "endTime", defaultValue = "", required = false) String endTime,
+                                    @RequestParam(name = "conStatus", defaultValue = "", required = false) String conStatus,
+                                    @RequestParam(name = "abnormalLevel", defaultValue = "", required = false) String abnormalLevel,
+                                    @RequestParam(name = "abnormalType", defaultValue = "", required = false) String abnormalType,
+                                    @RequestParam(name = "abnormalName", defaultValue = "", required = false) String abnormalName,
+                                    @RequestParam(name = "mokpiName", defaultValue = "", required = false) String mokpiName,
+                                    @RequestParam(name = "resName", defaultValue = "", required = false) String resName,
+                                    @RequestParam(name = "resId", defaultValue = "", required = false) Integer resId,
+                                    @RequestParam(name = "resAlias", defaultValue = "", required = false) String resAlias,
+                                    @RequestParam(name = "isAutoOrder", defaultValue = "", required = false) boolean isAutoOrder,
+                                    @RequestParam(name = "resAbnormalId", defaultValue = "", required = false) String resAbnormalId) {
         Page<ResMoAbnormalInfoModel> moThresholdModelPage = resMoAbnormalInfoService.selectPageByCondition(new Page<>(pageIndex, pageSize), beginTime, endTime, conStatus, abnormalLevel,
-                abnormalType, abnormalName, mokpiName, resName, resAlias, isAutoOrder,resAbnormalId);
+                abnormalType, abnormalName, mokpiName, resName, resId, resAlias, isAutoOrder, resAbnormalId);
         return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(moThresholdModelPage.getTotal(), pageIndex, pageSize, moThresholdModelPage.getRecords()));
     }
 
@@ -97,7 +99,7 @@ public class ResMoAbnormalInfoController {
      * 删除告警
      */
     @DeleteMapping(value = "/{resAbnormalId}")
-    public PublicResult deleteAbnormalInfo(@PathVariable("resAbnormalId") Long resAbnormalId) throws Exception{
+    public PublicResult deleteAbnormalInfo(@PathVariable("resAbnormalId") Long resAbnormalId) throws Exception {
 
         boolean result = resMoAbnormalInfoService.deleteResAbnoraml(resAbnormalId);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
@@ -120,7 +122,7 @@ public class ResMoAbnormalInfoController {
      */
     @PutMapping(value = "/cleanAbnormal")
     public PublicResult cleanAbnormalInfo(@ValidationParam("resAbnormalId")
-                                          @RequestBody JSONObject requestJson) throws Exception{
+                                          @RequestBody JSONObject requestJson) throws Exception {
         boolean result = resMoAbnormalInfoService.cleanResAbnormal(requestJson);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }

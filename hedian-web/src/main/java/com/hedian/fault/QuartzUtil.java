@@ -112,9 +112,6 @@ public class QuartzUtil {
                             ResBase rootbase = (ResBase) rootMapCache.get(QuatzConstants.ROOTBASE);
                             rootbase.setResColor((String) rootMapCache.get(QuatzConstants.ROOTCOLOR));
                             resBaseService.updateAllColumnById(rootbase);
-                            //消息推送
-                            noticeModel.setType(1);
-                            MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
                             log.info("update rootBase" + rootbase.getResAlias() + " Successful!");
                         }
                     }

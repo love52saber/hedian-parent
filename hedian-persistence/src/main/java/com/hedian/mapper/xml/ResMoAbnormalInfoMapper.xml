@@ -204,6 +204,9 @@
         <if test="resName != null and resName != ''">
             AND rb.res_name LIKE concat('%',#{resName},'%')
         </if>
+        <if test="resId != null and resId != ''">
+            AND rmi.res_id = #{resId}
+        </if>
         <if test="resAlias != null and resAlias != ''">
             and rb.res_alias LIKE concat('%', #{resAlias},'%')
         </if>
