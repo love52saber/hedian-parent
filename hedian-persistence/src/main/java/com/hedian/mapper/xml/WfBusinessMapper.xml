@@ -45,6 +45,8 @@
         <result column="res_abnormal_name" property="resAbnormalName"/>
         <result column="res_abnomaltime" property="resAbnomaltime"/>
         <result column="abnormal_type_name" property="abnormalTypeName"/>
+        <result column="abnormal_type_id" property="abnormalTypeId"/>
+        <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
         <result column="res_abnormallevel_name" property="resAbnormallevelName"/>
         <result column="res_mtype_name" property="resMtypeName"/>
         <result column="res_stype_name" property="resStypeName"/>
@@ -52,20 +54,65 @@
         <result column="current_user" property="currentUser"/>
         <result column="current_step" property="currentStep"/>
         <result column="wo_eval_score" property="woEvalScore"/>
-        <association property="wfReviewInfoModel" javaType="com.hedian.model.WfReviewInfoModel">
-            <id column="review_id" property="reviewId"/>
-            <result column="bui_id" property="buiId"/>
-            <result column="deptName" property="deptName"/>
-            <result column="disName" property="disName"/>
-            <result column="dis_phone" property="disPhone"/>
-            <result column="review_desc" property="reviewDesc"/>
-        </association>
         <association property="resBase" javaType="com.hedian.entity.ResBase">
             <id column="res_id" property="resId"/>
             <result column="res_name" property="resName"/>
             <result column="res_alias" property="resAlias"/>
             <result column="res_ipv4" property="resIpv4"/>
             <result column="res_address" property="resAddress"/>
+        </association>
+        <association property="wfReviewInfoModel" javaType="com.hedian.model.WfReviewInfoModel">
+            <id column="review_id" property="reviewId"/>
+            <result column="disName" property="disName"/>
+            <result column="dis_phone" property="disPhone"/>
+            <result column="review_desc" property="reviewDesc"/>
+            <result column="review_time" property="reviewTime"/>
+        </association>
+        <association property="wfDisInfoModel" javaType="com.hedian.model.WfDisInfoModel">
+            <id column="dis_id" property="disId"/>
+            <result column="dis_info" property="disInfo"/>
+            <result column="dis_time" property="disTime" />
+            <result column="overName" property="overName"/>
+            <result column="over_phone" property="overPhone"/>
+        </association>
+        <association property="wfOverInfoModel" javaType="com.hedian.model.WfOverInfoModel">
+            <id column="over_id" property="overId"/>
+            <result column="over_file" property="overFile"/>
+            <result column="over_type" property="overType"/>
+            <result column="over_info" property="overInfo"/>
+            <result column="over_time" property="overTime" />
+            <result column="handleName" property="handleName"/>
+            <result column="handle_phone" property="handlePhone"/>
+        </association>
+        <association property="wfHandleInfoModel" javaType="com.hedian.model.WfHandleInfoModel">
+            <id column="handle_id" property="handleId"/>
+            <result column="handle_file" property="handleFile"/>
+            <result column="handle_type" property="handleType"/>
+            <result column="handle_info" property="handleInfo"/>
+            <result column="handle_time" property="handleTime"/>
+            <result column="confirmName" property="confirmName"/>
+            <result column="confirm_phone" property="confirmPhone"/>
+        </association>
+        <association property="wfConfirmInfoModel" javaType="com.hedian.model.WfConfirmInfoModel">
+            <id column="confirm_id" property="confirmId"/>
+            <result column="confirm_info" property="confirmInfo"/>
+            <result column="confirm_time" property="confirmTime" />
+            <result column="baseAppraName" property="baseAppraName"/>
+            <result column="base_appra_phone" property="baseAppraPhone"/>
+        </association>
+        <association property="wfBaseAppraInfoModel" javaType="com.hedian.model.WfBaseAppraInfoModel">
+            <id column="base_appra_id" property="baseAppraId"/>
+            <result column="base_appra_info" property="baseAppraInfo"/>
+            <result column="base_appra_score" property="baseAppraScore"/>
+            <result column="base_appra_time" property="baseAppraTime" />
+            <result column="kexinAppraName" property="kexinAppraName"/>
+            <result column="kexin_appra_phone" property="kexinAppraPhone"/>
+        </association>
+        <association property="wfKexinAppraInfoModel" javaType="com.hedian.model.WfKexinAppraInfoModel">
+            <id column="kexin_appra_id" property="kexinAppraId"/>
+            <result column="kexin_appra_info" property="kexinAppraInfo"/>
+            <result column="kexin_appra_scora" property="kexinAppraScora"/>
+            <result column="kexin_appra_time" property="kexinAppraTime" />
         </association>
     </resultMap>
 
@@ -76,7 +123,9 @@
 
     <select id="selectPageByCondition" resultMap="CustomMap">
         SELECT
-        wb.business_id,wb.wf_id,wb.wf_title,wb.wf_type,wb.telephone,wb.gmt_create,wb.res_abnormal_id,wb.res_abnormaldesc,wb.url,wb.wo_eval_score,wb.current_step,wb.current_user,
+        wb.business_id,wb.wf_id,wb.wf_title,wb.wf_type,wb.telephone,wb.gmt_create,wb.res_abnormal_id,wb.abnormal_type_id,
+        wb.res_abnormallevel_id,
+        wb.res_abnormaldesc,wb.url,wb.wo_eval_score,wb.current_step,wb.current_user,
         ws.hopetime,
         ws.deadtime,
         su.username,
@@ -92,7 +141,13 @@
         trm.res_mtype_name,
         trs.res_stype_name,
         susu.username As currentUserName,
-        twri.*
+        twri.*,
+        twdi.*,
+        twoi.*,
+        twhi.*,
+        twci.*,
+        twbai.*,
+        twkai.*
 
         FROM
         tbl_wf_business wb
@@ -107,12 +162,53 @@
         LEFT JOIN sys_user susu ON wb.current_user = susu.user_id
         LEFT JOIN
         (
-        SELECT twri.business_id,twri.review_id,twri.dis_phone,twri.review_desc,su.username AS disName, sd.name AS
-        deptName FROM tbl_wf_review_info twri
+        SELECT twri.business_id,twri.review_id,twri.dis_phone,twri.review_desc,twri.review_time,su.name AS disName FROM
+        tbl_wf_review_info twri
         INNER JOIN sys_user su ON twri.dis_user_id=su.user_id
-        INNER JOIN sys_dept sd ON twri.dept_id=sd.dept_id
         ) twri
         ON wb.business_id = twri.business_id
+        LEFT JOIN
+        (
+        SELECT twdi.dis_id,twdi.business_id,twdi.over_phone,twdi.dis_info,twdi.dis_time,su.name AS overName FROM
+        tbl_wf_dis_info twdi
+        INNER JOIN sys_user su ON twdi.over_user_id=su.user_id
+        ) twdi
+        ON wb.business_id = twdi.business_id
+        LEFT JOIN
+        (
+        SELECT twoi.business_id,twoi.over_id,twoi.over_info,twoi.over_file,twoi.over_type,twoi.over_time,twoi.handle_phone,su.name AS
+        handleName FROM tbl_wf_over_info twoi
+        INNER JOIN sys_user su ON twoi.handle_user_id=su.user_id
+        ) twoi
+        ON wb.business_id = twoi.business_id
+        LEFT JOIN
+        (
+        SELECT twhi.business_id,twhi.handle_id,twhi.confirm_phone,twhi.handle_file,twhi.handle_type,twhi.handle_time,su.name AS
+        confirmName FROM tbl_wf_handle_info twhi
+        INNER JOIN sys_user su ON twhi.confirm_user_id=su.user_id
+        ) twhi
+        ON wb.business_id = twhi.business_id
+        LEFT JOIN
+        (
+        SELECT twci.business_id,twci.confirm_id,twci.base_appra_phone,twci.confirm_info,twci.confirm_time,su.name AS baseAppraName FROM
+        tbl_wf_confirm_info twci
+        INNER JOIN sys_user su ON twci.base_appra_user_id=su.user_id
+        ) twci
+        ON wb.business_id = twci.business_id
+        LEFT JOIN
+        (
+        SELECT
+        twbai.business_id,twbai.base_appra_id,twbai.base_appra_score,twbai.kexin_appra_phone,twbai.base_appra_info,twbai.base_appra_time,su.name
+        AS kexinAppraName FROM tbl_wf_base_appra_info twbai
+        INNER JOIN sys_user su ON twbai.kexin_appra_user_id=su.user_id
+        ) twbai
+        ON wb.business_id = twbai.business_id
+        LEFT JOIN
+        (
+        SELECT twkai.business_id,twkai.kexin_appra_id,twkai.kexin_appra_scora,twkai.kexin_appra_time,twkai.kexin_appra_info FROM
+        tbl_wf_kexin_appra_info twkai
+        ) twkai
+        ON wb.business_id = twkai.business_id
         WHERE wb.useflag=1
         <if test="wfType != null and wfType != ''">
             AND wb.wf_type = #{wfType}

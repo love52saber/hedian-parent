@@ -6,10 +6,7 @@ import com.hedian.base.BusinessException;
 import com.hedian.entity.*;
 import com.hedian.mapper.SysRoleMapper;
 import com.hedian.mapper.SysUserMapper;
-import com.hedian.service.ISysFileService;
-import com.hedian.service.ISysMenuService;
-import com.hedian.service.ISysUserRoleService;
-import com.hedian.service.ISysUserService;
+import com.hedian.service.*;
 import com.hedian.util.ComUtil;
 import com.hedian.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +42,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Autowired
     private ISysFileService sysFileService;
+    @Autowired
+    private ISysConfService sysConfService;
 
     @Override
     public boolean register(SysUser user, List<Long> roleIds, String url) throws BusinessException {
@@ -136,6 +135,40 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public List<SysUser> selectUserList(Long grpId) {
         List<SysUser> userList = sysUserMapper.selectUserList(grpId);
+        return userList;
+    }
+
+    @Override
+    public List<SysUser> getWfUsers(Integer stepType, Long deptId) throws BusinessException {
+
+        List<SysUser> userList = null;
+        switch (stepType){
+            case 1:
+                stepType = 1000;
+                break;
+            case 2:
+                stepType = 2000;
+                break;
+            case 3:
+                stepType = 3000;
+                break;
+            case 4:
+                stepType = 4000;
+                break;
+            case 5:
+                stepType = 5000;
+                break;
+            case 6:
+                stepType = 6000;
+                break;
+            default:
+                throw new BusinessException("stepType类型不正确!stepType＝" + stepType);
+        }
+
+        SysConf sysConf = sysConfService.selectOne(new EntityWrapper<SysConf>().where("c_type={0} and paraKey={1}", stepType, deptId));
+        if(!ComUtil.isEmpty(sysConf)){
+            userList = this.selectUserList(Long.valueOf(sysConf.getParavalue()));
+        }
         return userList;
     }
 }

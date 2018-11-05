@@ -28,5 +28,7 @@ public interface IRuntimeService {
      */
     String saveWorkFlow(JSONObject requestJson) throws BusinessException;
 
-    String handleWorkFlow(JSONObject requestJson);
+    String handleWorkFlow(JSONObject requestJson) throws BusinessException;
+
+    String rejectWorkFlow(JSONObject requestJson);
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.WfOverInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.WfOverInfo">
+        <id column="over_id" property="overId" />
+        <result column="business_id" property="businessId" />
+        <result column="over_user_id" property="overUserId" />
+        <result column="over_info" property="overInfo" />
+        <result column="over_type" property="overType" />
+        <result column="over_file" property="overFile" />
+        <result column="over_time" property="overTime" />
+        <result column="handle_user_id" property="handleUserId" />
+        <result column="handle_phone" property="handlePhone" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        over_id AS overId,  business_id AS businessId,over_type AS overType,over_user_id AS overUserId, over_info AS overInfo, over_file AS overFile,
+         over_time AS overTime,handle_user_id AS handleUserId, handle_phone AS handlePhone
+    </sql>
+
+</mapper>

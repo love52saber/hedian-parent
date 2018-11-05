@@ -2,7 +2,6 @@ package com.hedian.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.hedian.entity.ResBase;
-import com.hedian.entity.WfReviewInfo;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -50,10 +49,15 @@ public class WfBusinessModel {
 
     private String resAbnormalName;
 
+
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date resAbnomaltime;
 
     private String abnormalTypeName;
+
+    private Integer abnormalTypeId;
+
+    private Integer resAbnormallevelId;
 
     private String resAbnormallevelName;
 
@@ -91,8 +95,83 @@ public class WfBusinessModel {
 
     private WfReviewInfoModel wfReviewInfoModel;
 
+    private WfDisInfoModel wfDisInfoModel;
+
+    private WfOverInfoModel wfOverInfoModel;
+
+    private WfHandleInfoModel wfHandleInfoModel;
+
+    private WfConfirmInfoModel wfConfirmInfoModel;
+
+    private WfBaseAppraInfoModel wfBaseAppraInfoModel;
+
+    private WfKexinAppraInfoModel wfKexinAppraInfoModel;
+
+    public WfDisInfoModel getWfDisInfoModel() {
+        return wfDisInfoModel;
+    }
+
+    public void setWfDisInfoModel(WfDisInfoModel wfDisInfoModel) {
+        this.wfDisInfoModel = wfDisInfoModel;
+    }
+
+    public WfOverInfoModel getWfOverInfoModel() {
+        return wfOverInfoModel;
+    }
+
+    public void setWfOverInfoModel(WfOverInfoModel wfOverInfoModel) {
+        this.wfOverInfoModel = wfOverInfoModel;
+    }
+
+    public WfHandleInfoModel getWfHandleInfoModel() {
+        return wfHandleInfoModel;
+    }
+
+    public void setWfHandleInfoModel(WfHandleInfoModel wfHandleInfoModel) {
+        this.wfHandleInfoModel = wfHandleInfoModel;
+    }
+
+    public WfConfirmInfoModel getWfConfirmInfoModel() {
+        return wfConfirmInfoModel;
+    }
+
+    public void setWfConfirmInfoModel(WfConfirmInfoModel wfConfirmInfoModel) {
+        this.wfConfirmInfoModel = wfConfirmInfoModel;
+    }
+
+    public WfBaseAppraInfoModel getWfBaseAppraInfoModel() {
+        return wfBaseAppraInfoModel;
+    }
+
+    public void setWfBaseAppraInfoModel(WfBaseAppraInfoModel wfBaseAppraInfoModel) {
+        this.wfBaseAppraInfoModel = wfBaseAppraInfoModel;
+    }
+
+    public WfKexinAppraInfoModel getWfKexinAppraInfoModel() {
+        return wfKexinAppraInfoModel;
+    }
+
+    public void setWfKexinAppraInfoModel(WfKexinAppraInfoModel wfKexinAppraInfoModel) {
+        this.wfKexinAppraInfoModel = wfKexinAppraInfoModel;
+    }
 
     private String taskId;
+
+    public Integer getAbnormalTypeId() {
+        return abnormalTypeId;
+    }
+
+    public void setAbnormalTypeId(Integer abnormalTypeId) {
+        this.abnormalTypeId = abnormalTypeId;
+    }
+
+    public Integer getResAbnormallevelId() {
+        return resAbnormallevelId;
+    }
+
+    public void setResAbnormallevelId(Integer resAbnormallevelId) {
+        this.resAbnormallevelId = resAbnormallevelId;
+    }
 
     public Long getCurrentUser() {
         return currentUser;

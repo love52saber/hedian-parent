@@ -59,4 +59,13 @@ public interface ISysUserService extends IService<SysUser> {
      * @return
      */
     List<SysUser> selectUserList(Long grpId);
+
+    /**
+     * 获取配置用户
+     * @param stepType
+     * @param deptId
+     * @return
+     */
+
+    List<SysUser> getWfUsers(Integer stepType, Long deptId) throws BusinessException;
 }

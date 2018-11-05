@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.annotation.CurrentUser;
 import com.hedian.annotation.Pass;
 import com.hedian.annotation.ValidationParam;
+import com.hedian.base.BusinessException;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
@@ -95,8 +96,17 @@ public class InitializeWorkFlowController {
      * 审批，派发，查看，处理，确认
      */
     @PostMapping(value = "handleWorkFlow")
-    public PublicResult<String> handleWorkFlow(@ValidationParam("currentStep") @RequestBody JSONObject requestJson) throws Exception {
+    public PublicResult<String> handleWorkFlow(@ValidationParam("currentStep,taskId,businessId") @RequestBody JSONObject requestJson) throws BusinessException {
         String instanceId = runtimeService.handleWorkFlow(requestJson);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, instanceId);
+    }
+
+    /**
+     * 驳回，跳转
+     */
+    @PostMapping(value = "rejectWorkFlow")
+    public PublicResult<String> rejectWorkFlow(@ValidationParam("currentStep,taskId,businessId") @RequestBody JSONObject requestJson) throws BusinessException {
+        String instanceId = runtimeService.rejectWorkFlow(requestJson);
         return new PublicResult<>(PublicResultConstant.SUCCESS, instanceId);
     }
 }

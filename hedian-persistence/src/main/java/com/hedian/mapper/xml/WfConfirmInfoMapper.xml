@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.WfConfirmInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.WfConfirmInfo">
+        <id column="confirm_id" property="confirmId" />
+        <result column="business_id" property="businessId" />
+        <result column="confirm_user_id" property="confirmUserId" />
+        <result column="confirm_info" property="confirmInfo" />
+        <result column="confirm_time" property="confirmTime" />
+        <result column="base_appra_user_id" property="baseAppraUserId" />
+        <result column="base_appra_phone" property="baseAppraPhone" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        confirm_id AS confirmId,  business_id AS businessId,confirm_user_id AS confirmUserId, confirm_info AS confirmInfo, base_appra_user_id AS baseAppraUserId,
+          confirm_time AS confirmTime,base_appra_phone AS baseAppraPhone
+    </sql>
+
+</mapper>
