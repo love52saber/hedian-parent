@@ -3,6 +3,7 @@ package com.hedian.fault;
 
 import com.baomidou.mybatisplus.toolkit.StringUtils;
 import com.hedian.entity.*;
+import com.hedian.util.DateTimeUtil;
 import org.apache.tools.ant.util.DateUtils;
 
 import java.util.Date;
@@ -114,7 +115,7 @@ public class TranslateTemplateUtil {
                                            ResBase resBase, ResMaintype resMainType, ResSubtype resSubtype) {
         if (StringUtils.isNotEmpty(template)) {
             //获取当前  yyyy-MM-dd HH:mm:ss 时间
-            String currentTime = DateUtils.format(new Date(), FORMAT_DATE);
+            String currentTime = DateTimeUtil.formatDateTimetoString(new Date(), FORMAT_DATE);
             /**
              * 资源别名
              */
