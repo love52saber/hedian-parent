@@ -68,7 +68,7 @@ public class WfBusinessModel {
      * 流程状态
      */
 
-    private Integer wfStatus;
+    private Boolean wfStatus;
 
     private Integer useflag;
     /**
@@ -333,11 +333,11 @@ public class WfBusinessModel {
         this.resMtypeName = resMtypeName;
     }
 
-    public Integer getWfStatus() {
+    public Boolean getWfStatus() {
         return wfStatus;
     }
 
-    public void setWfStatus(Integer wfStatus) {
+    public void setWfStatus(Boolean wfStatus) {
         this.wfStatus = wfStatus;
     }
 

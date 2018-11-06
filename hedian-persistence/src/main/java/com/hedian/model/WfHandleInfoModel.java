@@ -9,9 +9,10 @@ public class WfHandleInfoModel {
 
     private Integer handleId;
 
-    private boolean handleType;
+    private Boolean handleType;
     private String confirmPhone;
     private String confirmName;
+    private String currentHandleName;
     private String handleFile;
     private String handleInfo;
     private String handleMethod;
@@ -24,14 +25,6 @@ public class WfHandleInfoModel {
 
     public void setHandleId(Integer handleId) {
         this.handleId = handleId;
-    }
-
-    public boolean isHandleType() {
-        return handleType;
-    }
-
-    public void setHandleType(boolean handleType) {
-        this.handleType = handleType;
     }
 
     public String getConfirmPhone() {
@@ -82,6 +75,22 @@ public class WfHandleInfoModel {
         this.handleTime = handleTime;
     }
 
+    public Boolean getHandleType() {
+        return handleType;
+    }
+
+    public void setHandleType(Boolean handleType) {
+        this.handleType = handleType;
+    }
+
+    public String getCurrentHandleName() {
+        return currentHandleName;
+    }
+
+    public void setCurrentHandleName(String currentHandleName) {
+        this.currentHandleName = currentHandleName;
+    }
+
     @Override
     public String toString() {
         return "WfHandleInfoModel{" +
@@ -89,6 +98,7 @@ public class WfHandleInfoModel {
                 ", handleType=" + handleType +
                 ", confirmPhone='" + confirmPhone + '\'' +
                 ", confirmName='" + confirmName + '\'' +
+                ", currentHandleName='" + currentHandleName + '\'' +
                 ", handleFile='" + handleFile + '\'' +
                 ", handleInfo='" + handleInfo + '\'' +
                 ", handleMethod='" + handleMethod + '\'' +

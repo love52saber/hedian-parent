@@ -11,6 +11,7 @@ public class WfConfirmInfoModel {
 
     private String baseAppraName;
     private String baseAppraPhone;
+    private String currentConfirmName;
     private String confirmInfo;
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date confirmTime;
@@ -55,12 +56,21 @@ public class WfConfirmInfoModel {
         this.confirmTime = confirmTime;
     }
 
+    public String getCurrentConfirmName() {
+        return currentConfirmName;
+    }
+
+    public void setCurrentConfirmName(String currentConfirmName) {
+        this.currentConfirmName = currentConfirmName;
+    }
+
     @Override
     public String toString() {
         return "WfConfirmInfoModel{" +
                 "confirmId=" + confirmId +
                 ", baseAppraName='" + baseAppraName + '\'' +
                 ", baseAppraPhone='" + baseAppraPhone + '\'' +
+                ", currentConfirmName='" + currentConfirmName + '\'' +
                 ", confirmInfo='" + confirmInfo + '\'' +
                 ", confirmTime=" + confirmTime +
                 '}';

@@ -10,6 +10,7 @@ public class WfDisInfoModel {
     private Integer disId;
     private String overName;
     private String overPhone;
+    private String currentDisName;
     private String disInfo;
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date disTime;
@@ -54,12 +55,21 @@ public class WfDisInfoModel {
         this.disTime = disTime;
     }
 
+    public String getCurrentDisName() {
+        return currentDisName;
+    }
+
+    public void setCurrentDisName(String currentDisName) {
+        this.currentDisName = currentDisName;
+    }
+
     @Override
     public String toString() {
         return "WfDisInfoModel{" +
                 "disId=" + disId +
                 ", overName='" + overName + '\'' +
                 ", overPhone='" + overPhone + '\'' +
+                ", currentDisName='" + currentDisName + '\'' +
                 ", disInfo='" + disInfo + '\'' +
                 ", disTime=" + disTime +
                 '}';

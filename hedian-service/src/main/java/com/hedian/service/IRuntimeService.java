@@ -9,7 +9,7 @@ public interface IRuntimeService {
 
 
     Page<WfBusinessModel> selectPageByConditionResBase(Page<WfBusinessModel> page, Integer wfType, String wfTitle, String resAbnormallevelName,String resName,
-                                                       String userName, String currentUserName, String beginTime, String endTime, Integer currentUser,
+                                                       String userName, boolean wfStatus,String currentUserName, String beginTime, String endTime, Integer currentUser,
                                                        Integer userId, Integer handleId);
 
     /**
@@ -30,5 +30,5 @@ public interface IRuntimeService {
 
     String handleWorkFlow(JSONObject requestJson) throws BusinessException;
 
-    String rejectWorkFlow(JSONObject requestJson);
+    String rejectWorkFlow(JSONObject requestJson) throws BusinessException;
 }

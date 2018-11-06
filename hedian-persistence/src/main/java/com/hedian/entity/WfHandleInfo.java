@@ -36,7 +36,7 @@ public class WfHandleInfo extends Model<WfHandleInfo> {
     @TableField("handle_method")
     private String handleMethod;
     @TableField("handle_type")
-    private Integer handleType;
+    private Boolean handleType;
     @TableField("handle_file")
     private String handleFile;
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
@@ -72,11 +72,11 @@ public class WfHandleInfo extends Model<WfHandleInfo> {
         this.handleInfo = handleInfo;
     }
 
-    public Integer getHandleType() {
+    public Boolean getHandleType() {
         return handleType;
     }
 
-    public void setHandleType(Integer handleType) {
+    public void setHandleType(Boolean handleType) {
         this.handleType = handleType;
     }
 

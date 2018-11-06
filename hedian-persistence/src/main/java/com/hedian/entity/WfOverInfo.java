@@ -34,7 +34,7 @@ public class WfOverInfo extends Model<WfOverInfo> {
     @TableField("over_info")
     private String overInfo;
     @TableField("over_type")
-    private boolean overType;
+    private Boolean overType;
     @TableField("over_file")
     private String overFile;
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
@@ -102,11 +102,11 @@ public class WfOverInfo extends Model<WfOverInfo> {
         this.overTime = overTime;
     }
 
-    public boolean isOverType() {
+    public Boolean isOverType() {
         return overType;
     }
 
-    public void setOverType(boolean overType) {
+    public void setOverType(Boolean overType) {
         this.overType = overType;
     }
 

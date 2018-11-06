@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.annotations.TableName;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -235,5 +236,34 @@ public class SysDept extends Model<SysDept> {
                 ", userIdMod=" + userIdMod +
                 ", children=" + children +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SysDept sysDept = (SysDept) o;
+        return Objects.equals(deptId, sysDept.deptId) &&
+                Objects.equals(parentId, sysDept.parentId) &&
+                Objects.equals(orgType, sysDept.orgType) &&
+                Objects.equals(orgCode, sysDept.orgCode) &&
+                Objects.equals(name, sysDept.name) &&
+                Objects.equals(shortName, sysDept.shortName) &&
+                Objects.equals(orgDesc, sysDept.orgDesc) &&
+                Objects.equals(orderNum, sysDept.orderNum) &&
+                Objects.equals(delflag, sysDept.delflag) &&
+                Objects.equals(useflag, sysDept.useflag) &&
+                Objects.equals(userIdCreate, sysDept.userIdCreate) &&
+                Objects.equals(gmtCreate, sysDept.gmtCreate) &&
+                Objects.equals(gmtModified, sysDept.gmtModified) &&
+                Objects.equals(userIdMod, sysDept.userIdMod) &&
+                Objects.equals(children, sysDept.children) &&
+                Objects.equals(parentName, sysDept.parentName);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(deptId, parentId, orgType, orgCode, name, shortName, orgDesc, orderNum, delflag, useflag, userIdCreate, gmtCreate, gmtModified, userIdMod, children, parentName);
     }
 }

@@ -11,6 +11,7 @@ public class WfKexinAppraInfoModel {
 
     private Integer kexinAppraScora;
     private String kexinAppraInfo;
+    private String kexinAppraName;
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date kexinAppraTime;
 
@@ -46,12 +47,21 @@ public class WfKexinAppraInfoModel {
         this.kexinAppraTime = kexinAppraTime;
     }
 
+    public String getKexinAppraName() {
+        return kexinAppraName;
+    }
+
+    public void setKexinAppraName(String kexinAppraName) {
+        this.kexinAppraName = kexinAppraName;
+    }
+
     @Override
     public String toString() {
         return "WfKexinAppraInfoModel{" +
                 "kexinAppraId=" + kexinAppraId +
                 ", kexinAppraScora=" + kexinAppraScora +
                 ", kexinAppraInfo='" + kexinAppraInfo + '\'' +
+                ", kexinAppraName='" + kexinAppraName + '\'' +
                 ", kexinAppraTime=" + kexinAppraTime +
                 '}';
     }

@@ -7,13 +7,12 @@ import com.hedian.mapper.SysDeptMapper;
 import com.hedian.model.BuildTree;
 import com.hedian.model.Tree;
 import com.hedian.service.ISysDeptService;
+import com.hedian.util.ComUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.smartcardio.CommandAPDU;
+import java.util.*;
 
 /**
  * <p>
@@ -80,6 +79,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     private List<Tree<SysDept>> transTrees(List<SysDept> sysDepts){
+        if(!ComUtil.isEmpty(sysDepts)){
+            sysDepts = new ArrayList<>(new HashSet<>(sysDepts));
+        }
         List<Tree<SysDept>> trees = new ArrayList<>();
         for (SysDept sysDept : sysDepts) {
             Tree<SysDept> tree = new Tree<>();

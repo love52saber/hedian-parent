@@ -73,7 +73,7 @@ public class WfBusiness extends Model<WfBusiness> {
      * 流程状态
      */
     @TableField("wf_status")
-    private Integer wfStatus;
+    private Boolean wfStatus;
     @TableField(value = "useflag",fill = FieldFill.INSERT)
     private Integer useflag;
     /**
@@ -221,11 +221,11 @@ public class WfBusiness extends Model<WfBusiness> {
         this.resMtypeId = resMtypeId;
     }
 
-    public Integer getWfStatus() {
+    public Boolean getWfStatus() {
         return wfStatus;
     }
 
-    public void setWfStatus(Integer wfStatus) {
+    public void setWfStatus(Boolean wfStatus) {
         this.wfStatus = wfStatus;
     }
 

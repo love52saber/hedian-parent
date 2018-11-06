@@ -12,6 +12,7 @@ public class WfBaseAppraInfoModel {
     private Integer baseAppraScore;
     private String kexinAppraName;
     private String kexinAppraPhone;
+    private String currentBaseAppraName;
     private String baseAppraInfo;
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date baseAppraTime;
@@ -64,6 +65,14 @@ public class WfBaseAppraInfoModel {
         this.baseAppraTime = baseAppraTime;
     }
 
+    public String getCurrentBaseAppraName() {
+        return currentBaseAppraName;
+    }
+
+    public void setCurrentBaseAppraName(String currentBaseAppraName) {
+        this.currentBaseAppraName = currentBaseAppraName;
+    }
+
     @Override
     public String toString() {
         return "WfBaseAppraInfoModel{" +
@@ -71,6 +80,7 @@ public class WfBaseAppraInfoModel {
                 ", baseAppraScore=" + baseAppraScore +
                 ", kexinAppraName='" + kexinAppraName + '\'' +
                 ", kexinAppraPhone='" + kexinAppraPhone + '\'' +
+                ", currentBaseAppraName='" + currentBaseAppraName + '\'' +
                 ", baseAppraInfo='" + baseAppraInfo + '\'' +
                 ", baseAppraTime=" + baseAppraTime +
                 '}';

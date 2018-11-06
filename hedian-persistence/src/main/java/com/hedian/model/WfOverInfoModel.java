@@ -8,10 +8,11 @@ public class WfOverInfoModel {
 
     private Integer overId;
 
-    private boolean overType;
+    private Boolean overType;
     private String overFile;
     private String overInfo;
     private String handlePhone;
+    private String currentOverName;
     private String handleName;
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date overTime;
@@ -23,14 +24,6 @@ public class WfOverInfoModel {
 
     public void setOverId(Integer overId) {
         this.overId = overId;
-    }
-
-    public boolean isOverType() {
-        return overType;
-    }
-
-    public void setOverType(boolean overType) {
-        this.overType = overType;
     }
 
     public String getOverFile() {
@@ -73,6 +66,22 @@ public class WfOverInfoModel {
         this.overTime = overTime;
     }
 
+    public Boolean getOverType() {
+        return overType;
+    }
+
+    public void setOverType(Boolean overType) {
+        this.overType = overType;
+    }
+
+    public String getCurrentOverName() {
+        return currentOverName;
+    }
+
+    public void setCurrentOverName(String currentOverName) {
+        this.currentOverName = currentOverName;
+    }
+
     @Override
     public String toString() {
         return "WfOverInfoModel{" +
@@ -81,6 +90,7 @@ public class WfOverInfoModel {
                 ", overFile='" + overFile + '\'' +
                 ", overInfo='" + overInfo + '\'' +
                 ", handlePhone='" + handlePhone + '\'' +
+                ", currentOverName='" + currentOverName + '\'' +
                 ", handleName='" + handleName + '\'' +
                 ", overTime=" + overTime +
                 '}';

@@ -69,9 +69,9 @@ public class RunTimeServiceImpl implements IRuntimeService {
 
     @Override
     public Page<WfBusinessModel> selectPageByConditionResBase(Page<WfBusinessModel> page, Integer wfType, String wfTitle, String resAbnormallevelName, String resName,
-                                                              String userName, String currentUserName, String beginTime, String endTime, Integer currentUser,
+                                                              String userName,  boolean wfStatus,String currentUserName, String beginTime, String endTime, Integer currentUser,
                                                               Integer userId, Integer handleId) {
-        List<WfBusinessModel> wfBusinessModels = wfBusinessMapper.selectPageByCondition(page, wfType, wfTitle, resAbnormallevelName, resName, userName, currentUserName,
+        List<WfBusinessModel> wfBusinessModels = wfBusinessMapper.selectPageByCondition(page, wfType, wfTitle, resAbnormallevelName, resName, userName, wfStatus,currentUserName,
                 beginTime, endTime, currentUser, userId, handleId);
         wfBusinessModels.stream().forEach(wfBusinessModel -> {
             TaskQuery taskQuery = taskService.createTaskQuery();
@@ -94,6 +94,7 @@ public class RunTimeServiceImpl implements IRuntimeService {
         WfBusiness wfBusiness = requestJson.toJavaObject(WfBusiness.class);
         wfBusiness.setWfId(processInstance.getProcessInstanceId());
         wfBusiness.setWfType(1);
+        wfBusiness.setWfStatus(false);
         boolean result = wfBusinessService.insert(wfBusiness);
         if (!result) {
             throw new BusinessException("插入信息失败");
@@ -119,6 +120,7 @@ public class RunTimeServiceImpl implements IRuntimeService {
         WfBusiness wfBusiness = requestJson.toJavaObject(WfBusiness.class);
         wfBusiness.setWfId(processInstance.getProcessInstanceId());
         wfBusiness.setWfType(1);
+        wfBusiness.setWfStatus(false);
         //设置当前节点人
         wfBusiness.setCurrentUser(wfBusiness.getUserId());
         boolean result = wfBusinessService.insert(wfBusiness);
@@ -229,10 +231,12 @@ public class RunTimeServiceImpl implements IRuntimeService {
                 /**
                  * 处理-转确认
                  */
+                WfReviewInfo reviewInfos = wfReviewInfoService.selectOne(new EntityWrapper<WfReviewInfo>().eq("business_id", businessId));
                 //1.插入派发信息
                 WfHandleInfo wfHandleInfo = requestJson.toJavaObject(WfHandleInfo.class);
                 wfHandleInfo.setBusinessId(businessId);
                 wfHandleInfo.setHandleTime(date);
+                wfHandleInfo.setConfirmUserId(reviewInfos.getReviewUserId());
                 result = wfHandleInfoService.insert(wfHandleInfo);
                 if (!result) {
                     throw new BusinessException("插入失败");
@@ -241,7 +245,6 @@ public class RunTimeServiceImpl implements IRuntimeService {
                 wfBusiness = wfBusinessService.selectById(businessId);
                 if (!ComUtil.isEmpty(wfBusiness)) {
                     wfBusiness.setCurrentStep(++currentStep);
-                    WfReviewInfo reviewInfos = wfReviewInfoService.selectOne(new EntityWrapper<WfReviewInfo>().eq("business_id", businessId));
                     wfBusiness.setCurrentUser(reviewInfos.getReviewUserId());
                     result = wfBusinessService.updateById(wfBusiness);
                 }
@@ -314,6 +317,13 @@ public class RunTimeServiceImpl implements IRuntimeService {
                 if (!result) {
                     throw new BusinessException("插入失败");
                 }
+                //2.流转到到派发
+                wfBusiness = wfBusinessService.selectById(businessId);
+                if (!ComUtil.isEmpty(wfBusiness)) {
+                    wfBusiness.setWfStatus(true);
+                    wfBusiness.setCurrentUser(null);
+                    result = wfBusinessService.updateById(wfBusiness);
+                }
                 //2.更改当前最新节点信息
                 if (result) {
                     taskService.complete(taskId);
@@ -327,11 +337,30 @@ public class RunTimeServiceImpl implements IRuntimeService {
     }
 
     @Override
-    public String rejectWorkFlow(JSONObject requestJson) {
+    public String rejectWorkFlow(JSONObject requestJson) throws BusinessException {
         Integer currentStep = requestJson.getInteger("currentStep");
         Long businessId = requestJson.getLong("businessId");
         String taskId = requestJson.getString("taskId");
+        switch (currentStep) {
+            case 1:
+                /**
+                 * 审批驳回
+                 */
 
+                break;
+            case 5:
+                /**
+                 * 确认驳回
+                 */
+                break;
+            case 3:
+                /**
+                 * 查看跳转确认
+                 */
+                break;
+            default:
+                throw new BusinessException("传输currentStep错误：currentStep：" + currentStep);
+        }
         return null;
     }
 

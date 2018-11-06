@@ -10,6 +10,7 @@ public class WfReviewInfoModel {
     private Integer reviewId;
     private String disName;
     private String disPhone;
+    private String currentReviewName;
     private String reviewDesc;
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date reviewTime;
@@ -54,12 +55,21 @@ public class WfReviewInfoModel {
         this.reviewTime = reviewTime;
     }
 
+    public String getCurrentReviewName() {
+        return currentReviewName;
+    }
+
+    public void setCurrentReviewName(String currentReviewName) {
+        this.currentReviewName = currentReviewName;
+    }
+
     @Override
     public String toString() {
         return "WfReviewInfoModel{" +
                 "reviewId=" + reviewId +
                 ", disName='" + disName + '\'' +
                 ", disPhone='" + disPhone + '\'' +
+                ", currentReviewName='" + currentReviewName + '\'' +
                 ", reviewDesc='" + reviewDesc + '\'' +
                 ", reviewTime=" + reviewTime +
                 '}';
