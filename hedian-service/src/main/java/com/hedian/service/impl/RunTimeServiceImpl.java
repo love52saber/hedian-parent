@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.base.BusinessException;
+import com.hedian.base.WorkFlowConstants;
 import com.hedian.entity.*;
 import com.hedian.mapper.WfBusinessMapper;
 import com.hedian.model.WfBusinessModel;
@@ -12,7 +13,6 @@ import com.hedian.util.ComUtil;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,9 +69,9 @@ public class RunTimeServiceImpl implements IRuntimeService {
 
     @Override
     public Page<WfBusinessModel> selectPageByConditionResBase(Page<WfBusinessModel> page, Integer wfType, String wfTitle, String resAbnormallevelName, String resName,
-                                                              String userName,  boolean wfStatus,String currentUserName, String beginTime, String endTime, Integer currentUser,
+                                                              String userName, boolean wfStatus, String currentUserName, String beginTime, String endTime, Integer currentUser,
                                                               Integer userId, Integer handleId) {
-        List<WfBusinessModel> wfBusinessModels = wfBusinessMapper.selectPageByCondition(page, wfType, wfTitle, resAbnormallevelName, resName, userName, wfStatus,currentUserName,
+        List<WfBusinessModel> wfBusinessModels = wfBusinessMapper.selectPageByCondition(page, wfType, wfTitle, resAbnormallevelName, resName, userName, wfStatus, currentUserName,
                 beginTime, endTime, currentUser, userId, handleId);
         wfBusinessModels.stream().forEach(wfBusinessModel -> {
             TaskQuery taskQuery = taskService.createTaskQuery();
@@ -205,7 +205,7 @@ public class RunTimeServiceImpl implements IRuntimeService {
                 /**
                  * 查看-转处理
                  */
-                //1.插入派发信息
+                //1.插入查看信息
                 WfOverInfo wfOverInfo = requestJson.toJavaObject(WfOverInfo.class);
                 wfOverInfo.setBusinessId(businessId);
                 wfOverInfo.setOverTime(date);
@@ -232,7 +232,7 @@ public class RunTimeServiceImpl implements IRuntimeService {
                  * 处理-转确认
                  */
                 WfReviewInfo reviewInfos = wfReviewInfoService.selectOne(new EntityWrapper<WfReviewInfo>().eq("business_id", businessId));
-                //1.插入派发信息
+                //1.插入处理信息
                 WfHandleInfo wfHandleInfo = requestJson.toJavaObject(WfHandleInfo.class);
                 wfHandleInfo.setBusinessId(businessId);
                 wfHandleInfo.setHandleTime(date);
@@ -341,22 +341,87 @@ public class RunTimeServiceImpl implements IRuntimeService {
         Integer currentStep = requestJson.getInteger("currentStep");
         Long businessId = requestJson.getLong("businessId");
         String taskId = requestJson.getString("taskId");
+        Map<String, Object> variables = new HashMap<>();
+        Date date = new Date();
+        boolean result;
+        WfBusiness wfBusiness = null;
+        WfOverInfo wfOverInfo = null;
+        WfHandleInfo wfHandleInfo = null;
         switch (currentStep) {
             case 1:
                 /**
-                 * 审批驳回
+                 * 审批驳回-创建
                  */
+                //1.修改
+                wfBusiness = wfBusinessService.selectById(businessId);
+
+                if (!ComUtil.isEmpty(wfBusiness)) {
+                    wfBusiness.setCurrentStep(WorkFlowConstants.CONFIRM_WF);
+                    variables.put("userId", wfBusiness.getCurrentUser());
+                    wfBusiness.setCurrentUser(null);
+                }
+                result = wfBusinessService.updateById(wfBusiness);
+
+                //2.更改当前最新节点信息
+                if (result) {
+                    variables.put("result", 1);
+                    taskService.complete(taskId, variables);
+                }
 
                 break;
             case 5:
                 /**
-                 * 确认驳回
+                 * 确认驳回-派发工单
                  */
+                //1.修改
+                wfBusiness = wfBusinessService.selectById(businessId);
+
+                //查询处理和查看 删除
+                wfHandleInfo = wfHandleInfoService.selectOne(new EntityWrapper<WfHandleInfo>().eq("business_id", businessId));
+                wfOverInfo = wfOverInfoService.selectOne(new EntityWrapper<WfOverInfo>().eq("business_id", businessId));
+                if (!ComUtil.isEmpty(wfHandleInfo)) {
+                    wfHandleInfoService.deleteById(wfHandleInfo);
+                }
+                if (!ComUtil.isEmpty(wfOverInfo)) {
+                    wfBusiness.setCurrentUser(wfOverInfo.getOverUserId());
+                    wfOverInfoService.deleteById(wfOverInfo);
+                }
+                wfBusiness.setCurrentStep(WorkFlowConstants.DIS_WF);
+                result = wfBusinessService.updateById(wfBusiness);
+                //2.更改当前最新节点信息
+                if (result) {
+                    variables.put("userId", wfBusiness.getCurrentUser());
+                    variables.put("result", 1);
+                    taskService.complete(taskId, variables);
+                }
                 break;
             case 3:
                 /**
                  * 查看跳转确认
                  */
+
+                WfReviewInfo reviewInfos = wfReviewInfoService.selectOne(new EntityWrapper<WfReviewInfo>().eq("business_id", businessId));
+                //1.插入查看信息
+                wfOverInfo = requestJson.toJavaObject(WfOverInfo.class);
+                wfOverInfo.setBusinessId(businessId);
+                wfOverInfo.setOverTime(date);
+                result = wfOverInfoService.insert(wfOverInfo);
+                if (!result) {
+                    throw new BusinessException("插入失败");
+                }
+                //2.流转到到派发
+                wfBusiness = wfBusinessService.selectById(businessId);
+                if (!ComUtil.isEmpty(wfBusiness)) {
+                    wfBusiness.setCurrentStep(WorkFlowConstants.CONFIRM_WF);
+                    wfBusiness.setCurrentUser(reviewInfos.getReviewUserId());
+                    result = wfBusinessService.updateById(wfBusiness);
+                }
+                //3.更改当前最新节点信息
+                if (result) {
+                    variables.put("userId", wfBusiness.getCurrentUser());
+                    variables.put("result", 1);
+                    taskService.complete(taskId, variables);
+                }
                 break;
             default:
                 throw new BusinessException("传输currentStep错误：currentStep：" + currentStep);

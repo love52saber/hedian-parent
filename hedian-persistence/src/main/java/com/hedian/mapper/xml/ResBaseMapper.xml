@@ -152,8 +152,9 @@
         FROM tbl_res_base rb
           INNER JOIN tbl_res_subtype rs ON  rb.res_stype_id = rs.res_stype_id
           INNER JOIN tbl_res_maintype rm ON rb.res_mtype_id = rm.res_mtype_id
-      WHERE
-          rb.res_mtype_id = #{resMtypeId}
+      WHERE rb.useflag = 1
+        AND
+             rb.res_mtype_id = #{resMtypeId}
     </select>
 
     <select id="selectPageByConditionResBase" resultMap="ResOtherMap">
@@ -161,26 +162,25 @@
         FROM tbl_res_base rb
         INNER JOIN tbl_res_subtype rs ON rb.res_stype_id = rs.res_stype_id
         INNER JOIN tbl_res_maintype rm ON rb.res_mtype_id = rm.res_mtype_id
-        <where>
-            <if test="resName != null and resName != '' ">
-                and rb.res_name like concat('%',#{resName},'%')
-            </if>
-            <if test="resIpv4 != null and resIpv4 != '' ">
-                and rb.res_ipv4 like concat('%',#{resIpv4},'%')
-            </if>
-            <if test="resSerialNum != null and resSerialNum != '' ">
-                and rb.res_serialnumber like concat('%',#{resSerialNum},'%')
-            </if>
-            <if test="resAddress != null and resAddress != '' ">
-                and rb.res_address like concat('%',#{resAddress},'%')
-            </if>
-            <if test="resStype != null">
-                and rs.res_stype_id = #{resStype}
-            </if>
-            <if test="resMtype != null">
-                and rm.res_mtype_id = #{resMtype}
-            </if>
-        </where>
+        WHERE rb.useflag = 1
+        <if test="resName != null and resName != '' ">
+            and rb.res_name like concat('%',#{resName},'%')
+        </if>
+        <if test="resIpv4 != null and resIpv4 != '' ">
+            and rb.res_ipv4 like concat('%',#{resIpv4},'%')
+        </if>
+        <if test="resSerialNum != null and resSerialNum != '' ">
+            and rb.res_serialnumber like concat('%',#{resSerialNum},'%')
+        </if>
+        <if test="resAddress != null and resAddress != '' ">
+            and rb.res_address like concat('%',#{resAddress},'%')
+        </if>
+        <if test="resStype != null">
+            and rs.res_stype_id = #{resStype}
+        </if>
+        <if test="resMtype != null">
+            and rm.res_mtype_id = #{resMtype}
+        </if>
         ORDER BY rb.gmt_create DESC
     </select>
 

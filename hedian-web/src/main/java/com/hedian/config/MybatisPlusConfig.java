@@ -1,13 +1,7 @@
 package com.hedian.config;
 
-import com.baomidou.mybatisplus.entity.GlobalConfiguration;
-import com.baomidou.mybatisplus.mapper.ISqlInjector;
-import com.baomidou.mybatisplus.mapper.LogicSqlInjector;
-import com.baomidou.mybatisplus.mapper.MetaObjectHandler;
 import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.plugins.PerformanceInterceptor;
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +40,7 @@ public class MybatisPlusConfig {
         performanceInterceptor.setFormat(true);
         return performanceInterceptor;
     }
+
 
 //    @Bean
 //    public ProcessEngineConfiguration processEngineConfiguration(){

@@ -9,7 +9,7 @@ public class WfKexinAppraInfoModel {
 
     private Integer kexinAppraId;
 
-    private Integer kexinAppraScora;
+    private Integer kexinAppraScore;
     private String kexinAppraInfo;
     private String kexinAppraName;
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
@@ -23,12 +23,12 @@ public class WfKexinAppraInfoModel {
         this.kexinAppraId = kexinAppraId;
     }
 
-    public Integer getKexinAppraScora() {
-        return kexinAppraScora;
+    public Integer getKexinAppraScore() {
+        return kexinAppraScore;
     }
 
-    public void setKexinAppraScora(Integer kexinAppraScora) {
-        this.kexinAppraScora = kexinAppraScora;
+    public void setKexinAppraScore(Integer kexinAppraScore) {
+        this.kexinAppraScore = kexinAppraScore;
     }
 
     public String getKexinAppraInfo() {
@@ -59,7 +59,7 @@ public class WfKexinAppraInfoModel {
     public String toString() {
         return "WfKexinAppraInfoModel{" +
                 "kexinAppraId=" + kexinAppraId +
-                ", kexinAppraScora=" + kexinAppraScora +
+                ", kexinAppraScore=" + kexinAppraScore +
                 ", kexinAppraInfo='" + kexinAppraInfo + '\'' +
                 ", kexinAppraName='" + kexinAppraName + '\'' +
                 ", kexinAppraTime=" + kexinAppraTime +

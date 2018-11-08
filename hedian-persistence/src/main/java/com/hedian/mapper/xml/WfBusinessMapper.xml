@@ -120,7 +120,7 @@
             <id column="kexin_appra_id" property="kexinAppraId"/>
             <result column="kexin_appra_info" property="kexinAppraInfo"/>
             <result column="kexin_appra_name" property="kexinAppraName"/>
-            <result column="kexin_appra_scora" property="kexinAppraScora"/>
+            <result column="kexin_appra_score" property="kexinAppraScore"/>
             <result column="kexin_appra_time" property="kexinAppraTime" />
         </association>
     </resultMap>
@@ -220,7 +220,7 @@
         ON wb.business_id = twbai.business_id
         LEFT JOIN
         (
-        SELECT twkai.business_id,twkai.kexin_appra_id,twkai.kexin_appra_scora,twkai.kexin_appra_time,twkai.kexin_appra_info,
+        SELECT twkai.business_id,twkai.kexin_appra_id,twkai.kexin_appra_score,twkai.kexin_appra_time,twkai.kexin_appra_info,
         (select name from sys_user where user_id=twkai.kexin_appra_user_id) AS kexinAppraName FROM
         tbl_wf_kexin_appra_info twkai
         ) twkai
@@ -266,6 +266,53 @@
             AND wb.gmt_create <![CDATA[ <= ]]> #{endTime}
         </if>
           ORDER BY wb.gmt_create DESC
+    </select>
+
+    <select id="selectAppraisePageByCondition" resultMap="CustomMap">
+        SELECT
+        wb.business_id,wb.wf_id,wb.wf_title,wb.wf_type,wb.telephone,wb.gmt_create,
+        wb.res_abnormaldesc,
+        ws.hopetime,
+        ws.deadtime,
+        trb.res_name,
+        tra.res_abnormallevel_name,
+        trm.res_mtype_name,
+        trs.res_stype_name,
+        twri.*,
+        twbai.*,
+        twkai.*
+
+        FROM
+        tbl_wf_business wb
+        LEFT JOIN tbl_wo_sla ws ON wb.wo_sla_id = ws.wo_sla_id
+        LEFT JOIN tbl_res_abnormallevel tra ON wb.res_abnormallevel_id = tra.res_abnormallevel_id
+        LEFT JOIN tbl_res_base trb ON wb.res_id = trb.res_id
+        LEFT JOIN tbl_res_maintype trm ON wb.res_mtype_id = trm.res_mtype_id
+        LEFT JOIN tbl_res_subtype trs ON wb.res_stype_id = trs.res_stype_id
+        LEFT JOIN
+        (
+        SELECT business_id,(select name from sys_dept where dept_id = twri.dept_id) AS deptName FROM
+        tbl_wf_review_info twri
+        ) twri
+        ON wb.business_id = twri.business_id
+        LEFT JOIN
+        (
+        SELECT
+        twbai.business_id,twbai.base_appra_id,twbai.base_appra_score,twbai.base_appra_info,twbai.base_appra_time,
+        (select name from sys_user where user_id=twbai.base_appra_user_id) AS baseAppraName  FROM
+        tbl_wf_base_appra_info twbai
+        ) twbai
+        ON wb.business_id = twbai.business_id
+        LEFT JOIN
+        (
+        SELECT twkai.business_id,twkai.kexin_appra_id,twkai.kexin_appra_score,twkai.kexin_appra_time,twkai.kexin_appra_info,
+        (select name from sys_user where user_id=twkai.kexin_appra_user_id) AS kexinAppraName FROM
+        tbl_wf_kexin_appra_info twkai
+        ) twkai
+        ON wb.business_id = twkai.business_id
+        WHERE wb.useflag=1
+
+        ORDER BY wb.gmt_create DESC
     </select>
 
 </mapper>

@@ -27,4 +27,12 @@ public interface WfBusinessMapper extends BaseMapper<WfBusiness> {
                                                 @Param("currentUser")Integer currentUser,@Param("userId")Integer userId,
                                                 @Param("handleId")Integer handleId);
 
+    List<WfBusinessModel> selectAppraisePageByCondition(Page<WfBusinessModel> page,@Param("wfTitle") String wfTitle,
+                                                @Param("resName")String resName,
+                                                @Param("userName") String userName,
+                                                @Param("wfStatus") boolean wfStatus,
+                                                @Param("currentUserName") String currentUserName,
+                                                @Param("beginTime") String beginTime,@Param("endTime") String endTime);
+
+
 }

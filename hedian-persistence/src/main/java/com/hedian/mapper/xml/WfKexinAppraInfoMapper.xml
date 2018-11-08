@@ -8,14 +8,14 @@
         <result column="business_id" property="businessId" />
         <result column="kexin_appra_user_id" property="kexinAppraUserId" />
         <result column="kexin_appra_info" property="kexinAppraInfo" />
-        <result column="kexin_appra_scora" property="kexinAppraScora" />
+        <result column="kexin_appra_score" property="kexinAppraScore" />
         <result column="kexin_appra_time" property="kexinAppraTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         kexin_appra_id AS kexinAppraId,  business_id AS businessId,kexin_appra_user_id AS kexinAppraUserId, kexin_appra_info AS kexinAppraInfo,
-         kexin_appra_scora AS kexinAppraScora,  kexin_appra_time AS kexinAppraTime,
+         kexin_appra_score AS kexinAppraScore,  kexin_appra_time AS kexinAppraTime,
     </sql>
 
 </mapper>

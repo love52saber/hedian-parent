@@ -36,8 +36,8 @@ public class WfKexinAppraInfo extends Model<WfKexinAppraInfo> {
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     @TableField("kexin_appra_time")
     private Date kexinAppraTime;
-    @TableField("kexin_appra_scora")
-    private Integer kexinAppraScora;
+    @TableField("kexin_appra_score")
+    private Integer kexinAppraScore;
 
 
     public Integer getKexinAppraId() {
@@ -64,12 +64,12 @@ public class WfKexinAppraInfo extends Model<WfKexinAppraInfo> {
         this.kexinAppraInfo = kexinAppraInfo;
     }
 
-    public Integer getKexinAppraScora() {
-        return kexinAppraScora;
+    public Integer getKexinAppraScore() {
+        return kexinAppraScore;
     }
 
-    public void setKexinAppraScora(Integer kexinAppraScora) {
-        this.kexinAppraScora = kexinAppraScora;
+    public void setKexinAppraScore(Integer kexinAppraScore) {
+        this.kexinAppraScore = kexinAppraScore;
     }
 
     public Date getKexinAppraTime() {
@@ -101,7 +101,7 @@ public class WfKexinAppraInfo extends Model<WfKexinAppraInfo> {
                 ", kexinAppraUserId=" + kexinAppraUserId +
                 ", kexinAppraInfo='" + kexinAppraInfo + '\'' +
                 ", kexinAppraTime=" + kexinAppraTime +
-                ", kexinAppraScora=" + kexinAppraScora +
+                ", kexinAppraScore=" + kexinAppraScore +
                 '}';
     }
 }
