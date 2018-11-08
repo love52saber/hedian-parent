@@ -128,7 +128,6 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
     }
 
     /**
-     *
      * 递归方式将资源插入部门tree中
      *
      * @param tree
@@ -154,7 +153,7 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
                 }
             }
             map.put("resIds", resIds);
-            map.put("resMtypeId",1001);
+            map.put("resMtypeId", 1001);
             //根据管理域对应的资源ids获取资源列表
             resBaseList = this.findByMap(map);
             //将资源数据放入tree中
@@ -166,11 +165,10 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
             tree.getChildren().stream().forEach(treeChild -> {
                 recursionFn(treeChild, mdDept, mdRes);
             });
+        } else {
+            //如果该部门没有子节点，且该部门没有对应的资产，则删除该部门
+            tree = null;
         }
-//        else {
-//            //如果该部门没有子节点，且该部门没有对应的资产，则删除该部门
-//            tree = null;
-//        }
         return tree;
     }
 

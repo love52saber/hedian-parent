@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.WfBaseAppraInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.WfBaseAppraInfo">
+        <result column="base_appra_id" property="baseAppraId" />
+        <result column="business_id" property="businessId" />
+        <result column="base_appra_user_id" property="baseAppraUserId" />
+        <result column="base_appra_score" property="baseAppraScore" />
+        <result column="base_appra_info" property="baseAppraInfo" />
+        <result column="base_appra_time" property="baseAppraTime" />
+        <result column="kexin_appra_user_id" property="kexinAppraUserId" />
+        <result column="kexin_appra_phone" property="kexinAppraPhone" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        base_appra_id AS baseAppraId, business_id AS businessId, base_appra_user_id AS baseAppraUserId, base_appra_score AS baseAppraScore,base_appra_time AS baseAppraTime,
+         base_appra_info AS baseAppraInfo, kexin_appra_user_id AS kexinAppraUserId, kexin_appra_phone AS kexinAppraPhone
+    </sql>
+
+</mapper>

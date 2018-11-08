@@ -1,15 +1,19 @@
 package com.hedian.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
+import java.util.Date;
+
 public class WfReviewInfoModel {
 
 
     private Integer reviewId;
-
-    private Integer buiId;
-    private String deptName;
     private String disName;
     private String disPhone;
+    private String currentReviewName;
     private String reviewDesc;
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    private Date reviewTime;
 
     public Integer getReviewId() {
         return reviewId;
@@ -17,22 +21,6 @@ public class WfReviewInfoModel {
 
     public void setReviewId(Integer reviewId) {
         this.reviewId = reviewId;
-    }
-
-    public Integer getBuiId() {
-        return buiId;
-    }
-
-    public void setBuiId(Integer buiId) {
-        this.buiId = buiId;
-    }
-
-    public String getDeptName() {
-        return deptName;
-    }
-
-    public void setDeptName(String deptName) {
-        this.deptName = deptName;
     }
 
     public String getDisName() {
@@ -57,5 +45,33 @@ public class WfReviewInfoModel {
 
     public void setReviewDesc(String reviewDesc) {
         this.reviewDesc = reviewDesc;
+    }
+
+    public Date getReviewTime() {
+        return reviewTime;
+    }
+
+    public void setReviewTime(Date reviewTime) {
+        this.reviewTime = reviewTime;
+    }
+
+    public String getCurrentReviewName() {
+        return currentReviewName;
+    }
+
+    public void setCurrentReviewName(String currentReviewName) {
+        this.currentReviewName = currentReviewName;
+    }
+
+    @Override
+    public String toString() {
+        return "WfReviewInfoModel{" +
+                "reviewId=" + reviewId +
+                ", disName='" + disName + '\'' +
+                ", disPhone='" + disPhone + '\'' +
+                ", currentReviewName='" + currentReviewName + '\'' +
+                ", reviewDesc='" + reviewDesc + '\'' +
+                ", reviewTime=" + reviewTime +
+                '}';
     }
 }

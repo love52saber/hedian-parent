@@ -11,11 +11,13 @@
         <result column="review_desc" property="reviewDesc" />
         <result column="dis_user_id" property="disUserId" />
         <result column="dis_phone" property="disPhone"/>
+        <result column="review_time" property="reviewTime"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        review_id AS reviewId, business_id AS businessId, deptId,review_user_id AS reviewUserId, review_desc AS reviewDesc, dis_user_id AS disUserId, dis_phone AS disPhone
+        review_id AS reviewId, business_id AS businessId, deptId,review_user_id AS reviewUserId, review_desc AS reviewDesc,
+        review_time AS reviewTime, dis_user_id AS disUserId, dis_phone AS disPhone
     </sql>
 
 </mapper>

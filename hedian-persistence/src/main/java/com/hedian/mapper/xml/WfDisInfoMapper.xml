@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.WfDisInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.WfDisInfo">
+        <id column="dis_id" property="disId" />
+        <result column="business_id" property="businessId" />
+        <result column="dis_user_id" property="disUserId" />
+        <result column="dis_info" property="disInfo" />
+        <result column="dis_time" property="disTime" />
+        <result column="over_user_id" property="overUserId" />
+        <result column="over_phone" property="overPhone" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        dis_id AS disId, business_id AS businessId, dis_user_id AS disUserId, dis_time AS disTime,dis_info AS disInfo, over_user_id AS overUserId, over_phone AS overPhone
+    </sql>
+
+</mapper>

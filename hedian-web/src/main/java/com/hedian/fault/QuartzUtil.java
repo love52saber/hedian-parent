@@ -54,7 +54,7 @@ public class QuartzUtil {
      */
     private Date getCurrentDate() {
         Date date = null;
-        if (date == null) {
+        if (!ComUtil.isEmpty(date)) {
             date = new Date();
         }
         return date;

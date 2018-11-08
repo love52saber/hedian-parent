@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.WfHandleInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.WfHandleInfo">
+        <id column="handle_id" property="handleId"/>
+        <result column="business_id" property="businessId"/>
+        <result column="handle_user_id" property="handleUserId"/>
+        <result column="handle_info" property="handleInfo"/>
+        <result column="handle_method" property="handleMethod"/>
+        <result column="handle_type" property="handleType"/>
+        <result column="handle_file" property="handleFile"/>
+        <result column="handle_time" property="handleTime"/>
+        <result column="confirm_user_id" property="confirmUserId"/>
+        <result column="confirm_phone" property="confirmPhone"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        handle_id AS handleId, business_id AS businessId, handle_user_id AS handleUserId, handle_info AS handleInfo,handle_method AS handleMethod,
+         handle_time AS handleTime, handle_type AS handleType, handle_file AS handleFile, confirm_user_id AS confirmUserId, confirm_phone AS confirmPhone
+    </sql>
+
+</mapper>

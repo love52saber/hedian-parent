@@ -21,6 +21,7 @@ public interface WfBusinessMapper extends BaseMapper<WfBusiness> {
     List<WfBusinessModel> selectPageByCondition(Page<WfBusinessModel> page,@Param("wfType") Integer wfType,@Param("wfTitle") String wfTitle,
                                                 @Param("resAbnormallevelName") String resAbnormallevelName,@Param("resName")String resName,
                                                 @Param("userName") String userName,
+                                                @Param("wfStatus") boolean wfStatus,
                                                 @Param("currentUserName") String currentUserName,
                                                 @Param("beginTime") String beginTime,@Param("endTime") String endTime,
                                                 @Param("currentUser")Integer currentUser,@Param("userId")Integer userId,
