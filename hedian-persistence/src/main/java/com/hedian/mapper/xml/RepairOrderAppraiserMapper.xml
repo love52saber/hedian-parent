@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.RepairOrderAppraiserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hedian.entity.RepairOrderAppraiser">
+        <id column="appraiserid" property="appraiserid" />
+        <result column="appraisertype" property="appraisertype" />
+        <result column="apprasiername" property="apprasiername" />
+        <result column="grp_id" property="grpId" />
+        <result column="user_id_create" property="userIdCreate" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="user_id_mod" property="userIdMod" />
+        <result column="gmt_modified" property="gmtModified" />
+        <result column="useflag" property="useflag" />
+        <result column="delflag" property="delflag" />
+        <!--自添加字段-->
+        <result column="grp_name" property="grpName" />
+    </resultMap>
+
+    <!--评价人及相关域map-->
+    <resultMap id="appraiserMdMap" type="com.hedian.entity.RepairOrderAppraiser">
+        <id column="appraiserid" property="appraiserid" />
+        <result column="appraisertype" property="appraisertype" />
+        <result column="apprasiername" property="apprasiername" />
+        <result column="grp_id" property="grpId" />
+        <result column="user_id_create" property="userIdCreate" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="user_id_mod" property="userIdMod" />
+        <result column="gmt_modified" property="gmtModified" />
+        <result column="useflag" property="useflag" />
+        <result column="delflag" property="delflag" />
+        <!--自添加字段-->
+        <result column="grp_name" property="grpName" />
+        <collection property="mdList" javaType="list" ofType="com.hedian.entity.Md">
+            <id property="mdId" column="md_id" />
+            <result property="mdName" column="md_name" />
+        </collection>
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        appraiserid, appraisertype, apprasiername, grp_id AS grpId, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified, useflag, delflag
+    </sql>
+
+    <select id="findPageByCondition"   resultMap="BaseResultMap">
+        select a.*,b.grp_name from
+        tbl_repair_order_appraiser a
+        LEFT JOIN sys_group b
+        on a.grp_id = b.grp_id
+        <where>
+            <if test="appraisertype!=null and appraisertype!=''">
+              and  a.appraisertype = #{appraisertype}
+            </if>
+            <if test="apprasiername!=null and apprasiername!=''">
+              and   a.apprasiername like concat('%',#{apprasiername},'%')
+            </if>
+            <if test="grpName!=null and grpName!=''">
+              and b.grp_name  like concat('%',#{grpName},'%')
+            </if>
+            and a.useflag = 1
+            and b.useflag = 1
+        </where>
+    </select>
+
+    <select id="findAppraiserById" parameterType="int" resultMap="appraiserMdMap">
+        select a.grp_name,b.*,d.md_id,d.md_name
+        from  sys_group a
+        right join tbl_repair_order_appraiser b
+        on a.grp_id = b.grp_id
+        left join tbl_repair_order_appraiser_md c
+        on b.appraiserid = c.appraiserid
+        left join tbl_md d
+        on c.md_id = d.md_id
+        <where>
+            <if test="appraiserid!=null and appraiserid!=''">
+              b.appraiserid = #{appraiserid}
+            </if>
+            and a.useflag = 1
+            and b.useflag = 1
+            and c.useflag = 1
+            and d.useflag = 1
+        </where>
+    </select>
+
+</mapper>

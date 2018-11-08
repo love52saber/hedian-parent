@@ -89,8 +89,11 @@ public class SysGroupController {
      * 获取所有用户组
      */
     @GetMapping("/all")
-    public PublicResult getAllGroup() {
-        List<SysGroup> roleList = sysGroupService.selectList(new EntityWrapper<SysGroup>());
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "grpName",value = "用户组名称",dataType = "string",paramType = "query")
+    })
+    public PublicResult getAllGroup(@RequestParam(name = "grpName", required = false)String grpName) {
+        List<SysGroup> roleList = sysGroupService.selectList(new EntityWrapper<SysGroup>().like("grp_name",grpName));
         return new PublicResult(PublicResultConstant.SUCCESS, roleList);
     }
 

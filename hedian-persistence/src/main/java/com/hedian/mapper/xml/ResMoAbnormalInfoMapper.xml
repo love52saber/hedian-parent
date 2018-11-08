@@ -109,6 +109,17 @@
         <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
         <result column="countNum" property="countNum"/>
     </resultMap>
+    
+    <resultMap id="ResMoAbnormalInfoModelMap" type="com.hedian.model.ResMoAbnormalInfoModel">
+        <id column="res_abnormal_id" property="resAbnormalId"/>
+        <result column="res_id" property="resId"/>
+        <result column="res_abnormal_code" property="resAbnormalCode"/>
+        <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
+        <result column="res_abnormal_name" property="resAbnormalName"/>
+        <result column="res_abnormaldesc" property="resAbnormaldesc"/>
+        <result column="res_abnomaltime" property="resAbnomaltime"/>
+        <result column="res_abnormallevel_priority" property="resAbnormallevelPriority"/>
+    </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
@@ -220,6 +231,15 @@
         INNER JOIN tbl_res_abnormallevel ra ON rmi.res_abnormallevel_id = ra.res_abnormallevel_id
         WHERE rmi.useflag = 1 and rmi.res_abnormalstatus = 1
         GROUP BY rmi.res_abnormallevel_id
+    </select>
+
+    <select id="selectByResId" resultMap="ResMoAbnormalInfoModelMap">
+      select a.res_id,a.res_abnormal_id,a.res_abnormal_code,a.res_abnormallevel_id,a.res_abnormal_name,a.res_abnormaldesc,a.res_abnomaltime
+      ,b.res_abnormallevel_priority
+      from tbl_res_mo_abnormal_info a, tbl_res_abnormallevel b
+      where a.res_abnormallevel_id = b.res_abnormallevel_id
+      and res_id = #{resId}
+      order by b.res_abnormallevel_priority,a.res_abnormal_id desc
     </select>
 
 
