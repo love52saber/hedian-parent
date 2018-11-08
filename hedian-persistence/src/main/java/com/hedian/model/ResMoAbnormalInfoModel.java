@@ -92,6 +92,7 @@ public class ResMoAbnormalInfoModel {
     private String abnormalTypeName;
     private String resAbnormallevelName;
     private String resAbnormallevelColor;
+    private Integer resAbnormallevelPriority;
     private String resName;
     private String resAlias;
     private String mokpiName;
@@ -99,6 +100,14 @@ public class ResMoAbnormalInfoModel {
     private String dispatchUserName;
     private String cleanUserName;
     private String delUserName;
+
+    public Integer getResAbnormallevelPriority() {
+        return resAbnormallevelPriority;
+    }
+
+    public void setResAbnormallevelPriority(Integer resAbnormallevelPriority) {
+        this.resAbnormallevelPriority = resAbnormallevelPriority;
+    }
 
     public String getResAbnormallevelColor() {
         return resAbnormallevelColor;

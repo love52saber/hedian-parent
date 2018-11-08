@@ -42,8 +42,18 @@
         user_id AS userId, username, name, password, dept_id AS deptId, email, mobile, telephone, status, user_id_create AS userIdCreate, lastwrong_time AS lastwrongTime, wrong_times AS wrongTimes, locktype, lockflag, unlocktime, lockreason, gmt_create AS gmtCreate, gmt_modified AS gmtModified, sex, birth, pic_id AS picId, live_address AS liveAddress, hobby, province, city, district, u_order AS uOrder, pwd_flag AS pwdFlag, user_id_mod AS userIdMod, useflag, delflag
     </sql>
     <select id="getUsersByGrpId" resultType="com.hedian.entity.SysUser">
-
-
+        select a.username
+        from sys_user a
+        right join sys_grp_user b
+        on a.user_id = b.user_id
+        <where>
+            <if test="grpId!=null">
+                b.grp_id = #{grpId}
+            </if>
+            and a.useflag = 1
+            and b.useflag = 1
+            and a.status = 1
+        </where>
     </select>
     <select id="selectUserList" resultMap="BaseResultMap">
 

@@ -61,5 +61,12 @@ public interface ResMoAbnormalInfoMapper extends BaseMapper<ResMoAbnormalInfo> {
      */
     List<MoAbnormalDef> getTopAbnormal(Map<String, Object> map);
 
+    /**
+     * 获得某设备的报警信息
+     * @param resId
+     * @return
+     */
+    List<ResMoAbnormalInfoModel> selectByResId(@Param("resId") Integer resId);
+
 
 }

@@ -44,4 +44,6 @@ public interface IResMoAbnormalInfoService extends IService<ResMoAbnormalInfo> {
      * @return
      */
     boolean cleanResAbnormal(JSONObject requestJson) throws Exception;
+
+    boolean cleanOrDelete(Long resAbnormalId, ResMoAbnormalInfo resMoAbnormalInfo) throws Exception;
 }
