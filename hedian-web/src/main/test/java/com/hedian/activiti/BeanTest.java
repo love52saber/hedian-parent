@@ -1,5 +1,10 @@
 package com.hedian.activiti;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.hedian.entity.RepairOrderAppraiser;
+import com.hedian.mapper.RepairOrderAppraiserMapper;
+import com.hedian.service.IRepairOrderAppraiserService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -18,6 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -87,5 +93,18 @@ public class BeanTest {
 
     }
 
+    @Autowired
+    private RepairOrderAppraiserMapper repairOrderAppraiserMapper;
+    @Autowired
+    private IRepairOrderAppraiserService iRepairOrderAppraiserService;
 
+    @Test
+    public void test5() {
+        RepairOrderAppraiser repairOrderAppraiser = new RepairOrderAppraiser();
+        List<RepairOrderAppraiser> repairOrderAppraiserList = repairOrderAppraiserMapper.selectList(new EntityWrapper<RepairOrderAppraiser>().eq("appraiserid", 79));
+        List<Integer> list = repairOrderAppraiserList.stream().map(RepairOrderAppraiser::getAppraiserid).collect(Collectors.toList());
+        System.out.println(list);
+        boolean b = iRepairOrderAppraiserService.deleteBatchIds(list);
+//        System.out.println(page);
+    }
 }
