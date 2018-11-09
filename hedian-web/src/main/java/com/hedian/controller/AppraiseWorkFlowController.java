@@ -9,6 +9,7 @@ import com.hedian.base.BusinessException;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
+import com.hedian.model.AppraiseWfBusinessModel;
 import com.hedian.model.WfBusinessModel;
 import com.hedian.service.IRuntimeService;
 import com.hedian.service.ISysFileService;
@@ -56,50 +57,12 @@ public class AppraiseWorkFlowController {
                                  @RequestParam(name = "wfTitle", defaultValue = "", required = false) String wfTitle,
                                  @RequestParam(name = "resName", defaultValue = "", required = false) String resName,
                                  @RequestParam(name = "userName", defaultValue = "", required = false) String userName,
-                                 @RequestParam(name = "currentUserName", defaultValue = "", required = false) String currentUserName,
                                  @RequestParam(name = "beginTime", defaultValue = "", required = false) String beginTime,
-                                 @RequestParam(name = "endTime", defaultValue = "", required = false) String endTime,
-                                 @RequestParam(name = "userId", defaultValue = "", required = false) Integer userId,
-                                 @RequestParam(name = "handleId", defaultValue = "", required = false) Integer handleId) {
-//        Page<WfBusinessModel> wfBusinessModelPage = runtimeService.selectPageByConditionResBase(new Page<>(pageIndex, pageSize), wfType, wfTitle,
-//                resAbnormallevelName, resName,userName, wfStatus, currentUserName, beginTime, endTime, currentUser, userId, handleId);
-        return null;
-    }
-
-    /**
-     * 保存流程审批
-     */
-    @PostMapping(value = "saveWorkFlow")
-    public PublicResult<String> saveWorkFlow(@RequestBody JSONObject requestJson) throws Exception {
-        String instanceId = runtimeService.saveWorkFlow(requestJson);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, instanceId);
-    }
-
-    /**
-     * 提交流程审批
-     */
-    @PostMapping(value = "startWorkFlow")
-    public PublicResult<String> startWorkFlow(@RequestBody JSONObject requestJson) throws Exception {
-        String instanceId = runtimeService.startWorkFlow(requestJson);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, instanceId);
+                                 @RequestParam(name = "endTime", defaultValue = "", required = false) String endTime) {
+        Page<AppraiseWfBusinessModel> appraiseWfBusinessModelPage = runtimeService.selectAppraisePageByCondition(new Page<>(pageIndex, pageSize), wfTitle,
+                resName,userName,beginTime, endTime);
+        return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(appraiseWfBusinessModelPage.getTotal(), pageIndex, pageSize, appraiseWfBusinessModelPage.getRecords()));
     }
 
 
-    /**
-     * 审批，派发，查看，处理，确认
-     */
-    @PostMapping(value = "handleWorkFlow")
-    public PublicResult<String> handleWorkFlow(@ValidationParam("currentStep,taskId,businessId") @RequestBody JSONObject requestJson) throws BusinessException {
-        String instanceId = runtimeService.handleWorkFlow(requestJson);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, instanceId);
-    }
-
-    /**
-     * 驳回，跳转
-     */
-    @PostMapping(value = "rejectWorkFlow")
-    public PublicResult<String> rejectWorkFlow(@ValidationParam("currentStep,taskId,businessId") @RequestBody JSONObject requestJson) throws BusinessException {
-        String instanceId = runtimeService.rejectWorkFlow(requestJson);
-        return new PublicResult<>(PublicResultConstant.SUCCESS, instanceId);
-    }
 }
