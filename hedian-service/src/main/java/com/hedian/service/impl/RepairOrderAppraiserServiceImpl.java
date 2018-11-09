@@ -110,7 +110,7 @@ public class RepairOrderAppraiserServiceImpl extends ServiceImpl<RepairOrderAppr
                 repairOrderAppraiserMd.setUseflag(0);
             });
             boolean deleteAppraiserMdResult = iRepairOrderAppraiserMdService.updateBatchById(existAppraiserMdList);
-            if (delAppraiserResult) {
+            if (!delAppraiserResult) {
                 throw new BusinessException("删除失败");
             }
         }
