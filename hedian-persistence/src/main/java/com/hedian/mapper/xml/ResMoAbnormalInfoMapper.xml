@@ -119,6 +119,19 @@
         <result column="res_abnormaldesc" property="resAbnormaldesc"/>
         <result column="res_abnomaltime" property="resAbnomaltime"/>
         <result column="res_abnormallevel_priority" property="resAbnormallevelPriority"/>
+        <result column="res_abnormallevel_color" property="resAbnormallevelColor"/>
+    </resultMap>
+
+    <resultMap id="ResMoAbnormalInfoPriorityMap" type="com.hedian.entity.ResMoAbnormalInfo">
+        <id column="res_abnormal_id" property="resAbnormalId"/>
+        <result column="res_id" property="resId"/>
+        <result column="res_abnormal_code" property="resAbnormalCode"/>
+        <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
+        <result column="res_abnormal_name" property="resAbnormalName"/>
+        <result column="res_abnormaldesc" property="resAbnormaldesc"/>
+        <result column="res_abnomaltime" property="resAbnomaltime"/>
+        <result column="res_abnormallevel_priority" property="resAbnormallevelPriority"/>
+        <result column="res_abnormallevel_color" property="resAbnormallevelColor"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -242,5 +255,14 @@
       order by b.res_abnormallevel_priority,a.res_abnormal_id desc
     </select>
 
-
+    <select id="findAbnormalAndPriorityInfoByResId" resultMap="ResMoAbnormalInfoPriorityMap">
+       select a.*,b.res_abnormallevel_color,b.res_abnormallevel_priority
+        from tbl_res_mo_abnormal_info a
+        left join tbl_res_abnormallevel b
+        on a.res_abnormallevel_id = b.res_abnormallevel_id
+        <where>
+            a.res_id = #{resId}
+        </where>
+        order by a.res_abnormal_id desc
+    </select>
 </mapper>

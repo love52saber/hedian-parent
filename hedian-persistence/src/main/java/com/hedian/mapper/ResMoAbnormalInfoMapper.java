@@ -69,4 +69,5 @@ public interface ResMoAbnormalInfoMapper extends BaseMapper<ResMoAbnormalInfo> {
     List<ResMoAbnormalInfoModel> selectByResId(@Param("resId") Integer resId);
 
 
+    List<ResMoAbnormalInfo> findAbnormalAndPriorityInfoByResId(@Param("resId") Integer resId);
 }

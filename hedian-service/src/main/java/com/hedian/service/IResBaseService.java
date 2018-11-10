@@ -2,6 +2,7 @@ package com.hedian.service;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.hedian.base.BusinessException;
 import com.hedian.entity.ResBase;
 import com.hedian.entity.SysDept;
 import com.hedian.entity.SysUser;
@@ -33,4 +34,10 @@ public interface IResBaseService extends IService<ResBase> {
                                                String resAddress, Integer resMtype);
 
     List<Integer> selectByUserId(@Param("userId") String userId);
+
+    /**
+     * 设备状态修改成正常
+     * @param resBase
+     */
+    void transferResToNormal(ResBase resBase) throws BusinessException;
 }

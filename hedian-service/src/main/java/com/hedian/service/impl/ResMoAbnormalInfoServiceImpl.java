@@ -1,10 +1,10 @@
 package com.hedian.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hedian.base.BusinessException;
-import com.hedian.base.Constant;
 import com.hedian.base.QuatzConstants;
 import com.hedian.entity.*;
 import com.hedian.mapper.ResAbnormallevelMapper;
@@ -17,15 +17,14 @@ import com.hedian.model.ResMoAbnormalInfoModel;
 import com.hedian.service.IResBaseService;
 import com.hedian.service.IResMoAbnormalInfoHService;
 import com.hedian.service.IResMoAbnormalInfoService;
+import com.hedian.service.IResTerminalService;
 import com.hedian.util.ComUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -50,7 +49,10 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
     private ResAbnormallevelMapper resAbnormallevelMapper;
     @Autowired
     private ResTerminalMapper resTerminalMapper;
-
+    @Autowired
+    private IResTerminalService iResTerminalService;
+    @Autowired
+    private IResMoAbnormalInfoService iResMoAbnormalInfoService;
 
     @Override
     public ResMoAbnormalInfo selectByResIdAndkpiId(Map<String, Integer> map) {
@@ -84,11 +86,13 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
     @Override
     public boolean deleteResAbnoraml(Long resAbnormalId) throws Exception {
         ResMoAbnormalInfo resMoAbnormalInfo = this.selectById(resAbnormalId);
+        if (ComUtil.isEmpty(resMoAbnormalInfo)) {
+            throw new BusinessException("找不到此条异常信息");
+        }
         boolean result = cleanOrDelete(resAbnormalId, resMoAbnormalInfo);
         return result;
     }
 
-    @Transactional
     @Override
     public boolean cleanOrDelete(Long resAbnormalId, ResMoAbnormalInfo resMoAbnormalInfo) throws Exception {
         ResMoAbnormalInfoH resMoAbnormalInfoH = new ResMoAbnormalInfoH();
@@ -99,62 +103,216 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
         }
         result = this.deleteById(resAbnormalId);
 
-        //判断是否是终端离线告警
-        boolean flag = false;
-        ResBase currentResBase = resBaseMapper.selectById(resMoAbnormalInfo.getResId());
-        //是，则关联未知设备清除状态,设备有故障则不变
-        if (currentResBase.getResMtypeId().equals(QuatzConstants.ZD_MAIN_TYPE) & resMoAbnormalInfo.getMoKpiId().equals(QuatzConstants.OFFLINE_KEY)) {
-            //找到所有终端关联的状态未知设备
-            List<ResBase> devList = resBaseMapper.selectDevListByTerminalId(currentResBase.getResId(),
-                    QuatzConstants.UNKNOWN);
-            if (!ComUtil.isEmpty(devList)) {
-                devList.stream().forEach(resBase -> {
-                    resBase.setResStatus(1);
-                });
-                flag = iResBaseService.updateBatchById(devList);
-                if (!flag) {
-                    throw new BusinessException("终端下设备更新失败");
+        //组装数据
+        Map<String, Object> dataMap = new HashMap<>();
+        //当前设备base信息
+        ResBase resBase = resBaseMapper.selectById(resMoAbnormalInfo.getResId());
+        dataMap.put("currentResBase", resBase);
+        //设备所属设备树base信息
+        dataMap.put("currentResTree", this.getCurrentResTree(resBase));
+        //当前故障信息
+        dataMap.put("currentResAbnormalInfo", resMoAbnormalInfo);
+        //设备所属设备树故障信息
+        dataMap.put("currentResTreeAbnormalInfo", this.getCurrentResTreeAbnormalInfo(resMoAbnormalInfo));
+
+        //判断是否为终端
+        boolean isTerminal = this.isTerminal(resMoAbnormalInfo.getResId());
+        //1.是终端
+        if (isTerminal) {
+            //1.1是否离线
+            if (resBase.getResStatus().equals(QuatzConstants.OFFLINE)) {
+                //1.1.1离线 未知设备恢复，故障设备不变;终端视故障条数而定
+                //1.1.1.1更新未知设备
+                TreeMap<Integer, ResBase> currentResTree = (TreeMap<Integer, ResBase>) dataMap.get("currentResTree");
+                List<ResBase> unknownResBaseList = new ArrayList<>();
+                for (Integer resId : currentResTree.keySet()) {
+                    ResBase resBaseTemp = currentResTree.get(resId);
+                    if (resBaseTemp.getResStatus().equals(QuatzConstants.UNKNOWN)) {
+                        resBaseTemp.setResAbnormalId(null);
+                        resBaseTemp.setResAbnormalcode(null);
+                        resBaseTemp.setResAbnormallevelId(null);
+                        resBaseTemp.setResAbnormalName(null);
+                        resBaseTemp.setResAbnormaldesc(null);
+                        resBaseTemp.setResAbnomaltime(null);
+                        resBaseTemp.setResRecoverytime(null);
+                        resBaseTemp.setResStatus(QuatzConstants.NORMAL);
+                        resBaseTemp.setResColor(QuatzConstants.RES_COLOR_NORMAL);
+                        unknownResBaseList.add(resBaseTemp);
+                    }
                 }
+                if (unknownResBaseList.size() > 0) {
+                    if (!iResBaseService.updateAllColumnBatchById(unknownResBaseList)) {
+                        throw new BusinessException("更新未知设备失败");
+                    }
+                }
+                //1.1.1.2 修改终端 同1.1.2终端逻辑
+            }
+            //1.1.2未离线 判断此时设备树故障数量
+            Map<Long, ResMoAbnormalInfo> currentResTreeAbnormalInfoMap = (Map<Long, ResMoAbnormalInfo>) dataMap.get("currentResTreeAbnormalInfo");
+            if (ComUtil.isEmpty(currentResTreeAbnormalInfoMap)) {
+                //1.1.2.1 =0 恢复正常
+                iResBaseService.transferResToNormal(resBase);
+            } else {
+                //1.1.2.2 >0 找下面设备故障最高的一条作为此终端故障
+                this.findLowestAbnormalInfoAndChangeResBase(resBase, currentResTreeAbnormalInfoMap);
             }
         } else {
-            //否 根据设备故障信息更新res_base表
-            //获取当前设备故障信息，按优先级升序和id降序排序，
-            List<ResMoAbnormalInfoModel> resMoAbnormalInfoModelList = resMoAbnormalInfoMapper.selectByResId(resMoAbnormalInfo.getResId());
-            if (resMoAbnormalInfoModelList.size() == 0) {
-                //没有故障，更改resBase状态为正常
-                currentResBase.setResAbnormalId(null);
-                currentResBase.setResAbnormalcode(null);
-                currentResBase.setResAbnormallevelId(null);
-                currentResBase.setResAbnormalName(null);
-                currentResBase.setResAbnormaldesc(null);
-                currentResBase.setResAbnomaltime(null);
-                currentResBase.setResRecoverytime(null);
-                currentResBase.setResStatus(QuatzConstants.NORMAL);
-                flag = iResBaseService.updateAllColumnById(currentResBase);
-            } else if (!ComUtil.isEmpty(resMoAbnormalInfoModelList)) {
-                //删除后有若干条故障，找到级别最高的一条
-                ResMoAbnormalInfoModel resMoAbnormalInfoModel = resMoAbnormalInfoModelList.get(0);
-                Integer HighestResAbnormalLevelPriority = resMoAbnormalInfoModel.getResAbnormallevelPriority();
-                //获取删除那条报警的优先级
-                Integer deledResAbnormallevelPriority = resAbnormallevelMapper.selectById(resMoAbnormalInfo.getResAbnormallevelId()).getResAbnormallevelPriority();
-                //删除的那条警告所属设备的base表中警告id
-                Integer deledResAbnormalId = currentResBase.getResAbnormalId();
-                if (HighestResAbnormalLevelPriority > deledResAbnormallevelPriority || (HighestResAbnormalLevelPriority.equals(deledResAbnormallevelPriority) & deledResAbnormalId.equals(resMoAbnormalInfo.getResAbnormalId().intValue()))) {
-                    //最高条优先级大于删除的那条或两者相等且base表中原本保存的就是这条故障则要更新
-                    ResBase resBase = new ResBase();
-                    BeanUtils.copyProperties(resMoAbnormalInfoModel, resBase);
-                    resBase.setResAbnormalId(resMoAbnormalInfoModel.getResAbnormalId().intValue());
-                    resBase.setResAbnormalcode(resMoAbnormalInfoModel.getResAbnormalCode());
-                    flag = iResBaseService.updateById(resBase);
+            //2 不是终端
+            //2.1 判断此故障是否是设备树终端resBase保留的故障
+            ResTerminal resTerminal = iResTerminalService.selectOne(new EntityWrapper<ResTerminal>().eq("res_id",
+                    resBase.getResSerialnumber()));
+            if (resTerminal.getResIdTerminal().equals(resMoAbnormalInfo.getResId())) {
+                //2.1.1 是 判断终端是否离线
+                ResBase terminalResBase = iResBaseService.selectOne(new EntityWrapper<ResBase>().eq("res_id", resTerminal.getResIdTerminal()));
+                if (!terminalResBase.getResStatus().equals(QuatzConstants.OFFLINE)) {
+                    //2.1.1.1 否 修改终端状态及设备状态
+                    this.findLowestAbnormalInfoAndChangeResBase(terminalResBase, (Map<Long, ResMoAbnormalInfo>) dataMap.get("currentResTreeAbnormalInfo"));
                 }
-                //如果最高条小于那条则base表不变
+                //2.1.1.2 是 不修改终端状态
+            }
+            //2.1.2 否 更新设备状态
+            List<ResMoAbnormalInfo> currentResAbnormalInfo =
+                    resMoAbnormalInfoMapper.findAbnormalAndPriorityInfoByResId(resBase.getResId());
+            //当前设备的异常信息列表
+            Integer lowestPriority = Integer.MAX_VALUE;
+            ResMoAbnormalInfo lowestResAbnormalInfo = null;
+            for (ResMoAbnormalInfo abnormalInfo : currentResAbnormalInfo) {
+                if (lowestPriority > abnormalInfo.getResAbnormallevelPriority()) {
+                    lowestPriority = abnormalInfo.getResAbnormallevelPriority();
+                    lowestResAbnormalInfo = abnormalInfo;
+                }
+            }
+            resBase.setResAbnormalId(lowestResAbnormalInfo.getMoAbnormalId());
+            resBase.setResAbnormalcode(lowestResAbnormalInfo.getResAbnormalCode());
+            resBase.setResAbnormallevelId(lowestResAbnormalInfo.getResAbnormallevelId());
+            resBase.setResAbnormalName(lowestResAbnormalInfo.getResAbnormalName());
+            resBase.setResAbnormaldesc(lowestResAbnormalInfo.getResAbnormaldesc());
+            resBase.setResAbnomaltime(new Date());
+            resBase.setResStatus(QuatzConstants.FAULT);
+            resBase.setResColor(lowestResAbnormalInfo.getResAbnormallevelColor());
+            if (!iResBaseService.updateById(resBase)) {
+                throw new BusinessException("更新设备失败");
             }
         }
-        return result&flag;
+        return result;
+    }
+
+    /**
+     * 从当前设备树异常信息中找到最高的一条并更新resBase
+     *
+     * @param resBase
+     * @param currentResTreeAbnormalInfoMap
+     */
+    private void findLowestAbnormalInfoAndChangeResBase(ResBase resBase, Map<Long, ResMoAbnormalInfo> currentResTreeAbnormalInfoMap) throws BusinessException {
+        Integer lowestPriority = Integer.MAX_VALUE;
+        ResMoAbnormalInfo lowestResAbnormalInfo = null;
+        for (Long resAbnormalIdTemp : currentResTreeAbnormalInfoMap.keySet()) {
+            ResMoAbnormalInfo resMoAbnormalInfoTemp = currentResTreeAbnormalInfoMap.get(resAbnormalIdTemp);
+            if (lowestPriority > resMoAbnormalInfoTemp.getResAbnormallevelPriority()) {
+                lowestPriority = resMoAbnormalInfoTemp.getResAbnormallevelPriority();
+                lowestResAbnormalInfo = resMoAbnormalInfoTemp;
+            }
+        }
+        resBase.setResAbnormalId(lowestResAbnormalInfo.getMoAbnormalId());
+        resBase.setResAbnormalcode(lowestResAbnormalInfo.getResAbnormalCode());
+        resBase.setResAbnormallevelId(lowestResAbnormalInfo.getResAbnormallevelId());
+        resBase.setResAbnormalName(lowestResAbnormalInfo.getResAbnormalName());
+        resBase.setResAbnormaldesc(lowestResAbnormalInfo.getResAbnormaldesc());
+        resBase.setResAbnomaltime(new Date());
+        resBase.setResStatus(QuatzConstants.FAULT);
+        resBase.setResColor(lowestResAbnormalInfo.getResAbnormallevelColor());
+        if (!iResBaseService.updateById(resBase)) {
+            throw new BusinessException("更新终端失败");
+        }
+    }
+
+    /**
+     * 获取当前设备树(排除当前设备)
+     *
+     * @param resBase 此设备resbase
+     * @return key:设备id value：设备resBase
+     */
+    private Map<Integer, ResBase> getCurrentResTree(ResBase resBase) {
+        Integer resId = resBase.getResId();
+        Map<Integer, ResBase> currentResTreeMap = new TreeMap<>();
+        Integer terminalResId = null;
+        ResBase terminalResBase = new ResBase();
+        if (!isTerminal(resId)) {
+            ResTerminal resTerminal = iResTerminalService.selectOne(new EntityWrapper<ResTerminal>().eq("res_id",
+                    resId));
+            terminalResId = resTerminal.getResId();
+        } else {
+            terminalResId = resId;
+        }
+        terminalResBase = iResBaseService.selectById(terminalResId);
+        List<ResBase> devResBaseList = resBaseMapper.selectDevListByTerminalId(terminalResId, null);
+        devResBaseList.stream().forEach(devResBase -> {
+            Integer devResBaseResId = devResBase.getResId();
+            currentResTreeMap.put(devResBaseResId, resBase);
+        });
+        //放入终端设备
+        currentResTreeMap.put(terminalResBase.getResId(), terminalResBase);
+        //删除当前设备
+        currentResTreeMap.remove(resBase.getResId());
+        return currentResTreeMap;
+    }
+
+    /**
+     * 根据当前设备或终端res_id获取当前设备树异常信息map(排除当前信息)
+     *
+     * @param resMoAbnormalInfo
+     * @return 设备树异常信息map key:异常信息id value：异常信息
+     */
+    private Map<Long, ResMoAbnormalInfo> getCurrentResTreeAbnormalInfo(ResMoAbnormalInfo resMoAbnormalInfo) {
+        Integer resId = resMoAbnormalInfo.getResId();
+        Map<Long, ResMoAbnormalInfo> currentResTreeAbnormalInfoMap = new TreeMap<>(new Comparator<Long>() {
+            //降序
+            @Override
+            public int compare(Long x, Long y) {
+                return (x < y) ? 1 : ((x == y) ? 0 : -1);
+            }
+        });
+        //终端resId
+        Integer terminalResId = null;
+        //终端相关异常信息list
+        List<ResMoAbnormalInfo> terminalResMoAbnormalInfoList = new ArrayList<>();
+        if (!isTerminal(resId)) {
+            ResTerminal terminal = iResTerminalService.selectOne(new EntityWrapper<ResTerminal>().eq("res_id", resId));
+            terminalResId = terminal.getResId();
+        } else {
+            terminalResId = resId;
+
+        }
+        //存放终端下设备相关异常信息
+        List<ResBase> resBaseList = resBaseMapper.selectDevListByTerminalId(terminalResId, null);
+        resBaseList.stream().forEach(resBase -> {
+            List<ResMoAbnormalInfo> resMoAbnormalInfos = resMoAbnormalInfoMapper.findAbnormalAndPriorityInfoByResId(resId);
+            resMoAbnormalInfos.stream().forEach(resMoAbnormalInfoTemp -> {
+                currentResTreeAbnormalInfoMap.put(resMoAbnormalInfoTemp.getResAbnormalId(), resMoAbnormalInfoTemp);
+            });
+        });
+        //存放终端的相关异常信息
+        terminalResMoAbnormalInfoList = resMoAbnormalInfoMapper.findAbnormalAndPriorityInfoByResId(terminalResId);
+        terminalResMoAbnormalInfoList.stream().forEach(resMoAbnormalInfoTemp -> {
+            currentResTreeAbnormalInfoMap.put(resMoAbnormalInfoTemp.getResAbnormalId(), resMoAbnormalInfoTemp);
+        });
+        //清除当前的这条异常
+        currentResTreeAbnormalInfoMap.remove(resMoAbnormalInfo.getResAbnormalId());
+        return currentResTreeAbnormalInfoMap;
+    }
+
+    /**
+     * 判断此设备设否是终端
+     *
+     * @param resId
+     * @return
+     */
+    private boolean isTerminal(Integer resId) {
+        ResBase resBase = resBaseMapper.selectById(resId);
+        return resBase.getResMtypeId().equals(QuatzConstants.ZD_MAIN_TYPE);
     }
 
     @Override
-    @Transactional
     public boolean cleanResAbnormal(JSONObject requestJson) throws Exception {
         Long resAbnormalId = requestJson.getLong("resAbnormalId");
         String cleanInfo = requestJson.getString("cleanInfo");

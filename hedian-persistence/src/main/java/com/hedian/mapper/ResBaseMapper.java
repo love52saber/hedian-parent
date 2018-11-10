@@ -35,7 +35,7 @@ public interface ResBaseMapper extends BaseMapper<ResBase> {
 
 
     /**
-     * 查找此终端下某状态的设备列表
+     * 查找某终端下某状态的设备列表
      * @param terminalId  终端id
      * @param resStatus  设备状态
      * @return
