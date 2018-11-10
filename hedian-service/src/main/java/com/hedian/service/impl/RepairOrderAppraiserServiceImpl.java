@@ -110,8 +110,8 @@ public class RepairOrderAppraiserServiceImpl extends ServiceImpl<RepairOrderAppr
                 repairOrderAppraiserMd.setUseflag(0);
             });
             boolean deleteAppraiserMdResult = iRepairOrderAppraiserMdService.updateBatchById(existAppraiserMdList);
-            if (!delAppraiserResult) {
-                throw new BusinessException("删除失败");
+            if (!deleteAppraiserMdResult) {
+                throw new BusinessException("相关域删除失败");
             }
         }
         return delAppraiserResult;
@@ -121,7 +121,7 @@ public class RepairOrderAppraiserServiceImpl extends ServiceImpl<RepairOrderAppr
     public boolean delBatchByIds(List<Integer> appraiseridList) throws BusinessException {
         for (Integer appraiserid : appraiseridList) {
             if (!delById(appraiserid)) {
-                throw new BusinessException("删除失败");
+                throw new BusinessException("评价人删除失败");
             }
         }
         return true;
