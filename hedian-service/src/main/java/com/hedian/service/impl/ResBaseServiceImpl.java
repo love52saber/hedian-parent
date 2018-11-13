@@ -37,6 +37,8 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
     private ISysDeptService sysDeptService;
     @Autowired
     private IMdResService mdResService;
+    @Autowired
+    private IResStatusService iResStatusService;
 
 
     @Override
@@ -61,7 +63,8 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
         resBase.setResAbnomaltime(null);
         resBase.setResRecoverytime(null);
         resBase.setResStatus(QuatzConstants.NORMAL);
-        resBase.setResColor(QuatzConstants.RES_COLOR_NORMAL);
+        ResStatus resStatus = iResStatusService.selectOne(new EntityWrapper<ResStatus>().eq("res_status", QuatzConstants.UNKNOWN));
+        resBase.setResColor(resStatus.getResStatusColor());
         boolean flag = this.updateAllColumnById(resBase);
         if (!flag) {
             throw new BusinessException("修改状态为正常失败");

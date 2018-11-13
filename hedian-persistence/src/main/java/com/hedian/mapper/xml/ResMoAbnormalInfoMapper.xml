@@ -122,14 +122,7 @@
         <result column="res_abnormallevel_color" property="resAbnormallevelColor"/>
     </resultMap>
 
-    <resultMap id="ResMoAbnormalInfoPriorityMap" type="com.hedian.entity.ResMoAbnormalInfo">
-        <id column="res_abnormal_id" property="resAbnormalId"/>
-        <result column="res_id" property="resId"/>
-        <result column="res_abnormal_code" property="resAbnormalCode"/>
-        <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
-        <result column="res_abnormal_name" property="resAbnormalName"/>
-        <result column="res_abnormaldesc" property="resAbnormaldesc"/>
-        <result column="res_abnomaltime" property="resAbnomaltime"/>
+    <resultMap id="ResMoAbnormalInfoPriorityMap" type="com.hedian.entity.ResMoAbnormalInfo" extends="BaseResultMap">
         <result column="res_abnormallevel_priority" property="resAbnormallevelPriority"/>
         <result column="res_abnormallevel_color" property="resAbnormallevelColor"/>
     </resultMap>

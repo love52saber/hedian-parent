@@ -91,6 +91,4 @@ public class QuatzConstants {
      */
     public final static String MOTHRESHOLD = "moThreshold";
 
-    public final static String RES_COLOR_NORMAL = "#04bbb7";
-
 }
