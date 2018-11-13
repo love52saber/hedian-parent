@@ -51,7 +51,7 @@ public class InitializeWorkFlowController {
             @ApiImplicitParam(name = "wfTitle", value = "工单标题", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "resAbnormallevelName", value = "告警等级", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "userName", value = "创建人", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "wfStatus", value = "工单状态", dataType = "boolean", paramType = "query"),
+            @ApiImplicitParam(name = "wfStatus", value = "工单状态", dataType = "Integer", paramType = "query"),
             @ApiImplicitParam(name = "currentUserName", value = "处理人", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "beginTime", value = "创建开始日期", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "endTime", value = "创建结束日期", dataType = "String", paramType = "query"),
@@ -67,7 +67,7 @@ public class InitializeWorkFlowController {
                                  @RequestParam(name = "resAbnormallevelName", defaultValue = "", required = false) String resAbnormallevelName,
                                  @RequestParam(name = "resName", defaultValue = "", required = false) String resName,
                                  @RequestParam(name = "userName", defaultValue = "", required = false) String userName,
-                                 @RequestParam(name = "wfStatus", defaultValue = "", required = false) boolean wfStatus,
+                                 @RequestParam(name = "wfStatus", defaultValue = "", required = false) Integer wfStatus,
                                  @RequestParam(name = "currentUserName", defaultValue = "", required = false) String currentUserName,
                                  @RequestParam(name = "beginTime", defaultValue = "", required = false) String beginTime,
                                  @RequestParam(name = "endTime", defaultValue = "", required = false) String endTime,
@@ -113,6 +113,15 @@ public class InitializeWorkFlowController {
     @PostMapping(value = "rejectWorkFlow")
     public PublicResult<String> rejectWorkFlow(@ValidationParam("currentStep,taskId,businessId") @RequestBody JSONObject requestJson) throws BusinessException {
         String instanceId = runtimeService.rejectWorkFlow(requestJson);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, instanceId);
+    }
+
+    /**
+     * 删除
+     */
+    @DeleteMapping(value = "/{businessId}")
+    public PublicResult<String> deleteWorkFlow(@PathVariable("businessId") Long businessId) throws BusinessException {
+        String instanceId = runtimeService.deleteWorkFlow(businessId);
         return new PublicResult<>(PublicResultConstant.SUCCESS, instanceId);
     }
 }

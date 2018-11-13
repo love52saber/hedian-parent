@@ -2,6 +2,7 @@ package com.hedian.entity;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
@@ -74,6 +75,7 @@ public class WfBusiness extends Model<WfBusiness> {
      */
     @TableField("wf_status")
     private Boolean wfStatus;
+    @TableLogic
     @TableField(value = "useflag",fill = FieldFill.INSERT)
     private Integer useflag;
     /**
