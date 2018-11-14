@@ -82,6 +82,8 @@
         <result column="dispatchUserName" property="dispatchUserName"/>
         <result column="cleanUserName" property="cleanUserName"/>
         <result column="mo_kpi_name" property="mokpiName"/>
+        <result column="res_mtype_name" property="resMtypeName"/>
+        <result column="res_mtype_id" property="resMtypeId"/>
     </resultMap>
 
     <resultMap id="AlarmResultMap" type="com.hedian.model.AlarmInfoModel">
@@ -182,7 +184,7 @@
     <!--分页条件查询-->
     <select id="selectPageByCondition" resultMap="CustomMap">
         SELECT tat.abnormal_type_name,rb.res_name, rb.res_alias, ra.res_abnormallevel_name, ra.res_abnormallevel_color,
-        mk.mo_kpi_name, suc.name AS confirmUserName,sud.name AS dispatchUserName,
+        mk.mo_kpi_name, suc.name AS confirmUserName,sud.name AS dispatchUserName,rm.res_mtype_name,rm.res_mtype_id,
         rmi.* FROM
         tbl_res_mo_abnormal_info rmi
         INNER JOIN tbl_abnormal_type tat ON rmi.abnormal_type_id = tat.abnormal_type_id
@@ -191,6 +193,7 @@
         LEFT JOIN tbl_mo_kpi mk ON rmi.mo_kpi_id = mk.mo_kpi_id
         LEFT JOIN sys_user suc ON rmi.confirm_user_id = suc.user_id
         LEFT JOIN sys_user sud ON rmi.dispatch_user_id = sud.user_id
+        left join tbl_res_maintype rm on rb.res_mtype_id = rm.res_mtype_id
         WHERE rmi.useflag = 1 and rmi.res_abnormalstatus = 1
         <if test="beginTime != null and beginTime != ''">
             AND rmi.res_abnomaltime <![CDATA[ >= ]]> #{beginTime}
