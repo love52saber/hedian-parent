@@ -100,6 +100,24 @@ public class ResMoAbnormalInfoModel {
     private String dispatchUserName;
     private String cleanUserName;
     private String delUserName;
+    private String resMtypeName;
+    private Integer resMtypeId;
+
+    public String getResMtypeName() {
+        return resMtypeName;
+    }
+
+    public void setResMtypeName(String resMtypeName) {
+        this.resMtypeName = resMtypeName;
+    }
+
+    public Integer getResMtypeId() {
+        return resMtypeId;
+    }
+
+    public void setResMtypeId(Integer resMtypeId) {
+        this.resMtypeId = resMtypeId;
+    }
 
     public Integer getResAbnormallevelPriority() {
         return resAbnormallevelPriority;
