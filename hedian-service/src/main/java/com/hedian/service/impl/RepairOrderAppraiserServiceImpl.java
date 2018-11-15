@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.base.BusinessException;
+import com.hedian.entity.Md;
 import com.hedian.entity.RepairOrderAppraiser;
 import com.hedian.entity.RepairOrderAppraiserMd;
+import com.hedian.mapper.MdMapper;
 import com.hedian.mapper.RepairOrderAppraiserMapper;
 import com.hedian.mapper.RepairOrderAppraiserMdMapper;
 import com.hedian.service.IRepairOrderAppraiserMdService;
@@ -38,6 +40,8 @@ public class RepairOrderAppraiserServiceImpl extends ServiceImpl<RepairOrderAppr
     private RepairOrderAppraiserMapper repairOrderAppraiserMapper;
     @Autowired
     private RepairOrderAppraiserMdMapper repairOrderAppraiserMdMapper;
+    @Autowired
+    private MdMapper mdMapper;
 
     @Override
     public boolean addAppraiser(JSONObject requestJson) throws BusinessException {
@@ -130,6 +134,11 @@ public class RepairOrderAppraiserServiceImpl extends ServiceImpl<RepairOrderAppr
     @Override
     public Page<RepairOrderAppraiser> findPageByCondition(Page<RepairOrderAppraiser> page, Integer appraisertype, String apprasiername, String grpName) {
         List<RepairOrderAppraiser> repairOrderAppraiserList = repairOrderAppraiserMapper.findPageByCondition(page,appraisertype,apprasiername,grpName);
+        //封装关联域
+        repairOrderAppraiserList.stream().forEach(repairOrderAppraiser -> {
+            List<Md> mdList = mdMapper.findMdListByRepairOrderAppraiserId(repairOrderAppraiser.getAppraiserid());
+            repairOrderAppraiser.setMdList(mdList);
+        });
         page.setRecords(repairOrderAppraiserList);
         return page;
     }

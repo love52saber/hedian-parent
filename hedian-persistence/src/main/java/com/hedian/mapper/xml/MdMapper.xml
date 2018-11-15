@@ -88,4 +88,11 @@
         LEFT JOIN sys_user su on t.user_id = su.user_id
     </select>
 
+    <select id="findMdListByRepairOrderAppraiserId" resultMap="BaseResultMap">
+      select b.md_id,b.md_name
+      from (select md_id,appraiserid from tbl_repair_order_appraiser_md where useflag = 1) a
+      inner join (select md_id,md_name from tbl_md where useflag = 1) b
+      on a.md_id = b.md_id
+      where  a.appraiserid = #{appraiserid}
+    </select>
 </mapper>

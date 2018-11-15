@@ -62,25 +62,22 @@
             and a.useflag = 1
             and b.useflag = 1
         </where>
+        order by a.appraiserid
     </select>
 
     <select id="findAppraiserById" parameterType="int" resultMap="appraiserMdMap">
         select a.grp_name,b.*,d.md_id,d.md_name
-        from  sys_group a
-        right join tbl_repair_order_appraiser b
+        from  (select * from sys_group where useflag = 1) a
+        right join (select * from tbl_repair_order_appraiser where useflag = 1) b
         on a.grp_id = b.grp_id
-        left join tbl_repair_order_appraiser_md c
+        left join (select * from tbl_repair_order_appraiser_md where useflag = 1) c
         on b.appraiserid = c.appraiserid
-        left join tbl_md d
+        left join (select * from tbl_md where useflag = 1) d
         on c.md_id = d.md_id
         <where>
             <if test="appraiserid!=null and appraiserid!=''">
               b.appraiserid = #{appraiserid}
             </if>
-            and a.useflag = 1
-            and b.useflag = 1
-            and c.useflag = 1
-            and d.useflag = 1
         </where>
     </select>
 
