@@ -171,7 +171,7 @@
         select b.mo_abnormal_id,b.mo_abnormalcode,b.mo_abnormal_name,b.res_abnormallevel_id,count(b.mo_abnormal_id) as
         countNum
         from
-        (select * from tbl_res_mo_abnormal_info where 1=1
+        (select * from tbl_res_mo_abnormal_info where res_abnormalstatus=1
         <if test="resIds != null">and res_id IN
             <foreach item="rId" collection="resIds" open="(" separator=","
                      close=")">
@@ -201,7 +201,7 @@
         LEFT JOIN tbl_mo_kpi mk ON rmi.mo_kpi_id = mk.mo_kpi_id
         LEFT JOIN sys_user suc ON rmi.confirm_user_id = suc.user_id
         LEFT JOIN sys_user sud ON rmi.dispatch_user_id = sud.user_id
-        WHERE rmi.useflag = 1 and rmi.res_abnormalstatus = 1
+        WHERE rmi.res_abnormalstatus = 1
         <if test="beginTime != null and beginTime != ''">
             AND rmi.res_abnomaltime <![CDATA[ >= ]]> #{beginTime}
         </if>

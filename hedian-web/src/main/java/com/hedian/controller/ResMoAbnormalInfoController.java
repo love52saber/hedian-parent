@@ -100,9 +100,9 @@ public class ResMoAbnormalInfoController {
      * 删除告警
      */
     @DeleteMapping(value = "/{resAbnormalId}")
-    public PublicResult deleteAbnormalInfo(@PathVariable("resAbnormalId") Long resAbnormalId) throws Exception {
+    public PublicResult deleteAbnormalInfo(@PathVariable("resAbnormalId") Long resAbnormalId, @CurrentUser SysUser user) throws Exception {
 
-        boolean result = resMoAbnormalInfoService.deleteResAbnoraml(resAbnormalId);
+        boolean result = resMoAbnormalInfoService.deleteResAbnoraml(resAbnormalId,user);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 
@@ -124,9 +124,9 @@ public class ResMoAbnormalInfoController {
      * 清除告警
      */
     @PutMapping(value = "/cleanAbnormal")
-    public PublicResult cleanAbnormalInfo(@ValidationParam("resAbnormalId")
+    public PublicResult cleanAbnormalInfo(@ValidationParam("resAbnormalId") @CurrentUser SysUser user,
                                           @RequestBody JSONObject requestJson) throws Exception {
-        boolean result = resMoAbnormalInfoService.cleanResAbnormal(requestJson);
+        boolean result = resMoAbnormalInfoService.cleanResAbnormal(requestJson,user);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 

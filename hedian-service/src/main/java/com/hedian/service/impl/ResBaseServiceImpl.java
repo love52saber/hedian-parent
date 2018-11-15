@@ -78,7 +78,20 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
 
     @Override
     public List<ResBase> getTopRes(Map<String, Object> map) {
-        return resBaseMapper.getTopRes(map);
+        List<ResBase> topRes = resBaseMapper.getTopRes(map);
+        if (!ComUtil.isEmpty(topRes)) {
+            List<ResBase> topResH = resBaseMapper.getTopResH(map);
+            if (!ComUtil.isEmpty(topResH)) {
+                topRes.stream().forEach(resBase -> {
+                    topResH.stream().forEach(resBaseH -> {
+                        if (resBase.getResId().equals(resBaseH.getResId())) {
+                            resBase.setCountNum(resBase.getCountNum() + resBaseH.getCountNum());
+                        }
+                    });
+                });
+            }
+        }
+        return topRes;
     }
 
     @Override
