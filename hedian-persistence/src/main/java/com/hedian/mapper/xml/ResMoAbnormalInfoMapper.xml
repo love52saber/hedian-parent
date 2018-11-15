@@ -75,6 +75,8 @@
         <result column="abnormal_type_name" property="abnormalTypeName"/>
         <result column="res_name" property="resName"/>
         <result column="res_alias" property="resAlias"/>
+        <result column="res_mtype_name" property="resMtypename"/>
+        <result column="res_stype_name" property="resStypeName"/>
         <result column="res_abnormallevel_name" property="resAbnormallevelName"/>
         <result column="res_abnormallevel_color" property="resAbnormallevelColor"/>
         <result column="mo_kpi_name" property="mokpiName"/>
@@ -109,7 +111,7 @@
         <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
         <result column="countNum" property="countNum"/>
     </resultMap>
-    
+
     <resultMap id="ResMoAbnormalInfoModelMap" type="com.hedian.model.ResMoAbnormalInfoModel">
         <id column="res_abnormal_id" property="resAbnormalId"/>
         <result column="res_id" property="resId"/>
@@ -175,13 +177,21 @@
     </select>
     <!--分页条件查询-->
     <select id="selectPageByCondition" resultMap="CustomMap">
-        SELECT tat.abnormal_type_name,rb.res_name, rb.res_alias, ra.res_abnormallevel_name, ra.res_abnormallevel_color,
+        SELECT tat.abnormal_type_name,ra.res_abnormallevel_name, ra.res_abnormallevel_color,
         mk.mo_kpi_name, suc.name AS confirmUserName,sud.name AS dispatchUserName,
-        rmi.* FROM
+        rmi.*,rb.*
+        FROM
         tbl_res_mo_abnormal_info rmi
         INNER JOIN tbl_abnormal_type tat ON rmi.abnormal_type_id = tat.abnormal_type_id
-        INNER JOIN tbl_res_base rb ON rmi.res_id = rb.res_id
         INNER JOIN tbl_res_abnormallevel ra ON rmi.res_abnormallevel_id = ra.res_abnormallevel_id
+        INNER JOIN
+        (
+         SELECT rm.res_mtype_name,rs.res_stype_name,rb.res_name,rb.res_alias,rb.res_id
+         FROM tbl_res_base rb
+         INNER JOIN tbl_res_maintype rm ON rb.res_mtype_id = rm.res_mtype_id
+         INNER JOIN tbl_res_subtype rs ON rb.res_stype_id = rs.res_stype_id
+        ) rb
+        ON rmi.res_id = rb.res_id
         LEFT JOIN tbl_mo_kpi mk ON rmi.mo_kpi_id = mk.mo_kpi_id
         LEFT JOIN sys_user suc ON rmi.confirm_user_id = suc.user_id
         LEFT JOIN sys_user sud ON rmi.dispatch_user_id = sud.user_id
@@ -197,9 +207,6 @@
         </if>
         <if test="isAutoOrder">
             AND rmi.dispatch_type != 0
-        </if>
-        <if test="useflag != null and useflag != ''">
-            AND rmi.useflag=#{useflag}
         </if>
         <if test="abnormalLevel != null and abnormalLevel != ''">
             AND ra.res_abnormallevel_name LIKE concat('%',#{abnormalLevel},'%')
@@ -222,7 +229,10 @@
         <if test="resAlias != null and resAlias != ''">
             and rb.res_alias LIKE concat('%', #{resAlias},'%')
         </if>
-        ORDER BY rmi.res_abnomaltime
+        <if test="conStatus != null and conStatus != ''">
+            and rmi.confirm_status = #{conStatus}
+        </if>
+        ORDER BY rmi.res_abnomaltime DESC
     </select>
     <!--统计告警级别数量-->
     <select id="selectAbnormalLevelCount" resultType="com.hedian.model.AbnormalLevelModel">

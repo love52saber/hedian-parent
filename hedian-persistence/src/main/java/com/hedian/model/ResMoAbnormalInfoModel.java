@@ -95,6 +95,8 @@ public class ResMoAbnormalInfoModel {
     private Integer resAbnormallevelPriority;
     private String resName;
     private String resAlias;
+    private String resMtypename;
+    private String resStypeName;
     private String mokpiName;
     private String confirmUserName;
     private String dispatchUserName;
@@ -445,6 +447,26 @@ public class ResMoAbnormalInfoModel {
         this.deltime = deltime;
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getResMtypename() {
+        return resMtypename;
+    }
+
+    public void setResMtypename(String resMtypename) {
+        this.resMtypename = resMtypename;
+    }
+
+    public String getResStypeName() {
+        return resStypeName;
+    }
+
+    public void setResStypeName(String resStypeName) {
+        this.resStypeName = resStypeName;
+    }
+
     @Override
     public String toString() {
         return "ResMoAbnormalInfoModel{" +
@@ -483,8 +505,11 @@ public class ResMoAbnormalInfoModel {
                 ", abnormalTypeName='" + abnormalTypeName + '\'' +
                 ", resAbnormallevelName='" + resAbnormallevelName + '\'' +
                 ", resAbnormallevelColor='" + resAbnormallevelColor + '\'' +
+                ", resAbnormallevelPriority=" + resAbnormallevelPriority +
                 ", resName='" + resName + '\'' +
                 ", resAlias='" + resAlias + '\'' +
+                ", resMtypename='" + resMtypename + '\'' +
+                ", resStypeName='" + resStypeName + '\'' +
                 ", mokpiName='" + mokpiName + '\'' +
                 ", confirmUserName='" + confirmUserName + '\'' +
                 ", dispatchUserName='" + dispatchUserName + '\'' +

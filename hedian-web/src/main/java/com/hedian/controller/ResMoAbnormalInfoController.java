@@ -26,6 +26,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,10 +110,12 @@ public class ResMoAbnormalInfoController {
      * 确认告警
      */
     @PutMapping(value = "/confirmAbnormal")
-    public PublicResult confirmAbnormalInfo(@ValidationParam("resAbnormalId")
+    public PublicResult confirmAbnormalInfo(@ValidationParam("resAbnormalId") @CurrentUser SysUser user,
                                             @RequestBody JSONObject requestJson) {
         ResMoAbnormalInfo resMoAbnormalInfo = requestJson.toJavaObject(ResMoAbnormalInfo.class);
         resMoAbnormalInfo.setConfirmStatus(2);
+        resMoAbnormalInfo.setConfirmUserId(user.getUserId());
+        resMoAbnormalInfo.setConfirmTime(new Date());
         boolean result = resMoAbnormalInfoService.updateById(resMoAbnormalInfo);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
