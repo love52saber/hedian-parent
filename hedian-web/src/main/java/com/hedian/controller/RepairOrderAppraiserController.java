@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.annotation.CurrentUser;
 import com.hedian.annotation.Pass;
 import com.hedian.annotation.ValidationParam;
+import com.hedian.base.BusinessException;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
@@ -21,8 +22,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -46,9 +45,10 @@ public class RepairOrderAppraiserController {
     @PostMapping("")
     @ApiOperation("添加评价人")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "requestJson", value = "{\"appraisertype\":评价人类型,\"apprasiername\":\"评价人规则名称\",\"grpId\":评价用户组id,\"mdIds\":\"管理域id数组\"}", required = true, dataType = "string", paramType = "body")
+            @ApiImplicitParam(name = "requestJson", value = "{\"appraisertype\":评价人类型,\"apprasiername\":\"评价人规则名称\"," +
+                    "\"grpId\":评价用户组id,\"mdIds\":[管理域id数组]}", required = true, dataType = "string", paramType = "body")
     })
-    public PublicResult addAppraiser(@ValidationParam("appraisertype,apprasiername,grpId,mdIds") @RequestBody JSONObject requestJson) {
+    public PublicResult addAppraiser(@ValidationParam("appraisertype,apprasiername,grpId") @RequestBody JSONObject requestJson) throws BusinessException {
         boolean result = iRepairOrderAppraiserService.addAppraiser(requestJson);
         return result ? new PublicResult(PublicResultConstant.SUCCESS, null) : new PublicResult(PublicResultConstant.ERROR, null);
     }
@@ -56,9 +56,10 @@ public class RepairOrderAppraiserController {
     @PutMapping("")
     @ApiOperation("修改评价人")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "requestJson", value = "{\"appraiserid\":评价人规则id,\"appraisertype\":评价人类型,\"apprasiername\":\"评价人规则名称\",\"grpId\":评价用户组id,\"mdIds\":\"管理域id数组\"}", required = true, dataType = "string", paramType = "body")
+            @ApiImplicitParam(name = "requestJson", value = "{\"appraiserid\":评价人规则id,\"appraisertype\":评价人类型," +
+                    "\"apprasiername\":\"评价人规则名称\",\"grpId\":评价用户组id,\"mdIds\":[管理域id数组]}", required = true, dataType = "string", paramType = "body")
     })
-    public PublicResult updateAppraiser(@ValidationParam("appraiserid,appraisertype,apprasiername,grpId,mdIds") @RequestBody JSONObject requestJson) throws Exception {
+    public PublicResult updateAppraiser(@ValidationParam("appraiserid,appraisertype,apprasiername,grpId") @RequestBody JSONObject requestJson) throws Exception {
         boolean result = iRepairOrderAppraiserService.updateAppraiser(requestJson);
         return result ? new PublicResult(PublicResultConstant.SUCCESS, null) : new PublicResult(PublicResultConstant.ERROR, null);
     }

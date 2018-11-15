@@ -3,6 +3,8 @@ package com.hedian.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.hedian.base.BusinessException;
+import com.hedian.base.QuatzConstants;
 import com.hedian.entity.*;
 import com.hedian.mapper.ResBaseMapper;
 import com.hedian.model.Tree;
@@ -35,6 +37,8 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
     private ISysDeptService sysDeptService;
     @Autowired
     private IMdResService mdResService;
+    @Autowired
+    private IResStatusService iResStatusService;
 
 
     @Override
@@ -47,6 +51,24 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
     @Override
     public List<Integer> selectByUserId(String userId) {
         return resBaseMapper.selectByUserId(userId);
+    }
+
+    @Override
+    public void transferResToNormal(ResBase resBase) throws BusinessException {
+        resBase.setResAbnormalId(null);
+        resBase.setResAbnormalcode(null);
+        resBase.setResAbnormallevelId(null);
+        resBase.setResAbnormalName(null);
+        resBase.setResAbnormaldesc(null);
+        resBase.setResAbnomaltime(null);
+        resBase.setResRecoverytime(null);
+        resBase.setResStatus(QuatzConstants.NORMAL);
+        ResStatus resStatus = iResStatusService.selectOne(new EntityWrapper<ResStatus>().eq("res_status", QuatzConstants.UNKNOWN));
+        resBase.setResColor(resStatus.getResStatusColor());
+        boolean flag = this.updateAllColumnById(resBase);
+        if (!flag) {
+            throw new BusinessException("修改状态为正常失败");
+        }
     }
 
     @Override

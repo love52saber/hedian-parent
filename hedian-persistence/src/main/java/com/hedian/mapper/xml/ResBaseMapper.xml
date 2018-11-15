@@ -198,20 +198,17 @@
 
     </select>
 
-    <select id="selectDevListByTerminalId" parameterType="integer" resultMap="BaseResultMap">
+    <select id="selectDevListByTerminalId" parameterType="integer" resultMap="BaseResultMap" flushCache="true">
       select a.*
       from tbl_res_base a,tbl_res_terminal b
-        <where>
-            and a.res_id = b.res_id
-            <if test="terminalId!=null">
-                and b.res_id_terminal = #{terminalId}
-            </if>
-            <if test="resStatus!=null">
-                and a.res_status = #{resStatus}
-            </if>
-            and a.useflag = 1
-            and b.useflag = 1
-        </where>
+      WHERE  a.res_id = b.res_id and a.useflag = 1 and b.useflag = 1
+        <if test="terminalId!=null">
+            and b.res_id_terminal = #{terminalId}
+        </if>
+        <if test="resStatus!=null">
+            and a.res_status = #{resStatus}
+        </if>
     </select>
+
 
 </mapper>
