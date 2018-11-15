@@ -24,7 +24,7 @@ public interface ResMoAbnormalInfoMapper extends BaseMapper<ResMoAbnormalInfo> {
 
 
     List<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, @Param("beginTime") String beginTime,
-                                                       @Param("endTime") String endTime, @Param("useflag") String useflag,
+                                                       @Param("endTime") String endTime, @Param("conStatus") String conStatus,
                                                        @Param("abnormalLevel") String abnormalLevel, @Param("abnormalType") String abnormalType,
                                                        @Param("abnormalName") String abnormalName, @Param("mokpiName") String mokpiName,
                                                        @Param("resName") String resName, @Param("resId") Integer resId, @Param("resAlias") String resAlias,
