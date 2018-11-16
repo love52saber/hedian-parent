@@ -64,17 +64,15 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
     @Override
     public List<MoAbnormalDef> getTopAbnormal(Map<String, Object> map) {
         List<MoAbnormalDef> topAbnormal = resMoAbnormalInfoMapper.getTopAbnormal(map);
-        if (!ComUtil.isEmpty(topAbnormal)) {
-            List<MoAbnormalDef> topAbnormalH = resMoAbnormalInfoHMapper.getTopAbnormalH(map);
-            if (!ComUtil.isEmpty(topAbnormalH)) {
-                topAbnormal.stream().forEach(moAbnormalDef -> {
-                    topAbnormalH.stream().forEach(moAbnormalDefH -> {
-                        if (moAbnormalDef.getMoAbnormalId().equals(moAbnormalDefH.getMoAbnormalId())) {
-                            moAbnormalDef.setCountNum(moAbnormalDef.getCountNum() + moAbnormalDefH.getCountNum());
-                        }
-                    });
+        List<MoAbnormalDef> topAbnormalH = resMoAbnormalInfoHMapper.getTopAbnormalH(map);
+        if (!ComUtil.isEmpty(topAbnormalH) && !ComUtil.isEmpty(topAbnormal)) {
+            topAbnormal.stream().forEach(moAbnormalDef -> {
+                topAbnormalH.stream().forEach(moAbnormalDefH -> {
+                    if (moAbnormalDef.getMoAbnormalId().equals(moAbnormalDefH.getMoAbnormalId())) {
+                        moAbnormalDef.setCountNum(moAbnormalDef.getCountNum() + moAbnormalDefH.getCountNum());
+                    }
                 });
-            }
+            });
         }
         return topAbnormal;
     }

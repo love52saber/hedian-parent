@@ -149,7 +149,7 @@
     <select id="getTopResH" resultMap="TopResMap">
         SELECT b.res_id,b.res_name,b.res_alias,count(b.res_id) AS countNum
         FROM (SELECT * FROM tbl_res_mo_abnormal_info_h
-        WHERE 1=1
+        WHERE useflag=1
         <if test="resIds != null">AND res_id IN
             <foreach item="rId" collection="resIds" open="(" separator=","
                      close=")">
