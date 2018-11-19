@@ -97,26 +97,14 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
         Map<String, Object> map = new HashMap<>(16);
         //根据用户id获取该用户管理域列表
         List<MdUser> mdUserList = mdUserService.selectList(new EntityWrapper<MdUser>().eq("user_id", sysUser.getUserId()));
-        //管理域对应的部门列表
-        Tree<SysDept> tree = new Tree<>();
-        //管理域与部门关系
-        Map<Long, Integer> mdDept = new IdentityHashMap<>(16);
+        //获取当前用户的部门  根据部门id查询部门树  向上查找
+        Tree<SysDept> parentDeptList = sysDeptService.getParentDeptList(sysUser.getDeptId());
         //管理域与资产关系
         Map<Integer, Integer> mdRes = new IdentityHashMap<>(16);
         //如果该用户拥有管理域,获取该用户的管理域
         if (!ComUtil.isEmpty(mdUserList)) {
             //管理域ID集合
             map.put("mdIds", mdUserList.stream().map(MdUser::getMdId).collect(Collectors.toList()));
-            //获取管理域关联的组织机构
-            List<MdDept> mdDeptList = mdDeptService.findByMap(map);
-            if (!ComUtil.isEmpty(mdDeptList)) {
-                List<Long> deptIdList = new ArrayList<>();
-                mdDeptList.stream().forEach(mdD -> {
-                    deptIdList.add(mdD.getDeptId());
-                    mdDept.put(mdD.getDeptId(), mdD.getMdId());
-                });
-                tree = sysDeptService.getParentList(deptIdList);
-            }
             //获取管理域关联的終端资产
             List<MdRes> mdResList = mdResService.findByMap(map);
             if (!ComUtil.isEmpty(mdResList)) {
@@ -126,65 +114,48 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
             }
         } else {
             //如果该用户没有管理域，获取该用户的部门，并判断该部门是否有管理域
-            Long deptId = sysUser.getDeptId();
             //获取该部门及其下的所有子部门的id
-            List<SysDept> sysDeptList = sysDeptService.getChildList(deptId);
-            List<Long> deptIds = null;
-            if (!ComUtil.isEmpty(sysDeptList)) {
-                deptIds = sysDeptList.stream().map(SysDept::getDeptId).collect(Collectors.toList());
-            }
-            map.put("orgIds", deptIds);
-            //获取管理域关联的组织机构
-            List<MdDept> mdDeptList = mdDeptService.findByMap(map);
-            List<Integer> mdIds = new ArrayList<>();
+            List<MdDept> mdDeptList = mdDeptService.selectList(new EntityWrapper<MdDept>().eq("dept_id", sysUser.getDeptId()));
+            List<Integer> mdIds = null;
             if (!ComUtil.isEmpty(mdDeptList)) {
-                mdDeptList.stream().forEach(mdD -> {
-                    mdIds.add(mdD.getMdId());
-                    mdDept.put(mdD.getDeptId(), mdD.getMdId());
-                });
-                tree = sysDeptService.getChildLists(deptId);
-                map.clear();
-                map.put("mdIds", mdIds);
-                //获取管理域关联的終端资产
-                List<MdRes> mdResList = mdResService.findByMap(map);
-                if (!ComUtil.isEmpty(mdResList)) {
-                    mdResList.stream().forEach(mdR -> {
-                        mdRes.put(mdR.getResId(), mdR.getMdId());
-                    });
-                }
+                mdIds = mdDeptList.stream().map(MdDept::getMdId).collect(Collectors.toList());
             }
-
+            map.put("mdIds", mdIds);
+            //获取管理域关联的終端资产
+            List<MdRes> mdResList = mdResService.findByMap(map);
+            if (!ComUtil.isEmpty(mdResList)) {
+                mdResList.stream().forEach(mdR -> {
+                    mdRes.put(mdR.getResId(), mdR.getMdId());
+                });
+            }
         }
+
         //整合部门树
-        tree = recursionFn(tree, mdDept, mdRes);
-        return tree;
+        parentDeptList = recursionFn(parentDeptList, mdRes, sysUser.getDeptId());
+        return parentDeptList;
     }
 
     /**
      * 递归方式将资源插入部门tree中
      *
      * @param tree
-     * @param mdDept
      * @param mdRes
      * @return
      */
-    private Tree<SysDept> recursionFn(Tree<SysDept> tree, Map<Long, Integer> mdDept, Map<Integer, Integer> mdRes) {
+    private Tree<SysDept> recursionFn(Tree<SysDept> tree, Map<Integer, Integer> mdRes, Long deptId) {
         if (tree == null || tree.getId() == null) {
             return null;
         }
         Map<String, Object> attributes = new LinkedHashMap<>();
         Map<String, Object> map = new HashMap<>(16);
         List<ResBase> resBaseList = null;
-        if (null != mdDept.get(Long.valueOf(tree.getId()))) {
-
+        if (deptId.equals(Long.valueOf(tree.getId()))) {
             //获取管理域id对应的资产id
             int[] resIds = new int[mdRes.size()];
             int index = 0;
             for (Map.Entry<Integer, Integer> entry : mdRes.entrySet()) {
-                if (mdDept.get(Long.valueOf(tree.getId())).equals(entry.getValue())) {
-                    resIds[index] = entry.getKey();
-                    index++;
-                }
+                resIds[index] = entry.getKey();
+                index++;
             }
             map.put("resIds", resIds);
             map.put("resMtypeId", QuatzConstants.ZD_MAIN_TYPE);
@@ -198,7 +169,7 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
         //如果部门数有子节点，继续添加
         if (!ComUtil.isEmpty(tree.getChildren())) {
             tree.getChildren().stream().forEach(treeChild -> {
-                recursionFn(treeChild, mdDept, mdRes);
+                recursionFn(treeChild, mdRes, deptId);
             });
         }
         return tree;

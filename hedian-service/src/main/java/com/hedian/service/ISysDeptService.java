@@ -36,4 +36,11 @@ public interface ISysDeptService extends IService<SysDept> {
     Tree<SysDept> getParentList(List<Long> deptIds);
 
     Tree<SysDept> getChildLists(Long deptId);
+
+    /**
+     * 获取部门树
+     * @param deptId
+     * @return
+     */
+    Tree<SysDept> getParentDeptList(Long deptId);
 }

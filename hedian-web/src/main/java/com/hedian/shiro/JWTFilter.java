@@ -85,12 +85,16 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             this.userService = SpringContextBean.getBean(ISysUserService.class);
         }
         String userNo = JWTUtil.getUserNo(token.getPrincipal().toString());
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        String authorization = httpServletRequest.getHeader("Authorization");
         /**
          * TODO 暂且放在全局变量里
          */
-        if (null == CacheConstans.CACHE_USER.getUserId()) {
+        if (!authorization.equals(CacheConstans.CACHE_TOKEN.get("token"))) {
             SysUser userBean = userService.getUserByUserName(userNo);
             BeanUtils.copyProperties(CacheConstans.CACHE_USER, userBean);
+            CacheConstans.CACHE_TOKEN.put("token", authorization);
+
         }
         request.setAttribute("currentUser", CacheConstans.CACHE_USER);
     }

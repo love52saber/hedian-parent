@@ -35,8 +35,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         for (SysDept m : list) {
             if (m.getParentId().equals(pId)) {
                 //TODO 待优化
-                if(!pId.equals(0L)){
-                    m.setParentName(this.selectOne(new EntityWrapper<SysDept>().eq("dept_id",m.getParentId())).getName());
+                if (!pId.equals(0L)) {
+                    m.setParentName(this.selectOne(new EntityWrapper<SysDept>().eq("dept_id", m.getParentId())).getName());
                 }
                 List<SysDept> childMenuList = treeDeptList(m.getDeptId(), list);
                 m.setChildren(childMenuList);
@@ -54,7 +54,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Override
     public Tree<SysDept> getParentList(List<Long> deptIds) {
         List<SysDept> sysDepts = new ArrayList<>();
-        for (Long deptId : deptIds){
+        for (Long deptId : deptIds) {
             List<SysDept> temp = sysDeptMapper.getParentList(deptId);
             sysDepts.addAll(temp);
         }
@@ -64,11 +64,31 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
+    public Tree<SysDept> getParentDeptList(Long deptId) {
+        List<SysDept> sysDepts = new ArrayList<>();
+        SysDept sysDept = sysDeptMapper.selectById(deptId);
+        sysDepts.add(sysDept);
+        getSysDeptForParents(sysDepts, sysDept);
+        // 默认顶级菜单为０，根据数据库实际情况调整
+        Tree<SysDept> t = BuildTree.build(transTrees(sysDepts));
+        return t;
+    }
+
+    private List<SysDept> getSysDeptForParents(List<SysDept> sysDepts, SysDept sysDept) {
+        if (!sysDept.getParentId().equals(0L)) {
+            SysDept sysDeptParent = sysDeptMapper.selectById(sysDept.getParentId());
+            sysDepts.add(sysDeptParent);
+            getSysDeptForParents(sysDepts, sysDeptParent);
+        }
+        return sysDepts;
+    }
+
+    @Override
     public Tree<SysDept> getChildLists(Long deptId) {
         List<SysDept> sysDepts = sysDeptMapper.getChildList(deptId);
-        for (SysDept sysDept : sysDepts){
+        for (SysDept sysDept : sysDepts) {
             //将该id对应部门设置为根节点
-            if (deptId.equals(sysDept.getDeptId())){
+            if (deptId.equals(sysDept.getDeptId())) {
                 sysDept.setParentId(0L);
                 break;
             }
@@ -78,8 +98,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         return t;
     }
 
-    private List<Tree<SysDept>> transTrees(List<SysDept> sysDepts){
-        if(!ComUtil.isEmpty(sysDepts)){
+    private List<Tree<SysDept>> transTrees(List<SysDept> sysDepts) {
+        if (!ComUtil.isEmpty(sysDepts)) {
             sysDepts = new ArrayList<>(new HashSet<>(sysDepts));
         }
         List<Tree<SysDept>> trees = new ArrayList<>();
