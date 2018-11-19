@@ -29,9 +29,19 @@ public interface WfBusinessMapper extends BaseMapper<WfBusiness> {
                                                 @Param("handleId")Integer handleId);
 
     List<AppraiseWfBusinessModel> selectAppraisePageByCondition(Page<AppraiseWfBusinessModel> page, @Param("wfTitle") String wfTitle,
-                                                                @Param("resName")String resName,
-                                                                @Param("userName") String userName,
-                                                                @Param("beginTime") String beginTime, @Param("endTime") String endTime);
+                                                                @Param("wfId") String wfId,
+                                                                @Param("baseUserName")String baseUserName,
+                                                                @Param("kexinUserName") String kexinUserName,
+                                                                @Param("baseAppraBeginTime") String baseAppraBeginTime,
+                                                                @Param("baseAppraEndTime") String baseAppraEndTime,
+                                                                @Param("kexinAppraBeginTime") String kexinAppraBeginTime, @Param("kexinAppraEndTime") String kexinAppraEndTime, @Param("baseAppraScore") Integer baseAppraScore,
+                                                                @Param("kexinAppraScore") Integer kexinAppraScore,
+                                                                @Param("defFlag") Integer defFlag);
+
+
+
+
+
 
 
 }

@@ -462,9 +462,13 @@ public class RunTimeServiceImpl implements IRuntimeService {
     }
 
     @Override
-    public Page<AppraiseWfBusinessModel> selectAppraisePageByCondition(Page<AppraiseWfBusinessModel> page, String wfTitle, String resName, String userName, String beginTime, String endTime) {
-        return page.setRecords(wfBusinessMapper.selectAppraisePageByCondition(page, wfTitle, resName, userName, beginTime, endTime));
+    public Page<AppraiseWfBusinessModel> selectAppraisePageByCondition(Page<AppraiseWfBusinessModel> page, String wfTitle, String wfId,String kexinUserName, String baseUserName,  String baseAppraBeginTime,String kexinAppraBeginTime,String kexinAppraEndTime,
+                                                                       String baseAppraEndTime,Integer baseAppraScore,Integer kexinAppraScore,Integer defFlag) {
+        return page.setRecords(wfBusinessMapper.selectAppraisePageByCondition(page, wfTitle,wfId,kexinUserName,baseUserName,baseAppraBeginTime, baseAppraEndTime,kexinAppraBeginTime,kexinAppraEndTime,baseAppraScore,kexinAppraScore,defFlag));
     }
+
+
+
 
 
 }

@@ -6,6 +6,8 @@ import com.hedian.base.BusinessException;
 import com.hedian.model.AppraiseWfBusinessModel;
 import com.hedian.model.WfBusinessModel;
 
+import java.util.List;
+
 public interface IRuntimeService {
 
 
@@ -40,14 +42,24 @@ public interface IRuntimeService {
      *
      * @param page
      * @param wfTitle
-     * @param resName
-     * @param userName
-     * @param beginTime
-     * @param endTime
+     * @param wfId
+     * @param kexinUserName
+     * @param baseUserName
+     * @param baseAppraBeginTime
+     * @param baseAppraEndTime
+     * @param kexinAppraBeginTime
+     * @param kexinAppraEndTIime
+     * @param baseAppraScore
+     * @param kexinAppraScore
+     * @param defFlag
      * @return
      */
-    Page<AppraiseWfBusinessModel> selectAppraisePageByCondition(Page<AppraiseWfBusinessModel> page, String wfTitle, String resName,
-                                                                String userName, String beginTime, String endTime);
+    Page<AppraiseWfBusinessModel> selectAppraisePageByCondition(Page<AppraiseWfBusinessModel> page, String wfTitle, String wfId,String kexinUserName,
+                                                                String baseUserName,String baseAppraBeginTime,String baseAppraEndTime,String kexinAppraBeginTime,
+                                                                String kexinAppraEndTIime,Integer baseAppraScore,Integer kexinAppraScore,Integer defFlag);
+
+
+
 
 }
 

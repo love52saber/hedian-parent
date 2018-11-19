@@ -56,7 +56,12 @@ public class AppraiseWfBusinessModel {
     private String resStypeName;
 
     private String resMtypeName;
+
     /**
+     * 故障类型
+     */
+    private  String abnormalTypeName;
+ /**
      * 流程状态
      */
 
@@ -83,6 +88,14 @@ public class AppraiseWfBusinessModel {
     private WfBaseAppraInfoModel wfBaseAppraInfoModel;
 
     private WfKexinAppraInfoModel wfKexinAppraInfoModel;
+
+    public String getAbnormalTypeName() {
+        return abnormalTypeName;
+    }
+
+    public void setAbnormalTypeName(String abnormalTypeName) {
+        this.abnormalTypeName = abnormalTypeName;
+    }
 
     public WfBaseAppraInfoModel getWfBaseAppraInfoModel() {
         return wfBaseAppraInfoModel;

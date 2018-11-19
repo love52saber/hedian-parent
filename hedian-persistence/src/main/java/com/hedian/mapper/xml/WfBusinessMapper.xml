@@ -150,6 +150,7 @@
         <result column="current_step" property="currentStep"/>
         <result column="wo_eval_score" property="woEvalScore"/>
         <result column="deptName" property="deptName"/>
+        <result column="abnormal_type_name" property="abnormalTypeName"/>
         <association property="wfBaseAppraInfoModel" javaType="com.hedian.model.WfBaseAppraInfoModel">
             <id column="base_appra_id" property="baseAppraId"/>
             <result column="base_appra_info" property="baseAppraInfo"/>
@@ -321,6 +322,7 @@
         ws.deadtime,
         trb.res_name,
         tra.res_abnormallevel_name,
+        tat.abnormal_type_name,
         trm.res_mtype_name,
         trs.res_stype_name,
         twri.*,
@@ -332,6 +334,7 @@
         INNER JOIN tbl_wo_sla ws ON wb.wo_sla_id = ws.wo_sla_id
         INNER JOIN tbl_res_abnormallevel tra ON wb.res_abnormallevel_id = tra.res_abnormallevel_id
         INNER JOIN tbl_res_base trb ON wb.res_id = trb.res_id
+        INNER JOIN tbl_abnormal_type tat ON   wb.abnormal_type_id=tat.abnormal_type_id
         INNER JOIN tbl_res_maintype trm ON wb.res_mtype_id = trm.res_mtype_id
         INNER JOIN tbl_res_subtype trs ON wb.res_stype_id = trs.res_stype_id
         INNER JOIN
@@ -356,8 +359,65 @@
         ) twkai
         ON wb.business_id = twkai.business_id
         WHERE wb.useflag=1
+        <if test="wfId !=null and wfId !=''">
+            and wb.wf_id=#{wfId}
+        </if>
+        <if test="wfTitle !=null and wfTitle !=''">
+            and wb.wf_title=#{wfTitle}
+        </if>
+        <if test="baseUserName !=null and baseUserName !=''">
+            and  baseAppraName=#{baseUserName}
+        </if>
+        <if test="kexinUserName !=null and kexinUserName !=''">
+            and kexinAppraName=#{kexinUserName}
+         </if>
+        <if test="baseAppraBeginTime !=null and baseAppraBeginTime !=''">
+            and  twbai.base_appra_time <![CDATA[ >= ]]> #{baseAppraBeginTime}
+        </if>
+        <if test="baseAppraEndTime !=null and baseAppraEndTime !=''">
+            and  twbai.base_appra_time  <![CDATA[ <= ]]> #{baseAppraEndTime}
+        </if>
+        <if test="kexinAppraBeginTime !=null and kexinAppraBeginTime !='' ">
+            and twkai.kexin_appra_time <![CDATA[ >= ]]> #{kexinAppraBeginTime}
+        </if>
+        <if test="kexinAppraEndTime !=null and kexinAppraEndTime !=''">
+            and twkai.kexin_appra_time  <![CDATA[ >= ]]> #{kexinAppraEndTime}
+        </if>
+        <if test="baseAppraScore !=null and baseAppraScore != '' and defFlag==0">
+        and twbai.base_appra_score <![CDATA[ > ]]> #{baseAppraScore}
+      </if>
+        <if test="baseAppraScore !=null and baseAppraScore != '' and defFlag==1">
+            and twbai.base_appra_score <![CDATA[ < ]]> #{baseAppraScore}
+        </if>
+        <if test="baseAppraScore !=null and baseAppraScore != '' and defFlag==2">
+            and twbai.base_appra_score <![CDATA[ = ]]> #{baseAppraScore}
+        </if>
+        <if test="baseAppraScore !=null and baseAppraScore != '' and defFlag==3">
+            and twbai.base_appra_score <![CDATA[ >= ]]> #{baseAppraScore}
+        </if>
+        <if test="baseAppraScore !=null and baseAppraScore != '' and defFlag==4">
+            and twbai.base_appra_score <![CDATA[ <= ]]> #{baseAppraScore}
+        </if>
+        <if test="kexinAppraScore !=null and kexinAppraScore != '' and defFlag==0">
+            and twkai.kexin_appra_score <![CDATA[ > ]]> #{kexinAppraScore}
+        </if>
+        <if test="kexinAppraScore !=null and kexinAppraScore != '' and defFlag==1">
+            and twkai.kexin_appra_score <![CDATA[ < ]]> #{kexinAppraScore}
+        </if>
+        <if test="kexinAppraScore !=null and kexinAppraScore != '' and defFlag==2">
+            and twkai.kexin_appra_score <![CDATA[ = ]]> #{kexinAppraScore}
+        </if>
+        <if test="kexinAppraScore !=null and kexinAppraScore != '' and defFlag==3">
+            and twkai.kexin_appra_score <![CDATA[ >= ]]> #{kexinAppraScore}
+        </if>
+        <if test="kexinAppraScore !=null and kexinAppraScore != '' and defFlag==4">
+            and twkai.kexin_appra_score <![CDATA[ <= ]]> #{kexinAppraScore}
+        </if>
+         ORDER BY wb.gmt_create DESC
 
-        ORDER BY wb.gmt_create DESC
-    </select>
+        </select>
+
+
+
 
 </mapper>
