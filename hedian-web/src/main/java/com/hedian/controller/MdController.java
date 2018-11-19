@@ -139,13 +139,13 @@ public class MdController {
         if (ComUtil.isEmpty(mdService.selectById(mdId))) {
             return new PublicResult<>(PublicResultConstant.ERROR, null);
         }
-        if (!ComUtil.isEmpty(mdDeptService.selectCount(new EntityWrapper<MdDept>().eq("md_id", mdId)))) {
+        if (!ComUtil.isEmpty(mdDeptService.selectList(new EntityWrapper<MdDept>().eq("md_id", mdId)))) {
             return new PublicResult<>("管理域下有部门，不能删除", null);
         }
-        if (!ComUtil.isEmpty(mdResService.selectCount(new EntityWrapper<MdRes>().eq("md_id", mdId)))) {
+        if (!ComUtil.isEmpty(mdResService.selectList(new EntityWrapper<MdRes>().eq("md_id", mdId)))) {
             return new PublicResult<>("管理域下面有设备，不能删除", null);
         }
-        if (!ComUtil.isEmpty(mdUserService.selectCount(new EntityWrapper<MdUser>().eq("md_id", mdId)))) {
+        if (!ComUtil.isEmpty(mdUserService.selectList(new EntityWrapper<MdUser>().eq("md_id", mdId)))) {
             return new PublicResult<>("管理域下面有用户，不能删除", null);
         }
         boolean result = mdService.deleteById(mdId);
