@@ -3,6 +3,8 @@ package com.hedian.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.hedian.base.BusinessException;
+import com.hedian.base.QuatzConstants;
 import com.hedian.entity.*;
 import com.hedian.mapper.ResBaseMapper;
 import com.hedian.model.Tree;
@@ -35,6 +37,8 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
     private ISysDeptService sysDeptService;
     @Autowired
     private IMdResService mdResService;
+    @Autowired
+    private IResStatusService iResStatusService;
 
 
     @Override
@@ -50,13 +54,42 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
     }
 
     @Override
+    public void transferResToNormal(ResBase resBase) throws BusinessException {
+        resBase.setResAbnormalId(null);
+        resBase.setResAbnormalcode(null);
+        resBase.setResAbnormallevelId(null);
+        resBase.setResAbnormalName(null);
+        resBase.setResAbnormaldesc(null);
+        resBase.setResAbnomaltime(null);
+        resBase.setResRecoverytime(null);
+        resBase.setResStatus(QuatzConstants.NORMAL);
+        ResStatus resStatus = iResStatusService.selectOne(new EntityWrapper<ResStatus>().eq("res_status", QuatzConstants.UNKNOWN));
+        resBase.setResColor(resStatus.getResStatusColor());
+        boolean flag = this.updateAllColumnById(resBase);
+        if (!flag) {
+            throw new BusinessException("修改状态为正常失败");
+        }
+    }
+
+    @Override
     public List<ResBase> findByMap(Map<String, Object> map) {
         return resBaseMapper.findByMap(map);
     }
 
     @Override
     public List<ResBase> getTopRes(Map<String, Object> map) {
-        return resBaseMapper.getTopRes(map);
+        List<ResBase> topRes = resBaseMapper.getTopRes(map);
+        List<ResBase> topResH = resBaseMapper.getTopResH(map);
+        if (!ComUtil.isEmpty(topResH) && !ComUtil.isEmpty(topRes)) {
+            topRes.stream().forEach(resBase -> {
+                topResH.stream().forEach(resBaseH -> {
+                    if (resBase.getResId().equals(resBaseH.getResId())) {
+                        resBase.setCountNum(resBase.getCountNum() + resBaseH.getCountNum());
+                    }
+                });
+            });
+        }
+        return topRes;
     }
 
     @Override
@@ -139,10 +172,11 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
         if (tree == null || tree.getId() == null) {
             return null;
         }
-        Map<String, Object> attributes = new HashMap<>(16);
+        Map<String, Object> attributes = new LinkedHashMap<>();
         Map<String, Object> map = new HashMap<>(16);
         List<ResBase> resBaseList = null;
         if (null != mdDept.get(Long.valueOf(tree.getId()))) {
+
             //获取管理域id对应的资产id
             int[] resIds = new int[mdRes.size()];
             int index = 0;
@@ -153,21 +187,19 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
                 }
             }
             map.put("resIds", resIds);
-            map.put("resMtypeId", 1001);
+            map.put("resMtypeId", QuatzConstants.ZD_MAIN_TYPE);
             //根据管理域对应的资源ids获取资源列表
             resBaseList = this.findByMap(map);
             //将资源数据放入tree中
             attributes.put("resBase", resBaseList);
             tree.setAttributes(attributes);
+
         }
         //如果部门数有子节点，继续添加
         if (!ComUtil.isEmpty(tree.getChildren())) {
             tree.getChildren().stream().forEach(treeChild -> {
                 recursionFn(treeChild, mdDept, mdRes);
             });
-        } else {
-            //如果该部门没有子节点，且该部门没有对应的资产，则删除该部门
-            tree = null;
         }
         return tree;
     }

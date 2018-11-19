@@ -88,7 +88,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         /**
          * TODO 暂且放在全局变量里
          */
-        if (ComUtil.isEmpty(CacheConstans.CACHE_USER)) {
+        if (null == CacheConstans.CACHE_USER.getUserId()) {
             SysUser userBean = userService.getUserByUserName(userNo);
             BeanUtils.copyProperties(CacheConstans.CACHE_USER, userBean);
         }
@@ -193,11 +193,11 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      * 非法url返回身份错误信息
      */
     private void responseError(ServletRequest request, ServletResponse response) {
-        HttpServletResponse servletResponse = (HttpServletResponse)response;
+        HttpServletResponse servletResponse = (HttpServletResponse) response;
         servletResponse.setCharacterEncoding("utf-8");
         servletResponse.setContentType("application/json; charset=utf-8");
         try {
-            servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,"获取登录用户信息失败");
+            servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "获取登录用户信息失败");
         } catch (IOException e) {
             e.printStackTrace();
         }

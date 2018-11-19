@@ -36,7 +36,6 @@ public class WoSlaController {
      * 获取工单流程考核定义
      */
     @GetMapping("/wosla")
-    @Pass
     public PublicResult getSingleWoSla() {
         WoSla woSla = woSlaService.selectOne(new EntityWrapper<WoSla>().eq("proc_def_id", workOrderKey));
         return new PublicResult(PublicResultConstant.SUCCESS, woSla);

@@ -48,19 +48,6 @@ public class QuartzUtil {
 
 
     /**
-     * 获取当前日期
-     *
-     * @return
-     */
-    private Date getCurrentDate() {
-        Date date = null;
-        if (ComUtil.isEmpty(date)) {
-            date = new Date();
-        }
-        return date;
-    }
-
-    /**
      * 20S查询一次数据库更新 设备信息，检测报警  更新日志等
      */
     @Scheduled(fixedDelay = QuatzConstants.ONE_MINUTE)
@@ -146,6 +133,8 @@ public class QuartzUtil {
             String errDataValue = null;
             //缓存 MoThreshold
             MoThreshold errMoThreshold = null;
+            //缓存故障等级最高故障
+            ResMoAbnormalInfo resMoAbnormalInfoCache = null;
             //如果有离线故障 先恢复离线故障
            if (flag == 0 && null != tblResMoAbnormalInfos.get(QuatzConstants.OFFLINE_KEY)) {
                 //恢复离线故障
@@ -190,7 +179,7 @@ public class QuartzUtil {
                                 resMoAbnormalInfo.setResAbnormalCode(moAbnormalDef.getMoAbnormalcode());
                                 resMoAbnormalInfo.setResAbnormalName(moAbnormalDef.getMoAbnormalName());
                                 resMoAbnormalInfo.setResAbnormallevelId(moAbnormalDef.getResAbnormallevelId());
-                                resMoAbnormalInfo.setResAbnomaltime(getCurrentDate());
+                                resMoAbnormalInfo.setResAbnomaltime(new Date());
                                 //异常信息翻译
                                 resMoAbnormalInfo.setResAbnormaldesc(errMainInfo);
                                 resMoAbnormalInfo.setResAbnormalvalue(targetValue);
@@ -204,6 +193,7 @@ public class QuartzUtil {
                                         abnormalDefCache = (MoAbnormalDef) BeanUtils.cloneBean(moAbnormalDef);
                                         errMoKpi = (MoKpi) BeanUtils.cloneBean(moKpi);
                                         errDataValue = targetValue;
+                                        resMoAbnormalInfoCache = (ResMoAbnormalInfo)BeanUtils.cloneBean(resMoAbnormalInfo);
                                         errMoThreshold = (MoThreshold) BeanUtils.cloneBean(moThresholdCache);
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -212,16 +202,11 @@ public class QuartzUtil {
                                 }
                                 if (null != tblResMoAbnormalInfos.get(kpiId)) {
                                     resMoAbnormalInfo.setResAbnormalId(tblResMoAbnormalInfos.get(kpiId).getResAbnormalId());
+
                                     //修改
                                     resMoAbnormalInfoService.updateById(resMoAbnormalInfo);
-                                    //消息推送
-                                    noticeModel.setType(1);
-                                    MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
                                 } else {
                                     resMoAbnormalInfoService.insert(resMoAbnormalInfo);
-                                    //消息推送
-                                    noticeModel.setType(1);
-                                    MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
                                 }
                             } else {
                                 //没有异常   判断当前kpi异常表有没有异常 有则恢复， 没有跳过
@@ -230,7 +215,7 @@ public class QuartzUtil {
                                     ResMoAbnormalInfo resMoAbnormalInfo = tblResMoAbnormalInfos.get(kpiId);
                                     resMoAbnormalInfo.setResRevoveryvalue(targetValue);
                                     resMoAbnormalInfo.setResAbnormalstatus(0);
-                                    resMoAbnormalInfo.setResRecoverytime(getCurrentDate());
+                                    resMoAbnormalInfo.setResRecoverytime(new Date());
                                     //修改
                                     resMoAbnormalInfoService.updateById(resMoAbnormalInfo);
                                     //消息推送
@@ -243,7 +228,7 @@ public class QuartzUtil {
                 }
             }
             //更新 base表  显示多有指标下面  最严重的一条
-            updateOrRestorResbase(rootResBase, tblResMoAbnormalInfos, restoreNums, color, abnormalDefCache, rootMapCache, errMoKpi, errDataValue, errMoThreshold, flag);
+            updateOrRestorResbase(rootResBase, tblResMoAbnormalInfos, restoreNums, color, abnormalDefCache, rootMapCache, errMoKpi, errDataValue, errMoThreshold, flag,resMoAbnormalInfoCache);
             if (null != rootResBase.getTerminalObjct() && !rootResBase.getTerminalObjct().isEmpty()) {
                 for (String linkPort : rootResBase.getTerminalObjct().keySet()) {
                     compareThresholds(rootResBase.getTerminalObjct(), linkPort, rootMapCache, 1);
@@ -374,7 +359,7 @@ public class QuartzUtil {
      */
     protected void updateOrRestorResbase(ResBase rootBase, Map<Integer, ResMoAbnormalInfo> tblResMoAbnormalInfos, int restoreNums, String color,
                                          MoAbnormalDef abnormalDefCache, Map<String, Object> rootMapCache, MoKpi errMoKpi, String errDataValue,
-                                         MoThreshold errMoThreshold, Integer flag) {
+                                         MoThreshold errMoThreshold, Integer flag,ResMoAbnormalInfo resMoAbnormalInfoCache) throws Exception{
         //TODO 待优化
         //说明  base 下面有异常信息
         if (null != abnormalDefCache) {
@@ -387,7 +372,7 @@ public class QuartzUtil {
             rootBase.setResAbnormalcode(abnormalDefCache.getMoAbnormalcode());
             rootBase.setResAbnormallevelId(abnormalDefCache.getResAbnormallevelId());
             rootBase.setResAbnormaldesc(errMainInfo);
-            rootBase.setResAbnomaltime(getCurrentDate());
+            rootBase.setResAbnomaltime(resMoAbnormalInfoCache.getResAbnomaltime());
             rootBase.setResRecoverytime(null);
             rootBase.setResAbnormalName(abnormalDefCache.getMoAbnormalName());
             if ((Integer) rootMapCache.get(QuatzConstants.ROOTPRIORITY) > resAbnormalLevel.getResAbnormallevelPriority()) {
@@ -402,6 +387,9 @@ public class QuartzUtil {
                 rootBase.setResColor(color);
                 resBaseService.updateById(rootBase);
             }
+            //消息推送
+            noticeModel.setType(1);
+            MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
         } else if ((restoreNums == tblResMoAbnormalInfos.size() && tblResMoAbnormalInfos.size() > 0)
                 || rootBase.getResStatus().equals(QuatzConstants.UNKNOWN)
                 || rootBase.getResStatus().equals(QuatzConstants.OFFLINE)) {
@@ -414,13 +402,16 @@ public class QuartzUtil {
             rootBase.setResAbnormaldesc(null);
             rootBase.setResAbnomaltime(null);
             rootBase.setResAbnormalName(null);
-            rootBase.setResRecoverytime(getCurrentDate());
+            rootBase.setResRecoverytime(new Date());
             if (flag == 0) {
                 rootMapCache.put(QuatzConstants.ROOTBASE, rootBase);
             } else {
                 rootBase.setResColor(null);
                 resBaseService.updateById(rootBase);
             }
+            //消息推送
+            noticeModel.setType(1);
+            MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
         }
         //终端正常没有异常数据是也要把对象放进去
         if (flag == 0 && null == rootMapCache.get(QuatzConstants.ROOTBASE)) {
@@ -461,19 +452,16 @@ public class QuartzUtil {
         resMoAbnormalInfo.setCleanType(0);
         //异常信息翻译
         resMoAbnormalInfo.setResAbnormaldesc(errMainInfo);
-        resMoAbnormalInfo.setResAbnomaltime(getCurrentDate());
+        resMoAbnormalInfo.setResAbnomaltime(new Date());
         resMoAbnormalInfo.setResAbnormalstatus(1);
         resMoAbnormalInfoService.insert(resMoAbnormalInfo);
-        // 消息推送
-        noticeModel.setType(1);
-        MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
         //更新base表
         rootResBase.setResStatus(QuatzConstants.OFFLINE);
         rootResBase.setResAbnormalId(moAbnormalDef.getMoAbnormalId());
         rootResBase.setResAbnormalcode(moAbnormalDef.getMoAbnormalcode());
         rootResBase.setResAbnormallevelId(moAbnormalDef.getResAbnormallevelId());
         rootResBase.setResAbnormaldesc(errMainInfo);
-        rootResBase.setResAbnomaltime(getCurrentDate());
+        rootResBase.setResAbnomaltime(resMoAbnormalInfo.getResAbnomaltime());
         rootResBase.setResRecoverytime(null);
         rootResBase.setResColor(resAbnormallevel.getResAbnormallevelColor());
         resBaseService.updateById(rootResBase);
@@ -493,12 +481,15 @@ public class QuartzUtil {
                     resBaseInfo.setResAbnormalcode(moAbnormalDefInfo.getMoAbnormalcode());
                     resBaseInfo.setResAbnormallevelId(moAbnormalDefInfo.getResAbnormallevelId());
                     resBaseInfo.setResAbnormaldesc(errTerminalInfo);
-                    resBaseInfo.setResAbnomaltime(getCurrentDate());
+                    resBaseInfo.setResAbnomaltime(new Date());
                     resBaseInfo.setResRecoverytime(null);
                     resBaseInfo.setResColor(resAbnormallevelInfo.getResAbnormallevelColor());
                     resBaseService.updateById(resBaseInfo);
                 }
             }
         }
+        // 消息推送
+        noticeModel.setType(1);
+        MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
     }
 }

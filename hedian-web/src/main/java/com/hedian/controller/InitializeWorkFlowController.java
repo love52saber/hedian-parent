@@ -59,7 +59,6 @@ public class InitializeWorkFlowController {
             @ApiImplicitParam(name = "userId", value = "我的创建", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "handleId", value = "我的处理", dataType = "String", paramType = "query")
     })
-    @Pass
     public PublicResult getAllWF(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
                                  @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
                                  @RequestParam(name = "wfType", defaultValue = "", required = false) Integer wfType,

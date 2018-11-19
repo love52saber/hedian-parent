@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.base.BusinessException;
+import com.hedian.entity.Md;
 import com.hedian.entity.RepairOrderAppraiser;
 import com.hedian.entity.RepairOrderAppraiserMd;
+import com.hedian.mapper.MdMapper;
 import com.hedian.mapper.RepairOrderAppraiserMapper;
 import com.hedian.mapper.RepairOrderAppraiserMdMapper;
 import com.hedian.service.IRepairOrderAppraiserMdService;
@@ -38,30 +40,35 @@ public class RepairOrderAppraiserServiceImpl extends ServiceImpl<RepairOrderAppr
     private RepairOrderAppraiserMapper repairOrderAppraiserMapper;
     @Autowired
     private RepairOrderAppraiserMdMapper repairOrderAppraiserMdMapper;
+    @Autowired
+    private MdMapper mdMapper;
 
     @Override
-    public boolean addAppraiser(JSONObject requestJson) {
+    public boolean addAppraiser(JSONObject requestJson) throws BusinessException {
         RepairOrderAppraiser repairOrderAppraiser = requestJson.toJavaObject(RepairOrderAppraiser.class);
         boolean saveAppraiserResult = this.insert(repairOrderAppraiser);
         //修改维修工单评价人关联维护域表
         ArrayList<RepairOrderAppraiserMd> repairOrderAppraiserMdList = new ArrayList<>();
-        for (Integer mdId : repairOrderAppraiser.getMdIds()) {
-            RepairOrderAppraiserMd repairOrderAppraiserMd = new RepairOrderAppraiserMd();
-            repairOrderAppraiserMd.setAppraiserid(repairOrderAppraiser.getAppraiserid());
-            repairOrderAppraiserMd.setMdId(mdId);
-            repairOrderAppraiserMdList.add(repairOrderAppraiserMd);
+        RepairOrderAppraiserMd repairOrderAppraiserMd;
+        Integer[] mdIds = repairOrderAppraiser.getMdIds();
+        if (!ComUtil.isEmpty(mdIds)) {
+            for (Integer mdId : mdIds) {
+                repairOrderAppraiserMd = new RepairOrderAppraiserMd();
+                repairOrderAppraiserMd.setAppraiserid(repairOrderAppraiser.getAppraiserid());
+                repairOrderAppraiserMd.setMdId(mdId);
+                repairOrderAppraiserMdList.add(repairOrderAppraiserMd);
+            }
+            boolean saveAppraiserMdResult = iRepairOrderAppraiserMdService.insertBatch(repairOrderAppraiserMdList);
+            if (!saveAppraiserMdResult) {
+                throw new BusinessException("添加失败");
+            }
         }
-        boolean saveAppraiserMdResult = iRepairOrderAppraiserMdService.insertBatch(repairOrderAppraiserMdList);
-        return saveAppraiserResult && saveAppraiserMdResult;
+        return saveAppraiserResult;
     }
 
     @Override
     public boolean updateAppraiser(JSONObject requestJson) throws BusinessException {
         RepairOrderAppraiser repairOrderAppraiser = requestJson.toJavaObject(RepairOrderAppraiser.class);
-        RepairOrderAppraiser existAppraiser = this.selectById(repairOrderAppraiser.getAppraiserid());
-        if (ComUtil.isEmpty(existAppraiser)) {
-            throw new BusinessException("查询不到此评价人");
-        }
         boolean saveAppraiserResult = this.updateById(repairOrderAppraiser);
         //修改维修工单评价人对应维护域表,先删再添加
         List<RepairOrderAppraiserMd> existAppraiserMds =
@@ -71,18 +78,24 @@ public class RepairOrderAppraiserServiceImpl extends ServiceImpl<RepairOrderAppr
                 repairOrderAppraiserMd.setUseflag(0);
             });
             if (!iRepairOrderAppraiserMdService.updateBatchById(existAppraiserMds)) {
-                throw new BusinessException("删除失败");
+                throw new BusinessException("修改失败");
             }
         }
+        Integer[] mdIds = repairOrderAppraiser.getMdIds();
         ArrayList<RepairOrderAppraiserMd> repairOrderAppraiserMdList = new ArrayList<>();
-        for (Integer mdId : repairOrderAppraiser.getMdIds()) {
-            RepairOrderAppraiserMd repairOrderAppraiserMd = new RepairOrderAppraiserMd();
-            repairOrderAppraiserMd.setAppraiserid(repairOrderAppraiser.getAppraiserid());
-            repairOrderAppraiserMd.setMdId(mdId);
-            repairOrderAppraiserMdList.add(repairOrderAppraiserMd);
+        if (!ComUtil.isEmpty(mdIds)) {
+            for (Integer mdId : repairOrderAppraiser.getMdIds()) {
+                RepairOrderAppraiserMd repairOrderAppraiserMd = new RepairOrderAppraiserMd();
+                repairOrderAppraiserMd.setAppraiserid(repairOrderAppraiser.getAppraiserid());
+                repairOrderAppraiserMd.setMdId(mdId);
+                repairOrderAppraiserMdList.add(repairOrderAppraiserMd);
+            }
+            boolean saveAppraiserMdResult = iRepairOrderAppraiserMdService.insertBatch(repairOrderAppraiserMdList);
+            if (saveAppraiserMdResult) {
+                throw new BusinessException("修改失败");
+            }
         }
-        boolean saveAppraiserMdResult = iRepairOrderAppraiserMdService.insertBatch(repairOrderAppraiserMdList);
-        return saveAppraiserResult && saveAppraiserMdResult;
+        return saveAppraiserResult;
     }
 
     @Override
@@ -95,22 +108,24 @@ public class RepairOrderAppraiserServiceImpl extends ServiceImpl<RepairOrderAppr
         //删除评价人
         boolean delAppraiserResult = iRepairOrderAppraiserService.deleteById(appraiserid);
         //删除评价人域关联表
-        boolean deleteAppraiserMdResult = false;
         List<RepairOrderAppraiserMd> existAppraiserMdList = iRepairOrderAppraiserMdService.selectList(new EntityWrapper<RepairOrderAppraiserMd>().eq("appraiserid", appraiserid));
         if (!ComUtil.isEmpty(existAppraiserMdList)) {
             existAppraiserMdList.stream().forEach(repairOrderAppraiserMd -> {
                 repairOrderAppraiserMd.setUseflag(0);
             });
-            deleteAppraiserMdResult = iRepairOrderAppraiserMdService.updateBatchById(existAppraiserMdList);
+            boolean deleteAppraiserMdResult = iRepairOrderAppraiserMdService.updateBatchById(existAppraiserMdList);
+            if (!deleteAppraiserMdResult) {
+                throw new BusinessException("相关域删除失败");
+            }
         }
-        return delAppraiserResult && deleteAppraiserMdResult;
+        return delAppraiserResult;
     }
 
     @Override
     public boolean delBatchByIds(List<Integer> appraiseridList) throws BusinessException {
         for (Integer appraiserid : appraiseridList) {
             if (!delById(appraiserid)) {
-                throw new BusinessException("删除失败");
+                throw new BusinessException("评价人删除失败");
             }
         }
         return true;
@@ -119,6 +134,11 @@ public class RepairOrderAppraiserServiceImpl extends ServiceImpl<RepairOrderAppr
     @Override
     public Page<RepairOrderAppraiser> findPageByCondition(Page<RepairOrderAppraiser> page, Integer appraisertype, String apprasiername, String grpName) {
         List<RepairOrderAppraiser> repairOrderAppraiserList = repairOrderAppraiserMapper.findPageByCondition(page,appraisertype,apprasiername,grpName);
+        //封装关联域
+        repairOrderAppraiserList.stream().forEach(repairOrderAppraiser -> {
+            List<Md> mdList = mdMapper.findMdListByRepairOrderAppraiserId(repairOrderAppraiser.getAppraiserid());
+            repairOrderAppraiser.setMdList(mdList);
+        });
         page.setRecords(repairOrderAppraiserList);
         return page;
     }

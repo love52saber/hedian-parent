@@ -105,7 +105,6 @@ public class SysUserController {
             @ApiImplicitParam(name = "grpId", value = "用戶組id"
                     , dataType = "Long", paramType = "query")
     })
-    @Pass
     public PublicResult findAll(@RequestParam(value = "grpId", defaultValue = "", required = false) Long grpId) {
 
         List<SysUser> userList = userService.selectUserList(grpId);
@@ -117,7 +116,6 @@ public class SysUserController {
             @ApiImplicitParam(name = "stepType", value = "步驟类型", dataType = "int", paramType = "query"),
             @ApiImplicitParam(name = "deptId", value = "部门id", dataType = "Long", paramType = "query")
     })
-    @Pass
     public PublicResult wfUserList(@RequestParam(value = "stepType", defaultValue = "", required = false) Integer stepType,
                                    @RequestParam(value = "deptId", defaultValue = "", required = false) Long deptId) throws BusinessException{
         List<SysUser> userList = userService.getWfUsers(stepType, deptId);
