@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.hedian.entity.MoAbnormalDef;
 import com.hedian.entity.ResMoAbnormalInfo;
+import com.hedian.entity.SysUser;
 import com.hedian.model.AbnormalLevelModel;
 import com.hedian.model.AlarmInfoModel;
 import com.hedian.model.ResMoAbnormalInfoModel;
@@ -35,15 +36,16 @@ public interface IResMoAbnormalInfoService extends IService<ResMoAbnormalInfo> {
 
     List<AbnormalLevelModel> selectAbnormalLevelCount();
 
-    boolean deleteResAbnoraml(Long resAbnormalId) throws Exception;
+    boolean deleteResAbnoraml(Long resAbnormalId, SysUser user) throws Exception;
 
     /**
      * 清除告警信息
      *
      * @param requestJson
+     * @param user
      * @return
      */
-    boolean cleanResAbnormal(JSONObject requestJson) throws Exception;
+    boolean cleanResAbnormal(JSONObject requestJson, SysUser user) throws Exception;
 
     boolean cleanOrDelete(Long resAbnormalId, ResMoAbnormalInfo resMoAbnormalInfo) throws Exception;
 }

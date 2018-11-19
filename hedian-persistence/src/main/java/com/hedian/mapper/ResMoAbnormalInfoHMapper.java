@@ -2,11 +2,13 @@ package com.hedian.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.hedian.entity.MoAbnormalDef;
 import com.hedian.entity.ResMoAbnormalInfoH;
 import com.hedian.model.ResMoAbnormalInfoModel;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -22,5 +24,14 @@ public interface ResMoAbnormalInfoHMapper extends BaseMapper<ResMoAbnormalInfoH>
                                                        @Param("abnormalLevel")String abnormalLevel, @Param("abnormalType")String abnormalType, @Param("abnormalName")String abnormalName,
                                                        @Param("mokpiName")String mokpiName, @Param("resName")String resName, @Param("resAlias")String resAlias,
                                                        @Param("isAutoOrder")boolean isAutoOrder,@Param("useflag")boolean useflag);
+
+
+    /**
+     * top 故障设备统计
+     *
+     * @param map
+     * @return
+     */
+    List<MoAbnormalDef> getTopAbnormalH(Map<String, Object> map);
 
 }

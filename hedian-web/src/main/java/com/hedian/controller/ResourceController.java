@@ -41,7 +41,6 @@ public class ResourceController {
             Arrays.asList("bmp", "jpg", "png", "tif", "gif", "pcx", "tga", "exif", "fpx", "svg", "psd", "cdr", "pcd", "dxf", "ufo", "eps", "ai", "raw", "WMF", "webp");
 
     @PostMapping
-    @Pass
     public PublicResult uploadResource(@RequestParam("file") MultipartFile multipartFile) throws Exception {
         boolean result = false;
         String newFileName = null;

@@ -107,7 +107,6 @@ public class ResBaseController {
      * 获取最新故障
      */
     @GetMapping("/getTopAlarm")
-    @Pass
     public PublicResult getTopAlarm(@CurrentUser SysUser sysUser) {
         Map<String, Object> map = new HashMap<>(16);
         List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
@@ -138,7 +137,6 @@ public class ResBaseController {
 
 
     @GetMapping("/getResTree")
-    @Pass
     public PublicResult getResTree(@CurrentUser SysUser sysUser) {
         Tree<SysDept> tree = resBaseService.genResTreeByUser(sysUser);
         return new PublicResult(PublicResultConstant.SUCCESS, tree);

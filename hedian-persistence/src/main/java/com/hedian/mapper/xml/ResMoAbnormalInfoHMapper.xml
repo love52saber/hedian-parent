@@ -85,6 +85,14 @@
         <result column="mo_kpi_name" property="mokpiName"/>
     </resultMap>
 
+    <resultMap id="TopAbnormalMap" type="com.hedian.entity.MoAbnormalDef">
+        <id column="mo_abnormal_id" property="moAbnormalId"/>
+        <result column="mo_abnormalcode" property="moAbnormalcode"/>
+        <result column="mo_abnormal_name" property="moAbnormalName"/>
+        <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
+        <result column="countNum" property="countNum"/>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         res_abnormal_id AS resAbnormalId, res_id AS resId, mo_th_id AS moThId, mo_kpi_id AS moKpiId, mo_abnormal_id AS moAbnormalId, res_abnormal_code AS resAbnormalCode, res_abnormal_name AS resAbnormalName, res_abnormallevel_id AS resAbnormallevelId, abnormal_type_id AS abnormalTypeId, res_abnormaldesc AS resAbnormaldesc, res_abnomaltime AS resAbnomaltime, res_recoverytime AS resRecoverytime, res_abnormalvalue AS resAbnormalvalue, res_revoveryvalue AS resRevoveryvalue, confirm_status AS confirmStatus, res_abnormalstatus AS resAbnormalstatus, confirm_type AS confirmType, confirm_user_id AS confirmUserId, confirm_time AS confirmTime, confirm_info AS confirmInfo, clean_type AS cleanType, clean_user_id AS cleanUserId, clean_time AS cleanTime, clean_info AS cleanInfo, dispatch_type AS dispatchType, dispatch_user_id AS dispatchUserId, dispatch_time AS dispatchTime, dispatch_ticket_id AS dispatchTicketId, fms_id AS fmsId, useflag, del_user_id AS delUserId, deltime
@@ -145,6 +153,21 @@
             AND rmi.useflag != 0
         </if>
         ORDER BY rmi.res_abnomaltime
+    </select>
+
+    <select id="getTopAbnormalH" resultMap="TopAbnormalMap">
+        select b.mo_abnormal_id,b.mo_abnormalcode,b.mo_abnormal_name,b.res_abnormallevel_id,count(b.mo_abnormal_id) as
+        countNum
+        from
+        (select * from tbl_res_mo_abnormal_info_h where useflag=1
+        <if test="resIds != null">and res_id IN
+            <foreach item="rId" collection="resIds" open="(" separator=","
+                     close=")">
+                #{rId}
+            </foreach>
+        </if>
+        ) a LEFT JOIN tbl_mo_abnormal_def b ON a.mo_abnormal_id=b.mo_abnormal_id
+        GROUP BY b.mo_abnormal_id ORDER BY countNum DESC
     </select>
 
 </mapper>

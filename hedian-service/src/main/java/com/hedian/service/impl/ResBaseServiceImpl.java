@@ -78,7 +78,18 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
 
     @Override
     public List<ResBase> getTopRes(Map<String, Object> map) {
-        return resBaseMapper.getTopRes(map);
+        List<ResBase> topRes = resBaseMapper.getTopRes(map);
+        List<ResBase> topResH = resBaseMapper.getTopResH(map);
+        if (!ComUtil.isEmpty(topResH) && !ComUtil.isEmpty(topRes)) {
+            topRes.stream().forEach(resBase -> {
+                topResH.stream().forEach(resBaseH -> {
+                    if (resBase.getResId().equals(resBaseH.getResId())) {
+                        resBase.setCountNum(resBase.getCountNum() + resBaseH.getCountNum());
+                    }
+                });
+            });
+        }
+        return topRes;
     }
 
     @Override
@@ -161,10 +172,11 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
         if (tree == null || tree.getId() == null) {
             return null;
         }
-        Map<String, Object> attributes = new HashMap<>(16);
+        Map<String, Object> attributes = new LinkedHashMap<>();
         Map<String, Object> map = new HashMap<>(16);
         List<ResBase> resBaseList = null;
         if (null != mdDept.get(Long.valueOf(tree.getId()))) {
+
             //获取管理域id对应的资产id
             int[] resIds = new int[mdRes.size()];
             int index = 0;
@@ -175,12 +187,13 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
                 }
             }
             map.put("resIds", resIds);
-            map.put("resMtypeId", 1001);
+            map.put("resMtypeId", QuatzConstants.ZD_MAIN_TYPE);
             //根据管理域对应的资源ids获取资源列表
             resBaseList = this.findByMap(map);
             //将资源数据放入tree中
             attributes.put("resBase", resBaseList);
             tree.setAttributes(attributes);
+
         }
         //如果部门数有子节点，继续添加
         if (!ComUtil.isEmpty(tree.getChildren())) {

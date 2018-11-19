@@ -8,6 +8,7 @@ import com.hedian.base.BusinessException;
 import com.hedian.base.QuatzConstants;
 import com.hedian.entity.*;
 import com.hedian.mapper.ResBaseMapper;
+import com.hedian.mapper.ResMoAbnormalInfoHMapper;
 import com.hedian.mapper.ResMoAbnormalInfoMapper;
 import com.hedian.model.AbnormalLevelModel;
 import com.hedian.model.AlarmInfoModel;
@@ -37,6 +38,8 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
     private ResMoAbnormalInfoMapper resMoAbnormalInfoMapper;
     @Resource
     private IResMoAbnormalInfoHService resMoAbnormalInfoHService;
+    @Resource
+    private ResMoAbnormalInfoHMapper resMoAbnormalInfoHMapper;
     @Autowired
     private IResBaseService iResBaseService;
     @Autowired
@@ -60,7 +63,18 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
 
     @Override
     public List<MoAbnormalDef> getTopAbnormal(Map<String, Object> map) {
-        return resMoAbnormalInfoMapper.getTopAbnormal(map);
+        List<MoAbnormalDef> topAbnormal = resMoAbnormalInfoMapper.getTopAbnormal(map);
+        List<MoAbnormalDef> topAbnormalH = resMoAbnormalInfoHMapper.getTopAbnormalH(map);
+        if (!ComUtil.isEmpty(topAbnormalH) && !ComUtil.isEmpty(topAbnormal)) {
+            topAbnormal.stream().forEach(moAbnormalDef -> {
+                topAbnormalH.stream().forEach(moAbnormalDefH -> {
+                    if (moAbnormalDef.getMoAbnormalId().equals(moAbnormalDefH.getMoAbnormalId())) {
+                        moAbnormalDef.setCountNum(moAbnormalDef.getCountNum() + moAbnormalDefH.getCountNum());
+                    }
+                });
+            });
+        }
+        return topAbnormal;
     }
 
     @Override
@@ -78,8 +92,11 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
     }
 
     @Override
-    public boolean deleteResAbnoraml(Long resAbnormalId) throws Exception {
+    public boolean deleteResAbnoraml(Long resAbnormalId, SysUser user) throws Exception {
         ResMoAbnormalInfo resMoAbnormalInfo = this.selectById(resAbnormalId);
+        resMoAbnormalInfo.setUseflag(0);
+        resMoAbnormalInfo.setDelUserId(user.getUserId());
+        resMoAbnormalInfo.setDeltime(new Date());
         if (ComUtil.isEmpty(resMoAbnormalInfo)) {
             throw new BusinessException("找不到此条设备异常信息");
         }
@@ -153,7 +170,7 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
             //设备所属终端resBase
             ResBase terminalResBase = iResBaseService.selectOne(new EntityWrapper<ResBase>().eq("res_id",
                     iResTerminalService.selectOne(new EntityWrapper<ResTerminal>().eq("res_id",
-                    currentResBase.getResId())).getResIdTerminal()));
+                            currentResBase.getResId())).getResIdTerminal()));
             //2.1 a>b 修改终端颜色 修改设备res_base
             if (lowestResAbnormalInfoPriority > deledAbnormalPriority) {
                 //2.1.1修改终端颜色 修改设备同2.2
@@ -195,6 +212,7 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
 
     /**
      * 获取此设备产生的异常信息列表
+     *
      * @param resMoAbnormalInfo
      * @return
      */
@@ -326,6 +344,7 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
 
     /**
      * 根据当前设备或终端res_id获取当前设备树异常信息(排除当前信息)
+     *
      * @param resMoAbnormalInfo
      * @return
      */
@@ -385,12 +404,14 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
     }
 
     @Override
-    public boolean cleanResAbnormal(JSONObject requestJson) throws Exception {
+    public boolean cleanResAbnormal(JSONObject requestJson, SysUser user) throws Exception {
         Long resAbnormalId = requestJson.getLong("resAbnormalId");
         String cleanInfo = requestJson.getString("cleanInfo");
         ResMoAbnormalInfo resMoAbnormalInfo = this.selectById(resAbnormalId);
         resMoAbnormalInfo.setCleanInfo(cleanInfo);
         resMoAbnormalInfo.setCleanType(2);
+        resMoAbnormalInfo.setCleanUserId(user.getUserId());
+        resMoAbnormalInfo.setCleanTime(new Date());
         boolean result = this.updateById(resMoAbnormalInfo);
         if (!result) {
             throw new BusinessException("清除告警信息失败");

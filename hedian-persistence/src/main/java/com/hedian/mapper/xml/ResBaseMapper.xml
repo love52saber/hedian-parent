@@ -132,16 +132,30 @@
     </select>
 
     <select id="getTopRes" resultMap="TopResMap">
-        select b.res_id,b.res_name,b.res_alias,count(b.res_id) as countNum
-        from (select * from tbl_res_mo_abnormal_info
-        <where>
-            <if test="resIds != null">and res_id IN
-                <foreach item="rId" collection="resIds" open="(" separator=","
-                         close=")">
-                    #{rId}
-                </foreach>
-            </if>
-        </where>
+        SELECT b.res_id,b.res_name,b.res_alias,count(b.res_id) AS countNum
+        FROM (SELECT * FROM tbl_res_mo_abnormal_info
+        WHERE 1=1
+        <if test="resIds != null">AND res_id IN
+            <foreach item="rId" collection="resIds" open="(" separator=","
+                     close=")">
+                #{rId}
+            </foreach>
+        </if>
+        ) a
+        LEFT JOIN tbl_res_base b ON a.res_id=b.res_id
+        GROUP BY a.res_id ORDER BY countNum DESC
+    </select>
+
+    <select id="getTopResH" resultMap="TopResMap">
+        SELECT b.res_id,b.res_name,b.res_alias,count(b.res_id) AS countNum
+        FROM (SELECT * FROM tbl_res_mo_abnormal_info_h
+        WHERE useflag=1
+        <if test="resIds != null">AND res_id IN
+            <foreach item="rId" collection="resIds" open="(" separator=","
+                     close=")">
+                #{rId}
+            </foreach>
+        </if>
         ) a
         LEFT JOIN tbl_res_base b ON a.res_id=b.res_id
         GROUP BY a.res_id ORDER BY countNum DESC
