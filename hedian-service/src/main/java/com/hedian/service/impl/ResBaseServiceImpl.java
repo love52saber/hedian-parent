@@ -200,9 +200,6 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
             tree.getChildren().stream().forEach(treeChild -> {
                 recursionFn(treeChild, mdDept, mdRes);
             });
-        } else {
-            //如果该部门没有子节点，且该部门没有对应的资产，则删除该部门
-            tree = null;
         }
         return tree;
     }
