@@ -94,12 +94,12 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
     @Override
     public boolean deleteResAbnoraml(Long resAbnormalId, SysUser user) throws Exception {
         ResMoAbnormalInfo resMoAbnormalInfo = this.selectById(resAbnormalId);
-        resMoAbnormalInfo.setUseflag(0);
-        resMoAbnormalInfo.setDelUserId(user.getUserId());
-        resMoAbnormalInfo.setDeltime(new Date());
         if (ComUtil.isEmpty(resMoAbnormalInfo)) {
             throw new BusinessException("找不到此条设备异常信息");
         }
+        resMoAbnormalInfo.setUseflag(0);
+        resMoAbnormalInfo.setDelUserId(user.getUserId());
+        resMoAbnormalInfo.setDeltime(new Date());
         boolean result = cleanOrDelete(resAbnormalId, resMoAbnormalInfo);
         return result;
     }
