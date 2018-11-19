@@ -238,7 +238,7 @@
         <if test="conStatus != null and conStatus != ''">
             and rmi.confirm_status = #{conStatus}
         </if>
-        ORDER BY rmi.res_abnomaltime DESC
+        ORDER BY rmi.res_abnomaltime,rmi.res_abnormal_id DESC
     </select>
     <!--统计告警级别数量-->
     <select id="selectAbnormalLevelCount" resultType="com.hedian.model.AbnormalLevelModel">

@@ -152,7 +152,7 @@
         <if test="useflag">
             AND rmi.useflag != 0
         </if>
-        ORDER BY rmi.res_abnomaltime
+        ORDER BY rmi.res_abnomaltime,rmi.res_abnormal_id DESC
     </select>
 
     <select id="getTopAbnormalH" resultMap="TopAbnormalMap">
