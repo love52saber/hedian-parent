@@ -112,6 +112,26 @@ public class ResMoAbnormalInfo extends Model<ResMoAbnormalInfo> {
     private Long delUserId;
     private Date deltime;
 
+    @TableField(exist = false)
+    private Integer resAbnormallevelPriority;
+    @TableField(exist = false)
+    private String resAbnormallevelColor;
+
+    public Integer getResAbnormallevelPriority() {
+        return resAbnormallevelPriority;
+    }
+
+    public void setResAbnormallevelPriority(Integer resAbnormallevelPriority) {
+        this.resAbnormallevelPriority = resAbnormallevelPriority;
+    }
+
+    public String getResAbnormallevelColor() {
+        return resAbnormallevelColor;
+    }
+
+    public void setResAbnormallevelColor(String resAbnormallevelColor) {
+        this.resAbnormallevelColor = resAbnormallevelColor;
+    }
 
     public Long getResAbnormalId() {
         return resAbnormalId;

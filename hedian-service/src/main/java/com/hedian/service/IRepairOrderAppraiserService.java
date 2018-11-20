@@ -18,7 +18,7 @@ import java.util.List;
  */
 public interface IRepairOrderAppraiserService extends IService<RepairOrderAppraiser> {
 
-    boolean addAppraiser(JSONObject requestJson);
+    boolean addAppraiser(JSONObject requestJson) throws BusinessException;
 
     boolean updateAppraiser(JSONObject requestJson) throws BusinessException;
 

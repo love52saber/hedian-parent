@@ -7,6 +7,7 @@ import com.hedian.base.BusinessException;
 import com.hedian.base.WorkFlowConstants;
 import com.hedian.entity.*;
 import com.hedian.mapper.WfBusinessMapper;
+import com.hedian.model.AppraiseWfBusinessModel;
 import com.hedian.model.WfBusinessModel;
 import com.hedian.service.*;
 import com.hedian.util.ComUtil;
@@ -69,7 +70,7 @@ public class RunTimeServiceImpl implements IRuntimeService {
 
     @Override
     public Page<WfBusinessModel> selectPageByConditionResBase(Page<WfBusinessModel> page, Integer wfType, String wfTitle, String resAbnormallevelName, String resName,
-                                                              String userName, boolean wfStatus, String currentUserName, String beginTime, String endTime, Integer currentUser,
+                                                              String userName, Integer wfStatus, String currentUserName, String beginTime, String endTime, Integer currentUser,
                                                               Integer userId, Integer handleId) {
         List<WfBusinessModel> wfBusinessModels = wfBusinessMapper.selectPageByCondition(page, wfType, wfTitle, resAbnormallevelName, resName, userName, wfStatus, currentUserName,
                 beginTime, endTime, currentUser, userId, handleId);
@@ -135,11 +136,31 @@ public class RunTimeServiceImpl implements IRuntimeService {
         Integer currentStep = requestJson.getInteger("currentStep");
         Long businessId = requestJson.getLong("businessId");
         String taskId = requestJson.getString("taskId");
+        Long currentUser = requestJson.getLong("currentUser");
         Map<String, Object> variables = new HashMap<>();
         Date date = new Date();
-        boolean result;
+        boolean result = false;
         WfBusiness wfBusiness = null;
         switch (currentStep) {
+            case 0:
+                /**
+                 * 保存-审批
+                 */
+                //查询流程节点
+                wfBusiness = wfBusinessService.selectById(businessId);
+                if (!ComUtil.isEmpty(wfBusiness)) {
+                    wfBusiness.setCurrentStep(++currentStep);
+                    wfBusiness.setCurrentUser(currentUser);
+                    result = wfBusinessService.updateById(wfBusiness);
+                }
+
+                //3.更改当前最新节点信息
+                if (result) {
+                    variables.put("userId", wfBusiness.getCurrentUser());
+                    variables.put("result", 0);
+                    taskService.complete(taskId, variables);
+                }
+                break;
             case 1:
                 /**
                  * 审批-转派发
@@ -428,6 +449,26 @@ public class RunTimeServiceImpl implements IRuntimeService {
         }
         return null;
     }
+
+    @Override
+    public String deleteWorkFlow(Long businessId) throws BusinessException {
+        WfBusiness wfBusiness = wfBusinessService.selectById(businessId);
+        if (ComUtil.isEmpty(wfBusiness)) {
+            throw new BusinessException("查询失败");
+        }
+        wfBusinessService.deleteById(wfBusiness);
+        runtimeService.deleteProcessInstance(wfBusiness.getWfId(), "");
+        return null;
+    }
+
+    @Override
+    public Page<AppraiseWfBusinessModel> selectAppraisePageByCondition(Page<AppraiseWfBusinessModel> page, String wfTitle, String wfId,String kexinUserName, String baseUserName,  String baseAppraBeginTime,String kexinAppraBeginTime,String kexinAppraEndTime,
+                                                                       String baseAppraEndTime,Integer baseAppraScore,Integer kexinAppraScore,Integer defFlag) {
+        return page.setRecords(wfBusinessMapper.selectAppraisePageByCondition(page, wfTitle,wfId,kexinUserName,baseUserName,baseAppraBeginTime, baseAppraEndTime,kexinAppraBeginTime,kexinAppraEndTime,baseAppraScore,kexinAppraScore,defFlag));
+    }
+
+
+
 
 
 }

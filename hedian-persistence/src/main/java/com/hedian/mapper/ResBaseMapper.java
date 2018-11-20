@@ -20,7 +20,19 @@ public interface ResBaseMapper extends BaseMapper<ResBase> {
 
     List<ResBase> findByMap(Map<String, Object> map);
 
+    /**
+     * top设备故障统计 （实时表）
+     * @param map
+     * @return
+     */
     List<ResBase> getTopRes(Map<String, Object> map);
+
+    /**
+     * top设备故障统计（历史表）
+     * @param map
+     * @return
+     */
+    List<ResBase> getTopResH(Map<String, Object> map);
 
     List<ResBase> selectByResMtypeId(@Param("resMtypeId") Integer resMtypeId);
 
@@ -35,7 +47,7 @@ public interface ResBaseMapper extends BaseMapper<ResBase> {
 
 
     /**
-     * 查找此终端下某状态的设备列表
+     * 查找某终端下某状态的设备列表
      * @param terminalId  终端id
      * @param resStatus  设备状态
      * @return

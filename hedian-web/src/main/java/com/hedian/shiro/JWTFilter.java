@@ -85,14 +85,18 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             this.userService = SpringContextBean.getBean(ISysUserService.class);
         }
         String userNo = JWTUtil.getUserNo(token.getPrincipal().toString());
-        SysUser userBean = userService.getUserByUserName(userNo);
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        String authorization = httpServletRequest.getHeader("Authorization");
         /**
          * TODO 暂且放在全局变量里
          */
-        if (!ComUtil.isEmpty(userBean)) {
+        if (!authorization.equals(CacheConstans.CACHE_TOKEN.get("token"))) {
+            SysUser userBean = userService.getUserByUserName(userNo);
             BeanUtils.copyProperties(CacheConstans.CACHE_USER, userBean);
+            CacheConstans.CACHE_TOKEN.put("token", authorization);
+
         }
-        request.setAttribute("currentUser", userBean);
+        request.setAttribute("currentUser", CacheConstans.CACHE_USER);
     }
 
     /**
@@ -193,11 +197,11 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      * 非法url返回身份错误信息
      */
     private void responseError(ServletRequest request, ServletResponse response) {
-        HttpServletResponse servletResponse = (HttpServletResponse)response;
+        HttpServletResponse servletResponse = (HttpServletResponse) response;
         servletResponse.setCharacterEncoding("utf-8");
         servletResponse.setContentType("application/json; charset=utf-8");
         try {
-            servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,"获取登录用户信息失败");
+            servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "获取登录用户信息失败");
         } catch (IOException e) {
             e.printStackTrace();
         }

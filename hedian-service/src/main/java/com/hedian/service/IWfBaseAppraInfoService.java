@@ -1,5 +1,7 @@
 package com.hedian.service;
 
+import com.alibaba.fastjson.JSONObject;
+import com.hedian.base.BusinessException;
 import com.hedian.entity.WfBaseAppraInfo;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -12,5 +14,8 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-11-01
  */
 public interface IWfBaseAppraInfoService extends IService<WfBaseAppraInfo> {
+
+     boolean save(JSONObject requestJson) throws BusinessException;
+
 
 }

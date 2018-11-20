@@ -125,6 +125,50 @@
         </association>
     </resultMap>
 
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="AppraiseMap" type="com.hedian.model.AppraiseWfBusinessModel">
+        <id column="business_id" property="businessId"/>
+        <result column="wf_id" property="wfId"/>
+        <result column="wf_title" property="wfTitle"/>
+        <result column="wf_type" property="wfType"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="telephone" property="telephone"/>
+        <result column="res_abnormaldesc" property="resAbnormaldesc"/>
+        <result column="url" property="url"/>
+        <result column="wf_status" property="wfStatus"/>
+        <result column="hopetime" property="hopetime"/>
+        <result column="deadtime" property="deadtime"/>
+        <result column="username" property="username"/>
+        <result column="res_abnormal_id" property="resAbnormalId"/>
+        <result column="abnormal_type_id" property="abnormalTypeId"/>
+        <result column="res_abnormallevel_id" property="resAbnormallevelId"/>
+        <result column="res_abnormallevel_name" property="resAbnormallevelName"/>
+        <result column="res_mtype_name" property="resMtypeName"/>
+        <result column="res_stype_name" property="resStypeName"/>
+        <result column="current_user" property="currentUser"/>
+        <result column="current_step" property="currentStep"/>
+        <result column="wo_eval_score" property="woEvalScore"/>
+        <result column="deptName" property="deptName"/>
+        <result column="abnormal_type_name" property="abnormalTypeName"/>
+        <association property="wfBaseAppraInfoModel" javaType="com.hedian.model.WfBaseAppraInfoModel">
+            <id column="base_appra_id" property="baseAppraId"/>
+            <result column="base_appra_info" property="baseAppraInfo"/>
+            <result column="base_appra_score" property="baseAppraScore"/>
+            <result column="base_appra_time" property="baseAppraTime" />
+            <result column="currentBaseAppraName" property="currentBaseAppraName"/>
+            <result column="kexinAppraName" property="kexinAppraName"/>
+            <result column="kexin_appra_phone" property="kexinAppraPhone"/>
+        </association>
+        <association property="wfKexinAppraInfoModel" javaType="com.hedian.model.WfKexinAppraInfoModel">
+            <id column="kexin_appra_id" property="kexinAppraId"/>
+            <result column="kexin_appra_info" property="kexinAppraInfo"/>
+            <result column="kexin_appra_name" property="kexinAppraName"/>
+            <result column="kexin_appra_score" property="kexinAppraScore"/>
+            <result column="kexin_appra_time" property="kexinAppraTime" />
+        </association>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         business_id AS businessId, wf_id AS wfId, wf_title AS wfTitle, wf_type AS wfType, wo_sla_id AS woSlaId, user_id AS userId,telephone, gmt_create AS gmtCreate, res_abnormaldesc AS resAbnormaldesc, url, res_abnormal_id AS resAbnormalId, abnormal_type_id AS abnormalTypeId, res_abnormallevel_id AS resAbnormallevelId, res_id AS resId, res_stype_id AS resStypeId, res_mtype_id AS resMtypeId, wf_status AS wfStatus, useflag, current_step AS currentStep, current_user AS currentUser, wo_eval_score AS woEvalScore
@@ -171,7 +215,7 @@
         LEFT JOIN sys_user susu ON wb.current_user = susu.user_id
         LEFT JOIN
         (
-        SELECT twri.business_id,twri.review_id,twri.dis_phone,twri.review_desc,twri.review_time,
+        SELECT twri.business_id,twri.review_id,twri.dis_phone,twri.review_desc,twri.review_time,twri.review_user_id,
         (select name from sys_user where user_id=twri.review_user_id) AS currentReviewName,
         (select name from sys_user where user_id=twri.dis_user_id) AS disName FROM
         tbl_wf_review_info twri
@@ -179,7 +223,7 @@
         ON wb.business_id = twri.business_id
         LEFT JOIN
         (
-        SELECT twdi.dis_id,twdi.business_id,twdi.over_phone,twdi.dis_info,twdi.dis_time,
+        SELECT twdi.dis_id,twdi.business_id,twdi.over_phone,twdi.dis_info,twdi.dis_time,twdi.dis_user_id,
         (select name from sys_user where user_id=twdi.dis_user_id) AS currentDisName,
         (select name from sys_user where user_id=twdi.over_user_id) AS overName FROM
         tbl_wf_dis_info twdi
@@ -187,7 +231,7 @@
         ON wb.business_id = twdi.business_id
         LEFT JOIN
         (
-        SELECT twoi.business_id,twoi.over_id,twoi.over_info,twoi.over_file,twoi.over_type,twoi.over_time,twoi.handle_phone,
+        SELECT twoi.business_id,twoi.over_id,twoi.over_info,twoi.over_file,twoi.over_type,twoi.over_time,twoi.handle_phone,twoi.over_user_id,
         (select name from sys_user where user_id=twoi.over_user_id) AS currentOverName,
         (select name from sys_user where user_id=twoi.handle_user_id) AS handleName FROM
         tbl_wf_over_info twoi
@@ -195,7 +239,8 @@
         ON wb.business_id = twoi.business_id
         LEFT JOIN
         (
-        SELECT twhi.business_id,twhi.handle_id,twhi.confirm_phone,twhi.handle_file,twhi.handle_type,twhi.handle_info, twhi.handle_method,twhi.handle_time,
+        SELECT twhi.business_id,twhi.handle_id,twhi.confirm_phone,twhi.handle_file,twhi.handle_type,twhi.handle_info, twhi.handle_method,
+        twhi.handle_time,twhi.handle_user_id,
         (select name from sys_user where user_id=twhi.handle_user_id) AS currentHandleName,
         (select name from sys_user where user_id=twhi.confirm_user_id) AS confirmName FROM
         tbl_wf_handle_info twhi
@@ -203,7 +248,7 @@
         ON wb.business_id = twhi.business_id
         LEFT JOIN
         (
-        SELECT twci.business_id,twci.confirm_id,twci.base_appra_phone,twci.confirm_info,twci.confirm_time,
+        SELECT twci.business_id,twci.confirm_id,twci.base_appra_phone,twci.confirm_info,twci.confirm_time,twci.confirm_user_id,
         (select name from sys_user where user_id=twci.confirm_user_id) AS currentConfirmName,
         (select name from sys_user where user_id=twci.base_appra_user_id) AS baseAppraName FROM
         tbl_wf_confirm_info twci
@@ -235,7 +280,7 @@
         <if test="resAbnormallevelName != null and resAbnormallevelName != ''">
             AND tra.res_abnormallevel_name LIKE concat('%',#{resAbnormallevelName},'%')
         </if>
-        <if test="wfStatus != null and wfStatus != ''">
+        <if test="wfStatus != null">
             AND wb.wf_status =#{wfStatus}
         </if>
         <if test="resName != null and resName != ''">
@@ -247,8 +292,7 @@
         <if test="handleId != null and handleId != ''">
             AND (twri.review_user_id=#{handleId} OR twdi.dis_user_id=#{handleId} OR
                  twoi.over_user_id=#{handleId} OR twhi.handle_user_id=#{handleId} OR
-                 twci.confirm_user_id=#{handleId} OR twbai.base_appra_user_id=#{handleId}
-                  OR twkai.kexin_appra_user_id = #{handleId})
+                 twci.confirm_user_id=#{handleId})
         </if>
         <if test="userId != null and userId != ''">
             AND wb.user_id = #{userId}
@@ -268,7 +312,9 @@
           ORDER BY wb.gmt_create DESC
     </select>
 
-    <select id="selectAppraisePageByCondition" resultMap="CustomMap">
+
+    <!--评价列表-->
+    <select id="selectAppraisePageByCondition" resultMap="AppraiseMap">
         SELECT
         wb.business_id,wb.wf_id,wb.wf_title,wb.wf_type,wb.telephone,wb.gmt_create,
         wb.res_abnormaldesc,
@@ -276,6 +322,7 @@
         ws.deadtime,
         trb.res_name,
         tra.res_abnormallevel_name,
+        tat.abnormal_type_name,
         trm.res_mtype_name,
         trs.res_stype_name,
         twri.*,
@@ -284,18 +331,19 @@
 
         FROM
         tbl_wf_business wb
-        LEFT JOIN tbl_wo_sla ws ON wb.wo_sla_id = ws.wo_sla_id
-        LEFT JOIN tbl_res_abnormallevel tra ON wb.res_abnormallevel_id = tra.res_abnormallevel_id
-        LEFT JOIN tbl_res_base trb ON wb.res_id = trb.res_id
-        LEFT JOIN tbl_res_maintype trm ON wb.res_mtype_id = trm.res_mtype_id
-        LEFT JOIN tbl_res_subtype trs ON wb.res_stype_id = trs.res_stype_id
-        LEFT JOIN
+        INNER JOIN tbl_wo_sla ws ON wb.wo_sla_id = ws.wo_sla_id
+        INNER JOIN tbl_res_abnormallevel tra ON wb.res_abnormallevel_id = tra.res_abnormallevel_id
+        INNER JOIN tbl_res_base trb ON wb.res_id = trb.res_id
+        INNER JOIN tbl_abnormal_type tat ON   wb.abnormal_type_id=tat.abnormal_type_id
+        INNER JOIN tbl_res_maintype trm ON wb.res_mtype_id = trm.res_mtype_id
+        INNER JOIN tbl_res_subtype trs ON wb.res_stype_id = trs.res_stype_id
+        INNER JOIN
         (
         SELECT business_id,(select name from sys_dept where dept_id = twri.dept_id) AS deptName FROM
         tbl_wf_review_info twri
         ) twri
         ON wb.business_id = twri.business_id
-        LEFT JOIN
+        INNER JOIN
         (
         SELECT
         twbai.business_id,twbai.base_appra_id,twbai.base_appra_score,twbai.base_appra_info,twbai.base_appra_time,
@@ -303,7 +351,7 @@
         tbl_wf_base_appra_info twbai
         ) twbai
         ON wb.business_id = twbai.business_id
-        LEFT JOIN
+        INNER JOIN
         (
         SELECT twkai.business_id,twkai.kexin_appra_id,twkai.kexin_appra_score,twkai.kexin_appra_time,twkai.kexin_appra_info,
         (select name from sys_user where user_id=twkai.kexin_appra_user_id) AS kexinAppraName FROM
@@ -311,8 +359,65 @@
         ) twkai
         ON wb.business_id = twkai.business_id
         WHERE wb.useflag=1
+        <if test="wfId !=null and wfId !=''">
+            and wb.wf_id=#{wfId}
+        </if>
+        <if test="wfTitle !=null and wfTitle !=''">
+            and wb.wf_title=#{wfTitle}
+        </if>
+        <if test="baseUserName !=null and baseUserName !=''">
+            and  baseAppraName=#{baseUserName}
+        </if>
+        <if test="kexinUserName !=null and kexinUserName !=''">
+            and kexinAppraName=#{kexinUserName}
+         </if>
+        <if test="baseAppraBeginTime !=null and baseAppraBeginTime !=''">
+            and  twbai.base_appra_time <![CDATA[ >= ]]> #{baseAppraBeginTime}
+        </if>
+        <if test="baseAppraEndTime !=null and baseAppraEndTime !=''">
+            and  twbai.base_appra_time  <![CDATA[ <= ]]> #{baseAppraEndTime}
+        </if>
+        <if test="kexinAppraBeginTime !=null and kexinAppraBeginTime !='' ">
+            and twkai.kexin_appra_time <![CDATA[ >= ]]> #{kexinAppraBeginTime}
+        </if>
+        <if test="kexinAppraEndTime !=null and kexinAppraEndTime !=''">
+            and twkai.kexin_appra_time  <![CDATA[ >= ]]> #{kexinAppraEndTime}
+        </if>
+        <if test="baseAppraScore !=null and baseAppraScore != '' and defFlag==0">
+        and twbai.base_appra_score <![CDATA[ > ]]> #{baseAppraScore}
+      </if>
+        <if test="baseAppraScore !=null and baseAppraScore != '' and defFlag==1">
+            and twbai.base_appra_score <![CDATA[ < ]]> #{baseAppraScore}
+        </if>
+        <if test="baseAppraScore !=null and baseAppraScore != '' and defFlag==2">
+            and twbai.base_appra_score <![CDATA[ = ]]> #{baseAppraScore}
+        </if>
+        <if test="baseAppraScore !=null and baseAppraScore != '' and defFlag==3">
+            and twbai.base_appra_score <![CDATA[ >= ]]> #{baseAppraScore}
+        </if>
+        <if test="baseAppraScore !=null and baseAppraScore != '' and defFlag==4">
+            and twbai.base_appra_score <![CDATA[ <= ]]> #{baseAppraScore}
+        </if>
+        <if test="kexinAppraScore !=null and kexinAppraScore != '' and defFlag==0">
+            and twkai.kexin_appra_score <![CDATA[ > ]]> #{kexinAppraScore}
+        </if>
+        <if test="kexinAppraScore !=null and kexinAppraScore != '' and defFlag==1">
+            and twkai.kexin_appra_score <![CDATA[ < ]]> #{kexinAppraScore}
+        </if>
+        <if test="kexinAppraScore !=null and kexinAppraScore != '' and defFlag==2">
+            and twkai.kexin_appra_score <![CDATA[ = ]]> #{kexinAppraScore}
+        </if>
+        <if test="kexinAppraScore !=null and kexinAppraScore != '' and defFlag==3">
+            and twkai.kexin_appra_score <![CDATA[ >= ]]> #{kexinAppraScore}
+        </if>
+        <if test="kexinAppraScore !=null and kexinAppraScore != '' and defFlag==4">
+            and twkai.kexin_appra_score <![CDATA[ <= ]]> #{kexinAppraScore}
+        </if>
+         ORDER BY wb.gmt_create DESC
 
-        ORDER BY wb.gmt_create DESC
-    </select>
+        </select>
+
+
+
 
 </mapper>

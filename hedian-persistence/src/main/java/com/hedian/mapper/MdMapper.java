@@ -21,4 +21,10 @@ public interface MdMapper extends BaseMapper<Md> {
 
     List<Md> selectPageByCondition(@Param("mdName") String mdName, @Param("deptId") Long deptId, @Param("userId") Long userId);
 
+    /**
+     * 根据评价人id找到关联域
+     * @param appraiserid
+     * @return
+     */
+    List<Md> findMdListByRepairOrderAppraiserId(@Param("appraiserid")Integer appraiserid);
 }

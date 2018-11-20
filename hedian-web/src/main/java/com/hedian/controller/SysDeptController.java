@@ -19,6 +19,7 @@ import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,7 +44,6 @@ public class SysDeptController {
      * 组织列表
      */
     @GetMapping("/pageList")
-    @Pass
     public PublicResult getPageList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
                                     @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
         Page<SysDept> rolePage = sysDeptService.selectPage(new Page<>(pageIndex, pageSize));
@@ -90,7 +90,6 @@ public class SysDeptController {
      * @return
      */
     @PostMapping
-    @Pass
     public PublicResult<String> addDept(@ValidationParam("parentId,name,shortName,orderNum,orgType")
                                         @RequestBody JSONObject requestJson) throws Exception {
         if (!ComUtil.isEmpty(sysDeptService.selectList(new EntityWrapper<SysDept>().eq("name",requestJson.getString("name"))))) {
