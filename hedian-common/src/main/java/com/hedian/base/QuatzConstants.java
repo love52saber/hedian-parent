@@ -28,10 +28,15 @@ public class QuatzConstants {
      */
     public static final int SYS_TIME_CONFIG = 20000;
 
+
     /**
      * 定时任务  多久跑一次
      */
     public final static long ONE_MINUTE = 30 * 1000;
+    /**
+     * 定时任务  多久跑一次
+     */
+    public final static long THREE_MINUTE = 180 * 1000;
 
     /**
      * 采集终端端口 11
