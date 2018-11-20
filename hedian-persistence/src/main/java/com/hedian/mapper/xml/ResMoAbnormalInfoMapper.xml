@@ -264,7 +264,10 @@
         left join tbl_res_abnormallevel b
         on a.res_abnormallevel_id = b.res_abnormallevel_id
         <where>
-            a.res_id = #{resId}
+            a.res_abnormalstatus = 1
+            <if test="resId!=null">
+              and a.res_id = #{resId}
+            </if>
         </where>
         order by a.res_abnormal_id desc
     </select>
