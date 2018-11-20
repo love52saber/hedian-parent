@@ -65,6 +65,10 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
     public List<MoAbnormalDef> getTopAbnormal(Map<String, Object> map) {
         List<MoAbnormalDef> topAbnormal = resMoAbnormalInfoMapper.getTopAbnormal(map);
         List<MoAbnormalDef> topAbnormalH = resMoAbnormalInfoHMapper.getTopAbnormalH(map);
+        Map<Integer, MoAbnormalDef> topAbnormalResultMap = new HashMap<>();
+        topAbnormalH.stream().forEach(moAbnormalDef -> {
+            topAbnormalResultMap.put(moAbnormalDef.getMoAbnormalId(), moAbnormalDef);
+        });
         if (!ComUtil.isEmpty(topAbnormalH) && !ComUtil.isEmpty(topAbnormal)) {
             topAbnormal.stream().forEach(moAbnormalDef -> {
                 topAbnormalH.stream().forEach(moAbnormalDefH -> {
@@ -72,9 +76,20 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
                         moAbnormalDef.setCountNum(moAbnormalDef.getCountNum() + moAbnormalDefH.getCountNum());
                     }
                 });
+                topAbnormalResultMap.put(moAbnormalDef.getMoAbnormalId(), moAbnormalDef);
             });
         }
-        return topAbnormal;
+        List<MoAbnormalDef> topAbnormalResult = new ArrayList<>();
+        topAbnormalResultMap.forEach((integer, moAbnormalDef) -> {
+            topAbnormalResult.add(moAbnormalDef);
+        });
+        Collections.sort(topAbnormalResult, new Comparator<MoAbnormalDef>() {
+            @Override
+            public int compare(MoAbnormalDef o1, MoAbnormalDef o2) {
+                return o2.getCountNum().compareTo(o1.getCountNum());
+            }
+        });
+        return topAbnormalResult;
     }
 
     @Override
@@ -100,7 +115,29 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
         resMoAbnormalInfo.setUseflag(0);
         resMoAbnormalInfo.setDelUserId(user.getUserId());
         resMoAbnormalInfo.setDeltime(new Date());
-        boolean result = cleanOrDelete(resAbnormalId, resMoAbnormalInfo);
+        boolean result = this.updateById(resMoAbnormalInfo);
+        if (!result) {
+            throw new BusinessException("删除告警信息失败");
+        }
+        result = cleanOrDelete(resAbnormalId, resMoAbnormalInfo);
+        return result;
+    }
+
+    @Override
+    public boolean cleanResAbnormal(JSONObject requestJson, SysUser user) throws Exception {
+        Long resAbnormalId = requestJson.getLong("resAbnormalId");
+        String cleanInfo = requestJson.getString("cleanInfo");
+        ResMoAbnormalInfo resMoAbnormalInfo = this.selectById(resAbnormalId);
+        resMoAbnormalInfo.setCleanInfo(cleanInfo);
+        resMoAbnormalInfo.setCleanType(2);
+        resMoAbnormalInfo.setCleanUserId(user.getUserId());
+        resMoAbnormalInfo.setCleanTime(new Date());
+        resMoAbnormalInfo.setResRecoverytime(new Date());
+        boolean result = this.updateById(resMoAbnormalInfo);
+        if (!result) {
+            throw new BusinessException("清除告警信息失败");
+        }
+        result = cleanOrDelete(resAbnormalId, resMoAbnormalInfo);
         return result;
     }
 
@@ -403,20 +440,4 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
         return currentResBase.getResMtypeId().equals(QuatzConstants.ZD_MAIN_TYPE);
     }
 
-    @Override
-    public boolean cleanResAbnormal(JSONObject requestJson, SysUser user) throws Exception {
-        Long resAbnormalId = requestJson.getLong("resAbnormalId");
-        String cleanInfo = requestJson.getString("cleanInfo");
-        ResMoAbnormalInfo resMoAbnormalInfo = this.selectById(resAbnormalId);
-        resMoAbnormalInfo.setCleanInfo(cleanInfo);
-        resMoAbnormalInfo.setCleanType(2);
-        resMoAbnormalInfo.setCleanUserId(user.getUserId());
-        resMoAbnormalInfo.setCleanTime(new Date());
-        boolean result = this.updateById(resMoAbnormalInfo);
-        if (!result) {
-            throw new BusinessException("清除告警信息失败");
-        }
-        result = cleanOrDelete(resAbnormalId, resMoAbnormalInfo);
-        return result;
-    }
 }

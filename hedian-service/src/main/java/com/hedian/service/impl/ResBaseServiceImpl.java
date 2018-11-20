@@ -80,16 +80,30 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
     public List<ResBase> getTopRes(Map<String, Object> map) {
         List<ResBase> topRes = resBaseMapper.getTopRes(map);
         List<ResBase> topResH = resBaseMapper.getTopResH(map);
-        if (!ComUtil.isEmpty(topResH) && !ComUtil.isEmpty(topRes)) {
-            topRes.stream().forEach(resBase -> {
-                topResH.stream().forEach(resBaseH -> {
-                    if (resBase.getResId().equals(resBaseH.getResId())) {
-                        resBase.setCountNum(resBase.getCountNum() + resBaseH.getCountNum());
-                    }
-                });
+        Map<Integer, ResBase> topResResultMap = new HashMap<>();
+        topResH.stream().forEach(resBase -> {
+            topResResultMap.put(resBase.getResId(), resBase);
+        });
+        topRes.stream().forEach(resBase -> {
+            topResH.stream().forEach(resBaseH -> {
+                if (resBase.getResId().equals(resBaseH.getResId())) {
+                    resBase.setCountNum(resBase.getCountNum() + resBaseH.getCountNum());
+                }
             });
-        }
-        return topRes;
+            //如果设备同时有实时信息和历史信息则用故障总数
+            topResResultMap.put(resBase.getResId(), resBase);
+        });
+        List<ResBase> topResResult = new ArrayList<>();
+        topResResultMap.forEach((integer, resBase) -> {
+            topResResult.add(resBase);
+        });
+        Collections.sort(topResResult, new Comparator<ResBase>() {
+            @Override
+            public int compare(ResBase o1, ResBase o2) {
+                return o2.getCountNum().compareTo(o1.getCountNum());
+            }
+        });
+        return topResResult;
     }
 
     @Override
