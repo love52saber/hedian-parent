@@ -60,7 +60,7 @@ public class MdController {
         if (!ComUtil.isEmpty(info)) {
             ew.eq("md_name", info);
         }
-        Page<Md> mdPage = mdService.selectPage(new Page<>(pageIndex, pageSize), ew);
+        Page<Md> mdPage = mdService.selectPageList(new Page<>(pageIndex, pageSize), info);
         mdPage.getRecords().stream().forEach(md -> {
             List<MdRes> mdResList = mdResService.selectList(new EntityWrapper<MdRes>().eq("md_id", md.getMdId()));
             md.setResIds(mdResList.stream().map(MdRes::getResId).collect(Collectors.toList()));

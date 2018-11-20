@@ -81,7 +81,6 @@
         <if test="mdName != null and mdName != ''">
             and md.md_name like concat('%',#{mdName},'%')
         </if>
-        and md.md_id =9
         )t
         LEFT JOIN tbl_res_base rb on t.res_id = rb.res_id
         LEFT JOIN sys_dept sd on t.dept_id = sd.dept_id
