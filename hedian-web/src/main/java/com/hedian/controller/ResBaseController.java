@@ -9,10 +9,9 @@ import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.ResBase;
 import com.hedian.entity.SysDept;
 import com.hedian.entity.SysUser;
-import com.hedian.model.ResMoAbnormalInfoModel;
 import com.hedian.model.Tree;
 import com.hedian.service.IResBaseService;
-import com.hedian.service.IResMoAbnormalInfoService;
+import com.hedian.util.ComUtil;
 import com.hedian.utils.HdywUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -20,10 +19,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -40,8 +36,7 @@ public class ResBaseController {
 
     @Autowired
     private IResBaseService resBaseService;
-    @Autowired
-    private IResMoAbnormalInfoService resMoAbnormalInfoService;
+
 
     /**
      * 资源设备列表
@@ -105,14 +100,25 @@ public class ResBaseController {
      * 获取最新故障
      */
     @GetMapping("/getTopAlarm")
-    public PublicResult getTopAlarm(@CurrentUser SysUser sysUser,Integer pageIndex,Integer pageSize) {
+    public PublicResult getTopAlarm(@CurrentUser SysUser sysUser) {
+        Map<String, Object> map = new HashMap<>(16);
         List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
-        Page<ResMoAbnormalInfoModel> resBaseAlarms = resMoAbnormalInfoService.selectPageByCondition(new Page<>(pageIndex, pageSize), null, null, null,
-                null, null, null, null, null,
-                null, null, false, null, resIds);
-        return new PublicResult(PublicResultConstant.SUCCESS, resBaseAlarms.getRecords());
-    }
+        if(!ComUtil.isEmpty(resIds)){
+            map.put("resIds", resIds);
+            map.put("resStatus", 1);
+            map.put("resStatu", 3);
+        }else{
+            map.put("resIds", null);
+            map.put("resStatus", null);
+            map.put("resStatu", null);
+        }
 
+        List<ResBase> resBaseAlarms = resBaseService.findByMap(map);
+        if(!ComUtil.isEmpty(resBaseAlarms)&& resBaseAlarms.size()>5){
+            resBaseAlarms = resBaseAlarms.subList(0,5);
+        }
+        return new PublicResult(PublicResultConstant.SUCCESS, resBaseAlarms);
+    }
     /**
      * 获得TOP故障设备统计
      *

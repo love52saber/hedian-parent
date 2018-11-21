@@ -172,7 +172,7 @@
         countNum
         from
         (select * from tbl_res_mo_abnormal_info where res_abnormalstatus=1
-        <if test="resIds != null">and res_id IN
+        <if test="resIds != null and resIds.size()>0">and res_id IN
             <foreach item="rId" collection="resIds" open="(" separator=","
                      close=")">
                 #{rId}

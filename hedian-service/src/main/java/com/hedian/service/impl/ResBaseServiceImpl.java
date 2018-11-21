@@ -97,9 +97,9 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
                 topResResultMap.put(resBase.getResId(), resBase);
             });
         }
-        List<ResBase> topResResult = null;
+        List<ResBase> topResResult = new ArrayList<>();
         if (null != topResResultMap && !topResResultMap.isEmpty()) {
-            topResResult = new ArrayList<>(topResResultMap.values());
+            topResResult.addAll(topResResultMap.values());
             Collections.sort(topResResult, new Comparator<ResBase>() {
                 @Override
                 public int compare(ResBase o1, ResBase o2) {
@@ -169,11 +169,9 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
         List<ResBase> resBaseList = null;
         if (deptId.equals(Long.valueOf(tree.getId()))) {
             //获取管理域id对应的资产id
-            int[] resIds = new int[mdRes.size()];
-            int index = 0;
+            List<Integer> resIds = new ArrayList<>();
             for (Map.Entry<Integer, Integer> entry : mdRes.entrySet()) {
-                resIds[index] = entry.getKey();
-                index++;
+                resIds.add(entry.getKey());
             }
             map.put("resIds", resIds);
             map.put("resMtypeId", QuatzConstants.ZD_MAIN_TYPE);

@@ -33,12 +33,13 @@
         as countNum from tbl_res_abnormallevel b
         left join (select * from tbl_res_base
         where 1 =1
-        <if test="resIds">and res_id IN
+        <if test="resIds != null and resIds.size()>0">and res_id IN
             <foreach item="rId" collection="resIds" open="(" separator=","
                      close=")">
                 #{rId}
             </foreach>
         </if>
+        <if test="resIds == null">AND res_id = -1 </if>
         ) a on b.res_abnormallevel_id=a.res_abnormallevel_id
         where
         b.useflag=1

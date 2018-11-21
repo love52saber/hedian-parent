@@ -7,6 +7,7 @@ import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.ResAbnormallevel;
 import com.hedian.entity.SysUser;
 import com.hedian.service.IResAbnormallevelService;
+import com.hedian.util.ComUtil;
 import com.hedian.utils.HdywUtils;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,12 @@ public class ResAbnormallevelController {
     public PublicResult getCountByLevel(@CurrentUser SysUser sysUser) {
         Map<String, Object> map = new HashMap<>(16);
         List<Integer> redIds = HdywUtils.getResidsByUserid(sysUser);
-        map.put("resIds", redIds);
+        if (!ComUtil.isEmpty(redIds)) {
+            map.put("resIds", redIds);
+        } else {
+            map.put("resIds", null);
+        }
+
         List<ResAbnormallevel> resAbnormallevels = resAbnormallevelService.getCountByLevelMap(map);
         return new PublicResult(PublicResultConstant.SUCCESS, resAbnormallevels);
     }

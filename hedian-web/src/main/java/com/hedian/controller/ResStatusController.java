@@ -7,6 +7,7 @@ import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.ResStatus;
 import com.hedian.entity.SysUser;
 import com.hedian.service.IResStatusService;
+import com.hedian.util.ComUtil;
 import com.hedian.utils.HdywUtils;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +37,21 @@ public class ResStatusController {
 
     @Autowired
     private IResStatusService iResStatusService;
+
     /**
      * 统计该用户下的资产状态
+     *
      * @return
      */
     @GetMapping("/getCountByStatus")
     public PublicResult getCountByStatus(@CurrentUser SysUser sysUser) {
         Map<String, Object> map = new HashMap<>(16);
         List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
-        map.put("resIds", resIds);
+        if (!ComUtil.isEmpty(resIds)) {
+            map.put("resIds", resIds);
+        }else{
+            map.put("resIds", null);
+        }
         List<ResStatus> resStatusList = iResStatusService.getCountByStatusMap(map);
         return new PublicResult(PublicResultConstant.SUCCESS, resStatusList);
     }

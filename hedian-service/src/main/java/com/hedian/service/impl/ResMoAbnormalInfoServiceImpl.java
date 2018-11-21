@@ -83,9 +83,9 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
                 });
             }
         }
-        List<MoAbnormalDef> topAbnormalResult = null;
+        List<MoAbnormalDef> topAbnormalResult = new ArrayList<>();
         if (null != topAbnormalResultMap && !topAbnormalResultMap.isEmpty()) {
-            topAbnormalResult = new ArrayList<>(topAbnormalResultMap.values());
+            topAbnormalResult.addAll(topAbnormalResultMap.values());
             Collections.sort(topAbnormalResult, new Comparator<MoAbnormalDef>() {
                 @Override
                 public int compare(MoAbnormalDef o1, MoAbnormalDef o2) {

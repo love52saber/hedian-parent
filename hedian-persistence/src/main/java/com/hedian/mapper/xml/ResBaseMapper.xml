@@ -113,14 +113,14 @@
     <!--top故障列表-->
     <select id="findByMap" resultMap="ResOtherMap">
         SELECT a.*,b.*,d.*
-        FROM (SELECT * FROM tbl_res_base WHERE 1 = 1
-        <if test="resIds != null">
-            AND res_id IN
+        FROM (SELECT * FROM tbl_res_base WHERE 1=1
+        <if test="resIds != null and resIds.size()>0">AND res_id IN
             <foreach item="rId" collection="resIds" open="(" separator=","
                      close=")">
                 #{rId}
             </foreach>
         </if>
+        <if test="resIds == null">AND res_id = -1</if>
         <if test="resMtypeId != null and resMtypeId != ''">AND res_mtype_id = #{resMtypeId}</if>
         <if test="resStatus != null and resStatus != ''">AND res_status != #{resStatus}</if>
         <if test="resStatu != null and resStatu != ''">AND res_status != #{resStatus}</if>
@@ -135,7 +135,7 @@
         SELECT b.res_id,b.res_name,b.res_alias,count(b.res_id) AS countNum
         FROM (SELECT * FROM tbl_res_mo_abnormal_info
         WHERE 1=1
-        <if test="resIds != null">AND res_id IN
+        <if test="resIds != null and resIds.size()>0">AND res_id IN
             <foreach item="rId" collection="resIds" open="(" separator=","
                      close=")">
                 #{rId}
@@ -150,7 +150,7 @@
         SELECT b.res_id,b.res_name,b.res_alias,count(b.res_id) AS countNum
         FROM (SELECT * FROM tbl_res_mo_abnormal_info_h
         WHERE useflag=1
-        <if test="resIds != null">AND res_id IN
+        <if test="resIds != null and resIds.size()>0">AND res_id IN
             <foreach item="rId" collection="resIds" open="(" separator=","
                      close=")">
                 #{rId}
@@ -213,9 +213,9 @@
     </select>
 
     <select id="selectDevListByTerminalId" parameterType="integer" resultMap="BaseResultMap" flushCache="true">
-      select a.*
-      from tbl_res_base a,tbl_res_terminal b
-      WHERE  a.res_id = b.res_id and a.useflag = 1 and b.useflag = 1
+        select a.*
+        from tbl_res_base a,tbl_res_terminal b
+        WHERE a.res_id = b.res_id and a.useflag = 1 and b.useflag = 1
         <if test="terminalId!=null">
             and b.res_id_terminal = #{terminalId}
         </if>
