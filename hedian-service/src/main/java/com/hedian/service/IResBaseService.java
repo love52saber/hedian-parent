@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>
@@ -24,7 +25,7 @@ public interface IResBaseService extends IService<ResBase> {
 
     List<ResBase> findByMap(Map<String, Object> map);
 
-    List<ResBase> getTopRes(Map<String, Object> map);
+    Set<ResBase> getTopRes(Map<String, Object> map);
 
     Tree<SysDept> genResTreeByUser(SysUser sysUser);
 

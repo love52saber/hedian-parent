@@ -4,32 +4,25 @@ package com.hedian.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.annotation.CurrentUser;
-import com.hedian.annotation.Pass;
 import com.hedian.annotation.ValidationParam;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.MoAbnormalDef;
 import com.hedian.entity.ResMoAbnormalInfo;
-import com.hedian.entity.ResMoAbnormalInfoH;
 import com.hedian.entity.SysUser;
 import com.hedian.model.AbnormalLevelModel;
 import com.hedian.model.AlarmInfoModel;
 import com.hedian.model.ResMoAbnormalInfoModel;
-import com.hedian.service.IResMoAbnormalInfoHService;
 import com.hedian.service.IResMoAbnormalInfoService;
 import com.hedian.utils.HdywUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -102,7 +95,7 @@ public class ResMoAbnormalInfoController {
     @DeleteMapping(value = "/{resAbnormalId}")
     public PublicResult deleteAbnormalInfo(@PathVariable("resAbnormalId") Long resAbnormalId, @CurrentUser SysUser user) throws Exception {
 
-        boolean result = resMoAbnormalInfoService.deleteResAbnoraml(resAbnormalId,user);
+        boolean result = resMoAbnormalInfoService.deleteResAbnoraml(resAbnormalId, user);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 
@@ -126,7 +119,7 @@ public class ResMoAbnormalInfoController {
     @PutMapping(value = "/cleanAbnormal")
     public PublicResult cleanAbnormalInfo(@ValidationParam("resAbnormalId") @CurrentUser SysUser user,
                                           @RequestBody JSONObject requestJson) throws Exception {
-        boolean result = resMoAbnormalInfoService.cleanResAbnormal(requestJson,user);
+        boolean result = resMoAbnormalInfoService.cleanResAbnormal(requestJson, user);
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 
@@ -141,7 +134,7 @@ public class ResMoAbnormalInfoController {
         Map<String, Object> map = new HashMap<String, Object>(16);
         List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
         map.put("resIds", resIds);
-        List<MoAbnormalDef> moAbnormalDefs = resMoAbnormalInfoService.getTopAbnormal(map);
+        Set<MoAbnormalDef> moAbnormalDefs = resMoAbnormalInfoService.getTopAbnormal(map);
         return new PublicResult(PublicResultConstant.SUCCESS, moAbnormalDefs);
     }
 

@@ -15,6 +15,7 @@ import com.hedian.model.AlarmInfoModel;
 import com.hedian.model.NoticeModel;
 import com.hedian.model.ResMoAbnormalInfoModel;
 import com.hedian.service.*;
+import com.hedian.service.utils.MoAbnormalDefComparator;
 import com.hedian.util.ComUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,13 +63,13 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
     }
 
     @Override
-    public List<MoAbnormalDef> getTopAbnormal(Map<String, Object> map) {
+    public Set<MoAbnormalDef> getTopAbnormal(Map<String, Object> map) {
         List<MoAbnormalDef> topAbnormal = resMoAbnormalInfoMapper.getTopAbnormal(map);
         List<MoAbnormalDef> topAbnormalH = resMoAbnormalInfoHMapper.getTopAbnormalH(map);
-        Map<Integer, MoAbnormalDef> topAbnormalResultMap = new HashMap<>();
-        topAbnormalH.stream().forEach(moAbnormalDef -> {
-            topAbnormalResultMap.put(moAbnormalDef.getMoAbnormalId(), moAbnormalDef);
-        });
+        Set<MoAbnormalDef> moAbnormalDefSet = new TreeSet<>(new MoAbnormalDefComparator());
+        if (!ComUtil.isEmpty(topAbnormalH)) {
+            moAbnormalDefSet.addAll(topAbnormalH);
+        }
         if (!ComUtil.isEmpty(topAbnormalH) && !ComUtil.isEmpty(topAbnormal)) {
             topAbnormal.stream().forEach(moAbnormalDef -> {
                 topAbnormalH.stream().forEach(moAbnormalDefH -> {
@@ -76,20 +77,10 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
                         moAbnormalDef.setCountNum(moAbnormalDef.getCountNum() + moAbnormalDefH.getCountNum());
                     }
                 });
-                topAbnormalResultMap.put(moAbnormalDef.getMoAbnormalId(), moAbnormalDef);
+                moAbnormalDefSet.add(moAbnormalDef);
             });
         }
-        List<MoAbnormalDef> topAbnormalResult = new ArrayList<>();
-        topAbnormalResultMap.forEach((integer, moAbnormalDef) -> {
-            topAbnormalResult.add(moAbnormalDef);
-        });
-        Collections.sort(topAbnormalResult, new Comparator<MoAbnormalDef>() {
-            @Override
-            public int compare(MoAbnormalDef o1, MoAbnormalDef o2) {
-                return o2.getCountNum().compareTo(o1.getCountNum());
-            }
-        });
-        return topAbnormalResult;
+        return moAbnormalDefSet;
     }
 
     @Override

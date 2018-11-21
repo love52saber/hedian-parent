@@ -112,23 +112,22 @@
 
     <!--top故障列表-->
     <select id="findByMap" resultMap="ResOtherMap">
-        select a.*,b.*,d.*
-        from (select * from tbl_res_base where 1 = 1
+        SELECT a.*,b.*,d.*
+        FROM (SELECT * FROM tbl_res_base WHERE 1 = 1
         <if test="resIds != null">
-            and res_id IN
+            AND res_id IN
             <foreach item="rId" collection="resIds" open="(" separator=","
                      close=")">
                 #{rId}
             </foreach>
         </if>
-        <if test="resMtypeId != null and resMtypeId != ''">and res_mtype_id = #{resMtypeId}</if>
-        <if test="resStatus != null and resStatus != ''">and res_status != #{resStatus}</if>
-        <if test="resStatu != null and resStatu != ''">and res_status != #{resStatu}</if>
+        <if test="resMtypeId != null and resMtypeId != ''">AND res_mtype_id = #{resMtypeId}</if>
+        <if test="resStatus != null and resStatus != ''">AND res_status != #{resStatus}</if>
         ) a
-        LEFT JOIN (select * from tbl_res_abnormallevel where useflag=1) b ON
+        LEFT JOIN (SELECT * FROM tbl_res_abnormallevel WHERE useflag=1) b ON
         a.res_abnormallevel_id=b.res_abnormallevel_id
-        LEFT JOIN (select * from tbl_res_status where useflag=1) d ON a.res_status=d.res_status
-        order by a.res_id
+        LEFT JOIN (SELECT * FROM tbl_res_status WHERE useflag=1) d ON a.res_status=d.res_status
+        ORDER BY a.res_id
     </select>
 
     <select id="getTopRes" resultMap="TopResMap">

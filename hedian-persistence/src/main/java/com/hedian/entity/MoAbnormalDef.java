@@ -1,12 +1,13 @@
 package com.hedian.entity;
 
-import java.io.Serializable;
-
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Objects;
 
 /**
  * <p>
@@ -211,5 +212,38 @@ public class MoAbnormalDef extends Model<MoAbnormalDef> {
                 ", gmtModified=" + gmtModified +
                 ", countNum=" + countNum +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MoAbnormalDef that = (MoAbnormalDef) o;
+        return Objects.equals(moAbnormalId, that.moAbnormalId) &&
+                Objects.equals(moAbnormalcode, that.moAbnormalcode) &&
+                Objects.equals(moAbnormalName, that.moAbnormalName) &&
+                Objects.equals(resAbnormallevelId, that.resAbnormallevelId) &&
+                Objects.equals(abnormalTypeId, that.abnormalTypeId) &&
+                Objects.equals(moAbnormalDesc, that.moAbnormalDesc) &&
+                Objects.equals(moAbnormalShowtemplate, that.moAbnormalShowtemplate) &&
+                Objects.equals(showorder, that.showorder) &&
+                Objects.equals(useflag, that.useflag) &&
+                Objects.equals(userIdCreate, that.userIdCreate) &&
+                Objects.equals(gmtCreate, that.gmtCreate) &&
+                Objects.equals(userIdMod, that.userIdMod) &&
+                Objects.equals(gmtModified, that.gmtModified) &&
+                Objects.equals(countNum, that.countNum) &&
+                Objects.equals(abnormalType, that.abnormalType) &&
+                Objects.equals(resAbnormallevel, that.resAbnormallevel);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(moAbnormalId, moAbnormalcode, moAbnormalName, resAbnormallevelId, abnormalTypeId, moAbnormalDesc, moAbnormalShowtemplate, showorder, useflag, userIdCreate, gmtCreate, userIdMod, gmtModified, countNum, abnormalType, resAbnormallevel);
     }
 }
