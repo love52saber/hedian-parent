@@ -28,12 +28,12 @@ public interface IResMoAbnormalInfoService extends IService<ResMoAbnormalInfo> {
 
     List<AlarmInfoModel> selectAlarmByResId(String resId);
 
-    Set<MoAbnormalDef> getTopAbnormal(Map<String, Object> map);
+    List<MoAbnormalDef> getTopAbnormal(Map<String, Object> map);
 
     Page<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, String beginTime, String endTime, String conStatus,
                                                        String abnormalLevel, String abnormalType, String abnormalName,
                                                        String mokpiName, String resName, Integer resId, String resAlias, boolean isAutoOrder,
-                                                       String resAbnormalId);
+                                                       String resAbnormalId, List<Integer> resIds);
 
     List<AbnormalLevelModel> selectAbnormalLevelCount();
 

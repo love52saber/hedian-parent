@@ -73,9 +73,10 @@ public class ResMoAbnormalInfoController {
                                     @RequestParam(name = "resId", defaultValue = "", required = false) Integer resId,
                                     @RequestParam(name = "resAlias", defaultValue = "", required = false) String resAlias,
                                     @RequestParam(name = "isAutoOrder", defaultValue = "", required = false) boolean isAutoOrder,
-                                    @RequestParam(name = "resAbnormalId", defaultValue = "", required = false) String resAbnormalId) {
+                                    @RequestParam(name = "resAbnormalId", defaultValue = "", required = false) String resAbnormalId,
+                                    @RequestParam(name = "resIds", defaultValue = "", required = false) List<Integer> resIds) {
         Page<ResMoAbnormalInfoModel> moThresholdModelPage = resMoAbnormalInfoService.selectPageByCondition(new Page<>(pageIndex, pageSize), beginTime, endTime, conStatus, abnormalLevel,
-                abnormalType, abnormalName, mokpiName, resName, resId, resAlias, isAutoOrder, resAbnormalId);
+                abnormalType, abnormalName, mokpiName, resName, resId, resAlias, isAutoOrder, resAbnormalId, resIds);
         return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(moThresholdModelPage.getTotal(), pageIndex, pageSize, moThresholdModelPage.getRecords()));
     }
 
@@ -134,7 +135,7 @@ public class ResMoAbnormalInfoController {
         Map<String, Object> map = new HashMap<String, Object>(16);
         List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
         map.put("resIds", resIds);
-        Set<MoAbnormalDef> moAbnormalDefs = resMoAbnormalInfoService.getTopAbnormal(map);
+        List<MoAbnormalDef> moAbnormalDefs = resMoAbnormalInfoService.getTopAbnormal(map);
         return new PublicResult(PublicResultConstant.SUCCESS, moAbnormalDefs);
     }
 

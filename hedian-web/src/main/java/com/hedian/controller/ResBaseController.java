@@ -9,8 +9,10 @@ import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.ResBase;
 import com.hedian.entity.SysDept;
 import com.hedian.entity.SysUser;
+import com.hedian.model.ResMoAbnormalInfoModel;
 import com.hedian.model.Tree;
 import com.hedian.service.IResBaseService;
+import com.hedian.service.IResMoAbnormalInfoService;
 import com.hedian.utils.HdywUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -18,7 +20,10 @@ import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -35,7 +40,8 @@ public class ResBaseController {
 
     @Autowired
     private IResBaseService resBaseService;
-
+    @Autowired
+    private IResMoAbnormalInfoService resMoAbnormalInfoService;
 
     /**
      * 资源设备列表
@@ -96,6 +102,18 @@ public class ResBaseController {
     }
 
     /**
+     * 获取最新故障
+     */
+    @GetMapping("/getTopAlarm")
+    public PublicResult getTopAlarm(@CurrentUser SysUser sysUser,Integer pageIndex,Integer pageSize) {
+        List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
+        Page<ResMoAbnormalInfoModel> resBaseAlarms = resMoAbnormalInfoService.selectPageByCondition(new Page<>(pageIndex, pageSize), null, null, null,
+                null, null, null, null, null,
+                null, null, false, null, resIds);
+        return new PublicResult(PublicResultConstant.SUCCESS, resBaseAlarms.getRecords());
+    }
+
+    /**
      * 获得TOP故障设备统计
      *
      * @return
@@ -105,7 +123,7 @@ public class ResBaseController {
         Map<String, Object> map = new HashMap<String, Object>(16);
         List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
         map.put("resIds", resIds);
-        Set<ResBase> resBaseList = resBaseService.getTopRes(map);
+        List<ResBase> resBaseList = resBaseService.getTopRes(map);
         return new PublicResult(PublicResultConstant.SUCCESS, resBaseList);
     }
 

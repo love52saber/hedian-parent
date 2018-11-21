@@ -200,12 +200,7 @@ public class QuartzUtil {
                                         log.info("copy object failed");
                                     }
                                 }
-                                if (null != tblResMoAbnormalInfos.get(kpiId)) {
-                                    resMoAbnormalInfo.setResAbnormalId(tblResMoAbnormalInfos.get(kpiId).getResAbnormalId());
-
-                                    //修改
-                                    resMoAbnormalInfoService.updateById(resMoAbnormalInfo);
-                                } else {
+                                if (null == tblResMoAbnormalInfos.get(kpiId)) {
                                     resMoAbnormalInfoService.insert(resMoAbnormalInfo);
                                 }
                             } else {

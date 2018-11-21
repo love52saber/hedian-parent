@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Objects;
 
@@ -18,7 +19,7 @@ import java.util.Objects;
  * @since 2018-08-17
  */
 @TableName("tbl_mo_abnormal_def")
-public class MoAbnormalDef extends Model<MoAbnormalDef> {
+public class MoAbnormalDef extends Model<MoAbnormalDef>{
 
     private static final long serialVersionUID = 1L;
 
@@ -246,4 +247,5 @@ public class MoAbnormalDef extends Model<MoAbnormalDef> {
 
         return Objects.hash(moAbnormalId, moAbnormalcode, moAbnormalName, resAbnormallevelId, abnormalTypeId, moAbnormalDesc, moAbnormalShowtemplate, showorder, useflag, userIdCreate, gmtCreate, userIdMod, gmtModified, countNum, abnormalType, resAbnormallevel);
     }
+
 }

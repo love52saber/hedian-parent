@@ -15,7 +15,6 @@ import com.hedian.model.AlarmInfoModel;
 import com.hedian.model.NoticeModel;
 import com.hedian.model.ResMoAbnormalInfoModel;
 import com.hedian.service.*;
-import com.hedian.service.utils.MoAbnormalDefComparator;
 import com.hedian.util.ComUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,33 +62,47 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
     }
 
     @Override
-    public Set<MoAbnormalDef> getTopAbnormal(Map<String, Object> map) {
+    public List<MoAbnormalDef> getTopAbnormal(Map<String, Object> map) {
         List<MoAbnormalDef> topAbnormal = resMoAbnormalInfoMapper.getTopAbnormal(map);
         List<MoAbnormalDef> topAbnormalH = resMoAbnormalInfoHMapper.getTopAbnormalH(map);
-        Set<MoAbnormalDef> moAbnormalDefSet = new TreeSet<>(new MoAbnormalDefComparator());
+        Map<Integer, MoAbnormalDef> topAbnormalResultMap = new HashMap<>();
         if (!ComUtil.isEmpty(topAbnormalH)) {
-            moAbnormalDefSet.addAll(topAbnormalH);
-        }
-        if (!ComUtil.isEmpty(topAbnormalH) && !ComUtil.isEmpty(topAbnormal)) {
-            topAbnormal.stream().forEach(moAbnormalDef -> {
-                topAbnormalH.stream().forEach(moAbnormalDefH -> {
-                    if (moAbnormalDef.getMoAbnormalId().equals(moAbnormalDefH.getMoAbnormalId())) {
-                        moAbnormalDef.setCountNum(moAbnormalDef.getCountNum() + moAbnormalDefH.getCountNum());
-                    }
-                });
-                moAbnormalDefSet.add(moAbnormalDef);
+            topAbnormalH.stream().forEach(moAbnormalDef -> {
+                topAbnormalResultMap.put(moAbnormalDef.getMoAbnormalId(), moAbnormalDef);
             });
         }
-        return moAbnormalDefSet;
+        if (!ComUtil.isEmpty(topAbnormal) && !ComUtil.isEmpty(topAbnormalH)) {
+            if (!ComUtil.isEmpty(topAbnormalH) && !ComUtil.isEmpty(topAbnormal)) {
+                topAbnormal.stream().forEach(moAbnormalDef -> {
+                    topAbnormalH.stream().forEach(moAbnormalDefH -> {
+                        if (moAbnormalDef.getMoAbnormalId().equals(moAbnormalDefH.getMoAbnormalId())) {
+                            moAbnormalDef.setCountNum(moAbnormalDef.getCountNum() + moAbnormalDefH.getCountNum());
+                        }
+                    });
+                    topAbnormalResultMap.put(moAbnormalDef.getMoAbnormalId(), moAbnormalDef);
+                });
+            }
+        }
+        List<MoAbnormalDef> topAbnormalResult = null;
+        if (null != topAbnormalResultMap && !topAbnormalResultMap.isEmpty()) {
+            topAbnormalResult = new ArrayList<>(topAbnormalResultMap.values());
+            Collections.sort(topAbnormalResult, new Comparator<MoAbnormalDef>() {
+                @Override
+                public int compare(MoAbnormalDef o1, MoAbnormalDef o2) {
+                    return o2.getCountNum().compareTo(o1.getCountNum());
+                }
+            });
+        }
+        return topAbnormalResult;
     }
 
     @Override
     public Page<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, String beginTime, String endTime,
                                                               String conStatus, String abnormalLevel, String abnormalType,
                                                               String abnormalName, String mokpiName, String resName, Integer resId,
-                                                              String resAlias, boolean isAutoOrder, String resAbnormalId) {
+                                                              String resAlias, boolean isAutoOrder, String resAbnormalId, List<Integer> resIds) {
         return page.setRecords(resMoAbnormalInfoMapper.selectPageByCondition(page, beginTime, endTime, conStatus, abnormalLevel, abnormalType,
-                abnormalName, mokpiName, resName, resId, resAlias, isAutoOrder, resAbnormalId));
+                abnormalName, mokpiName, resName, resId, resAlias, isAutoOrder, resAbnormalId,resIds));
     }
 
     @Override

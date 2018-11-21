@@ -28,7 +28,8 @@ public interface ResMoAbnormalInfoMapper extends BaseMapper<ResMoAbnormalInfo> {
                                                        @Param("abnormalLevel") String abnormalLevel, @Param("abnormalType") String abnormalType,
                                                        @Param("abnormalName") String abnormalName, @Param("mokpiName") String mokpiName,
                                                        @Param("resName") String resName, @Param("resId") Integer resId, @Param("resAlias") String resAlias,
-                                                       @Param("isAutoOrder") boolean isAutoOrder, @Param("resAbnormalId") String resAbnormalId);
+                                                       @Param("isAutoOrder") boolean isAutoOrder, @Param("resAbnormalId") String resAbnormalId,
+                                                       @Param("resIds") List<Integer> resIds);
 
 
     /**

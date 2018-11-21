@@ -192,16 +192,22 @@
         INNER JOIN tbl_res_abnormallevel ra ON rmi.res_abnormallevel_id = ra.res_abnormallevel_id
         INNER JOIN
         (
-         SELECT rm.res_mtype_name,rs.res_stype_name,rb.res_name,rb.res_alias,rb.res_id
-         FROM tbl_res_base rb
-         INNER JOIN tbl_res_maintype rm ON rb.res_mtype_id = rm.res_mtype_id
-         INNER JOIN tbl_res_subtype rs ON rb.res_stype_id = rs.res_stype_id
+        SELECT rm.res_mtype_name,rs.res_stype_name,rb.res_name,rb.res_alias,rb.res_id
+        FROM tbl_res_base rb
+        INNER JOIN tbl_res_maintype rm ON rb.res_mtype_id = rm.res_mtype_id
+        INNER JOIN tbl_res_subtype rs ON rb.res_stype_id = rs.res_stype_id
         ) rb
         ON rmi.res_id = rb.res_id
         LEFT JOIN tbl_mo_kpi mk ON rmi.mo_kpi_id = mk.mo_kpi_id
         LEFT JOIN sys_user suc ON rmi.confirm_user_id = suc.user_id
         LEFT JOIN sys_user sud ON rmi.dispatch_user_id = sud.user_id
         WHERE rmi.res_abnormalstatus = 1
+        <if test="resIds != null and resIds.size()>0">and rmi.res_id IN
+            <foreach item="rId" collection="resIds" open="(" separator=","
+                     close=")">
+                #{rId}
+            </foreach>
+        </if>
         <if test="beginTime != null and beginTime != ''">
             AND rmi.res_abnomaltime <![CDATA[ >= ]]> #{beginTime}
         </if>
@@ -259,14 +265,14 @@
     </select>
 
     <select id="findAbnormalAndPriorityInfoByResId" resultMap="ResMoAbnormalInfoPriorityMap">
-       select a.*,b.res_abnormallevel_color,b.res_abnormallevel_priority
+        select a.*,b.res_abnormallevel_color,b.res_abnormallevel_priority
         from tbl_res_mo_abnormal_info a
         left join tbl_res_abnormallevel b
         on a.res_abnormallevel_id = b.res_abnormallevel_id
         <where>
             a.res_abnormalstatus = 1
             <if test="resId!=null">
-              and a.res_id = #{resId}
+                and a.res_id = #{resId}
             </if>
         </where>
         order by a.res_abnormal_id desc

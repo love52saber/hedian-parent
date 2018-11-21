@@ -9,7 +9,6 @@ import com.hedian.entity.*;
 import com.hedian.mapper.ResBaseMapper;
 import com.hedian.model.Tree;
 import com.hedian.service.*;
-import com.hedian.service.utils.ReaBaseComparator;
 import com.hedian.util.ComUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,12 +77,14 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
     }
 
     @Override
-    public Set<ResBase> getTopRes(Map<String, Object> map) {
+    public List<ResBase> getTopRes(Map<String, Object> map) {
         List<ResBase> topRes = resBaseMapper.getTopRes(map);
         List<ResBase> topResH = resBaseMapper.getTopResH(map);
-        Set<ResBase> resBaseSet = new TreeSet<>(new ReaBaseComparator());
+        Map<Integer, ResBase> topResResultMap = new HashMap<>();
         if (!ComUtil.isEmpty(topResH)) {
-            resBaseSet.addAll(topResH);
+            topResH.stream().forEach(resBase -> {
+                topResResultMap.put(resBase.getResId(), resBase);
+            });
         }
         if (!ComUtil.isEmpty(topRes) && !ComUtil.isEmpty(topResH)) {
             topRes.stream().forEach(resBase -> {
@@ -93,11 +94,20 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
                     }
                 });
                 //如果设备同时有实时信息和历史信息则用故障总数
-                resBaseSet.add(resBase);
+                topResResultMap.put(resBase.getResId(), resBase);
             });
         }
-
-        return resBaseSet;
+        List<ResBase> topResResult = null;
+        if (null != topResResultMap && !topResResultMap.isEmpty()) {
+            topResResult = new ArrayList<>(topResResultMap.values());
+            Collections.sort(topResResult, new Comparator<ResBase>() {
+                @Override
+                public int compare(ResBase o1, ResBase o2) {
+                    return o2.getCountNum().compareTo(o1.getCountNum());
+                }
+            });
+        }
+        return topResResult;
     }
 
     @Override
