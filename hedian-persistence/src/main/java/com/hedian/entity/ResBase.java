@@ -1,16 +1,16 @@
 package com.hedian.entity;
 
-import java.io.Serializable;
+import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableName;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableName;
+import java.util.Objects;
 
 /**
  * <p>
@@ -178,10 +178,11 @@ public class ResBase extends Model<ResBase> {
      * 采集kpi_id_MoKp数据
      */
     @TableField(exist = false)
-    private Map<String,MoKpi> kpiKeyMap = new LinkedHashMap<>();
+    private Map<String, MoKpi> kpiKeyMap = new LinkedHashMap<>();
 
     /**
      * 终端下的每个kpi_key_MoKp异常数据
+     *
      * @return
      */
     @TableField(exist = false)
@@ -191,11 +192,12 @@ public class ResBase extends Model<ResBase> {
      * 终端数据下的对象
      */
     @TableField(exist = false)
-    private Map<String,ResBase> terminalObjct = new LinkedHashMap<>();
+    private Map<String, ResBase> terminalObjct = new LinkedHashMap<>();
 
 
     /**
      * 终端下的每个kpi异常数据
+     *
      * @return
      */
     @TableField(exist = false)
@@ -207,7 +209,7 @@ public class ResBase extends Model<ResBase> {
 
     public void setResAbnormallevel(ResAbnormallevel resAbnormallevel) {
         this.resAbnormallevel = resAbnormallevel;
-        if(this.resStatus == BROKEN_CODE){
+        if (this.resStatus == BROKEN_CODE) {
             setShowColor(resAbnormallevel.getResAbnormallevelColor());
         }
     }
@@ -251,7 +253,7 @@ public class ResBase extends Model<ResBase> {
 
     public void setResStatusDO(ResStatus resStatusDO) {
         this.resStatusDO = resStatusDO;
-        if(this.resStatus != BROKEN_CODE){
+        if (this.resStatus != BROKEN_CODE) {
             setShowColor(resStatusDO.getResStatusColor());
         }
     }
@@ -550,5 +552,59 @@ public class ResBase extends Model<ResBase> {
                 ", terminalObjct=" + terminalObjct +
                 ", terminalErrInfos=" + terminalErrInfos +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ResBase resBase = (ResBase) o;
+        return Objects.equals(resId, resBase.resId) &&
+                Objects.equals(resName, resBase.resName) &&
+                Objects.equals(resAlias, resBase.resAlias) &&
+                Objects.equals(resSerialnumber, resBase.resSerialnumber) &&
+                Objects.equals(resNo, resBase.resNo) &&
+                Objects.equals(resDesc, resBase.resDesc) &&
+                Objects.equals(resMtypeId, resBase.resMtypeId) &&
+                Objects.equals(resStypeId, resBase.resStypeId) &&
+                Objects.equals(resIpv4, resBase.resIpv4) &&
+                Objects.equals(resPort, resBase.resPort) &&
+                Objects.equals(longitude, resBase.longitude) &&
+                Objects.equals(latitude, resBase.latitude) &&
+                Objects.equals(resAddress, resBase.resAddress) &&
+                Objects.equals(resStatus, resBase.resStatus) &&
+                Objects.equals(resAbnormalId, resBase.resAbnormalId) &&
+                Objects.equals(resAbnormalcode, resBase.resAbnormalcode) &&
+                Objects.equals(resAbnormallevelId, resBase.resAbnormallevelId) &&
+                Objects.equals(resAbnormalName, resBase.resAbnormalName) &&
+                Objects.equals(resAbnormaldesc, resBase.resAbnormaldesc) &&
+                Objects.equals(resAbnomaltime, resBase.resAbnomaltime) &&
+                Objects.equals(resRecoverytime, resBase.resRecoverytime) &&
+                Objects.equals(resColor, resBase.resColor) &&
+                Objects.equals(useflag, resBase.useflag) &&
+                Objects.equals(userIdCreate, resBase.userIdCreate) &&
+                Objects.equals(gmtCreate, resBase.gmtCreate) &&
+                Objects.equals(userIdMod, resBase.userIdMod) &&
+                Objects.equals(gmtModified, resBase.gmtModified) &&
+                Objects.equals(showColor, resBase.showColor) &&
+                Objects.equals(countNum, resBase.countNum) &&
+                Objects.equals(resMainType, resBase.resMainType) &&
+                Objects.equals(resSubtype, resBase.resSubtype) &&
+                Objects.equals(resAbnormallevel, resBase.resAbnormallevel) &&
+                Objects.equals(resStatusDO, resBase.resStatusDO) &&
+                Objects.equals(kpiKeyMap, resBase.kpiKeyMap) &&
+                Objects.equals(kpiIdMap, resBase.kpiIdMap) &&
+                Objects.equals(terminalObjct, resBase.terminalObjct) &&
+                Objects.equals(terminalErrInfos, resBase.terminalErrInfos);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(resId, resName, resAlias, resSerialnumber, resNo, resDesc, resMtypeId, resStypeId, resIpv4, resPort, longitude, latitude, resAddress, resStatus, resAbnormalId, resAbnormalcode, resAbnormallevelId, resAbnormalName, resAbnormaldesc, resAbnomaltime, resRecoverytime, resColor, useflag, userIdCreate, gmtCreate, userIdMod, gmtModified, showColor, countNum, resMainType, resSubtype, resAbnormallevel, resStatusDO, kpiKeyMap, kpiIdMap, terminalObjct, terminalErrInfos);
     }
 }

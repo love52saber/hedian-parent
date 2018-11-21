@@ -149,22 +149,22 @@
     </select>
 
     <select id="selectAlarmByResId" resultMap="AlarmResultMap">
-        select (@:=@+1) AS
+        SELECT (@:=@+1) AS
         res_id,b.res_alias,d.res_abnormallevel_name,d.res_abnormallevel_color,a.res_abnormal_code,a.res_abnormal_name,b.res_name,f.res_mtype_name,
         a.res_abnormaldesc,a.res_abnomaltime,a.clean_type,a.confirm_status,a.dispatch_type,a.res_abnormal_id
-        from
-        (select * from tbl_res_mo_abnormal_info where
+        FROM
+        (SELECT * FROM tbl_res_mo_abnormal_info WHERE
         1=1
         <if test="resId != null and resId != ''">
             and res_id=#{resId,jdbcType=BIGINT}
         </if>
-        and res_abnormalstatus=1 ) a
-        left join tbl_res_base b on a.res_id=b.res_id
-        left join tbl_res_abnormallevel d on a.res_abnormallevel_id=d.res_abnormallevel_id
-        left join tbl_mo_abnormal_def e on a.mo_abnormal_id=e.mo_abnormal_id
-        left join tbl_res_maintype f on b.res_mtype_id = f.res_mtype_id
-        join (SELECT @:=0) r
-        order by a.res_abnomaltime desc
+        AND res_abnormalstatus=1 ) a
+        LEFT JOIN tbl_res_base b ON a.res_id=b.res_id
+        LEFT JOIN tbl_res_abnormallevel d ON a.res_abnormallevel_id=d.res_abnormallevel_id
+        LEFT JOIN tbl_mo_abnormal_def e ON a.mo_abnormal_id=e.mo_abnormal_id
+        LEFT JOIN tbl_res_maintype f ON b.res_mtype_id = f.res_mtype_id
+        JOIN (SELECT @:=0) r
+        ORDER BY a.res_abnomaltime,a.res_abnormal_id DESC
     </select>
 
     <select id="getTopAbnormal" resultMap="TopAbnormalMap">

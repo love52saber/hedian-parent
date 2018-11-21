@@ -12,6 +12,7 @@ import com.hedian.model.ResMoAbnormalInfoModel;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>
@@ -27,7 +28,7 @@ public interface IResMoAbnormalInfoService extends IService<ResMoAbnormalInfo> {
 
     List<AlarmInfoModel> selectAlarmByResId(String resId);
 
-    List<MoAbnormalDef> getTopAbnormal(Map<String, Object> map);
+    Set<MoAbnormalDef> getTopAbnormal(Map<String, Object> map);
 
     Page<ResMoAbnormalInfoModel> selectPageByCondition(Page<ResMoAbnormalInfoModel> page, String beginTime, String endTime, String conStatus,
                                                        String abnormalLevel, String abnormalType, String abnormalName,
