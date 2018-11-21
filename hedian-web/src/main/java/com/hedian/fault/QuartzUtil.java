@@ -50,7 +50,7 @@ public class QuartzUtil {
     /**
      * 20S查询一次数据库更新 设备信息，检测报警  更新日志等
      */
-//    @Scheduled(fixedDelay = QuatzConstants.THREE_MINUTE)
+    @Scheduled(fixedDelay = QuatzConstants.THREE_MINUTE)
     @Transactional(rollbackFor = Exception.class)
     public void updateResBase() throws Exception {
         //取出系统配置时间 c_type=20000 parakey为offline_count和offline_interval的配置值
