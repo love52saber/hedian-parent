@@ -58,9 +58,9 @@ public class MdController {
                                     @RequestParam(name = "info", defaultValue = "", required = false) String info) {
         EntityWrapper ew = new EntityWrapper();
         if (!ComUtil.isEmpty(info)) {
-            ew.eq("md_name", info);
+            ew.like("md_name", info);
         }
-        Page<Md> mdPage = mdService.selectPageList(new Page<>(pageIndex, pageSize), info);
+        Page<Md> mdPage = mdService.selectPage(new Page<>(pageIndex, pageSize), ew);
         mdPage.getRecords().stream().forEach(md -> {
             List<MdRes> mdResList = mdResService.selectList(new EntityWrapper<MdRes>().eq("md_id", md.getMdId()));
             md.setResIds(mdResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
