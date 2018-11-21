@@ -60,7 +60,7 @@ public class ResBaseController {
                     , dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "resIPV4", value = "设备IP地址"
                     , dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "resSerialNum", value = "设备序列号"
+            @ApiImplicitParam(name = "resSerialnumber", value = "设备序列号"
                     , dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "resAddress", value = "设备地址"
                     , dataType = "String", paramType = "query"),
@@ -72,13 +72,13 @@ public class ResBaseController {
                                     @RequestParam(name = "resName", defaultValue = "", required = false) String resName,
                                     @RequestParam(name = "resStype", defaultValue = "", required = false) Integer resStype,
                                     @RequestParam(name = "resIpv4", defaultValue = "", required = false) String resIpv4,
-                                    @RequestParam(name = "resSerialNum", defaultValue = "", required = false) String resSerialNum,
+                                    @RequestParam(name = "resSerialnumber", defaultValue = "", required = false) String resSerialnumber,
                                     @RequestParam(name = "resAddress", defaultValue = "", required = false) String resAddress,
                                     @RequestParam(name = "resMtype", defaultValue = "", required = false) Integer resMtype) {
 
         //自定义分页关联查询列表
         Page<ResBase> resBasePage = resBaseService.selectPageByConditionResBase(new Page<>(pageIndex, pageSize), resName, resStype,
-                resIpv4, resSerialNum, resAddress, resMtype);
+                resIpv4, resSerialnumber, resAddress, resMtype);
         return new PublicResult(PublicResultConstant.SUCCESS, new PageResult<>(resBasePage.getTotal(), pageIndex, pageSize, resBasePage.getRecords()));
 
     }
