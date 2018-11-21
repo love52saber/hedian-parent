@@ -61,7 +61,7 @@ public class HdywUtils {
         //根据用户id获取该用户管理域列表
         List<MdUser> mdUsers = hdywUtils.mdUserService.selectList(new EntityWrapper<MdUser>().eq("user_id", sysUser.getUserId()));
         if (!ComUtil.isEmpty(mdUsers)) {
-            map.put("mdIds", mdUsers.stream().map(MdUser::getUserId).collect(Collectors.toList()));
+            map.put("mdIds", mdUsers.stream().map(MdUser::getMdId).collect(Collectors.toList()));
             //获取管理域关联的资产
             List<MdRes> mdResList = hdywUtils.mdResService.findByMap(map);
             resIds = mdResList.stream().map(MdRes::getResId).collect(Collectors.toList());
