@@ -54,7 +54,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
         getSubject(request, response).login(token);
         // 如果没有抛出异常则代表登入成功，返回true
-        setUserBean(request, response, token,authorization);
+        setUserBean(request, response, token, authorization);
         return true;
     }
 
@@ -80,7 +80,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         return true;
     }
 
-    private void setUserBean(ServletRequest request, ServletResponse response, JWTToken token,String authorization) throws Exception {
+    private void setUserBean(ServletRequest request, ServletResponse response, JWTToken token, String authorization) throws Exception {
         if (this.userService == null) {
             this.userService = SpringContextBean.getBean(ISysUserService.class);
         }
@@ -88,10 +88,10 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         /**
          * TODO 暂且放在全局变量里
          */
-        if (!authorization.equals(CacheConstans.CACHE_MAP.get("token"))) {
+        if (null != authorization && !authorization.equals(CacheConstans.CACHE_MAP.get("token"))) {
             SysUser userBean = userService.getUserByUserName(userNo);
             BeanUtils.copyProperties(CacheConstans.CACHE_USER, userBean);
-            CacheConstans.CACHE_MAP.put("token",authorization);
+            CacheConstans.CACHE_MAP.put("token", authorization);
         }
         request.setAttribute("currentUser", CacheConstans.CACHE_USER);
     }
