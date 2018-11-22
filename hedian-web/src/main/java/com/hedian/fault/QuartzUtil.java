@@ -163,7 +163,7 @@ public class QuartzUtil {
                             MoThreshold moThresholdCache = getMoThreshold(targetValue, tblMoThresholds);
                             if (null != moThresholdCache) {
                                 for (MoThreshold moThreshold : tblMoThresholds) {
-                                    if (moThreshold.getMoThPriority().equals(moThreshold.getMoThPriority())) {
+                                    if (moThreshold.getMoThPriority().equals(moThresholdCache.getMoThPriority())) {
                                         log.info(rootResBase.getResAlias() + "产生的最高异常警告为id为：" + moThresholdCache.getMoThId()
                                                 + "类型为：" + moThresholdCache.getMoThType());
                                         //有异常, 查询监控异常定义
