@@ -69,6 +69,7 @@ public class MoThreshold extends Model<MoThreshold> {
     private Integer moKpiId;
     @TableField("mo_abnormal_id")
     private Integer moAbnormalId;
+    @TableField(value = "showorder", fill = FieldFill.INSERT)
     private Integer showorder;
     @TableLogic
     @TableField(value = "useflag", fill = FieldFill.INSERT)

@@ -63,7 +63,7 @@ public class MoThresholdController {
      * @return
      */
     @PostMapping
-    public PublicResult<String> addMokpi(@ValidationParam("moThType,resStypeId,moKpiId,moAbnormalId,showorder")
+    public PublicResult<String> addMokpi(@ValidationParam("moThType,resStypeId,moKpiId,moAbnormalId")
                                          @RequestBody JSONObject requestJson) throws Exception {
         //可直接转为java对象,简化操作,不用再set一个个属性
         MoThreshold moThreshold = requestJson.toJavaObject(MoThreshold.class);
