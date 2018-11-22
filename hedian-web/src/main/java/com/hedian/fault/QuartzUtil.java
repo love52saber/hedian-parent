@@ -136,7 +136,7 @@ public class QuartzUtil {
             //缓存故障等级最高故障
             ResMoAbnormalInfo resMoAbnormalInfoCache = null;
             //如果有离线故障 先恢复离线故障
-           if (flag == 0 && null != tblResMoAbnormalInfos.get(QuatzConstants.OFFLINE_KEY)) {
+            if (flag == 0 && null != tblResMoAbnormalInfos.get(QuatzConstants.OFFLINE_KEY)) {
                 //恢复离线故障
                 restoreNums++;
                 ResMoAbnormalInfo resMoAbnormalInfo = tblResMoAbnormalInfos.get(10000);
@@ -162,46 +162,50 @@ public class QuartzUtil {
                         if (null != tblMoThresholds && tblMoThresholds.size() > 0) {
                             MoThreshold moThresholdCache = getMoThreshold(targetValue, tblMoThresholds);
                             if (null != moThresholdCache) {
-                                log.info(rootResBase.getResAlias() + "产生的最高异常警告为id为：" + moThresholdCache.getMoThId()
-                                        + "类型为：" + moThresholdCache.getMoThType());
-                                //有异常, 查询监控异常定义
-                                MoAbnormalDef moAbnormalDef = moAbnormalDefService.selectById(moThresholdCache.getMoAbnormalId());
-                                //异常定义level等级
-                                ResAbnormallevel resAbnormalLevel = resAbnormallevelService.selectById(moAbnormalDef.getResAbnormallevelId());
-                                //监控异常模版翻译
-                                String errMainInfo = TranslateTemplateUtil.translateTemplate(moAbnormalDef.getMoAbnormalShowtemplate(), targetValue, moThresholdCache, moKpi,
-                                        resAbnormalLevel, moAbnormalDef, rootResBase, rootResBase.getResMainType(), rootResBase.getResSubtype());
-                                ResMoAbnormalInfo resMoAbnormalInfo = new ResMoAbnormalInfo();
-                                resMoAbnormalInfo.setResId(rootResBase.getResId());
-                                resMoAbnormalInfo.setMoAbnormalId(moAbnormalDef.getMoAbnormalId());
-                                resMoAbnormalInfo.setMoThId(moThresholdCache.getMoThId());
-                                resMoAbnormalInfo.setMoKpiId(moThresholdCache.getMoKpiId());
-                                resMoAbnormalInfo.setResAbnormalCode(moAbnormalDef.getMoAbnormalcode());
-                                resMoAbnormalInfo.setResAbnormalName(moAbnormalDef.getMoAbnormalName());
-                                resMoAbnormalInfo.setResAbnormallevelId(moAbnormalDef.getResAbnormallevelId());
-                                resMoAbnormalInfo.setResAbnomaltime(new Date());
-                                //异常信息翻译
-                                resMoAbnormalInfo.setResAbnormaldesc(errMainInfo);
-                                resMoAbnormalInfo.setResAbnormalvalue(targetValue);
-                                resMoAbnormalInfo.setResAbnormalstatus(1);
-                                resMoAbnormalInfo.setConfirmStatus(1);
-                                resMoAbnormalInfo.setCleanType(0);
-                                if (levelPriority > resAbnormalLevel.getResAbnormallevelPriority()) {
-                                    levelPriority = resAbnormalLevel.getResAbnormallevelPriority();
-                                    color = resAbnormalLevel.getResAbnormallevelColor();
-                                    try {
-                                        abnormalDefCache = (MoAbnormalDef) BeanUtils.cloneBean(moAbnormalDef);
-                                        errMoKpi = (MoKpi) BeanUtils.cloneBean(moKpi);
-                                        errDataValue = targetValue;
-                                        resMoAbnormalInfoCache = (ResMoAbnormalInfo)BeanUtils.cloneBean(resMoAbnormalInfo);
-                                        errMoThreshold = (MoThreshold) BeanUtils.cloneBean(moThresholdCache);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                        log.info("copy object failed");
+                                for (MoThreshold moThreshold : tblMoThresholds) {
+                                    if (moThreshold.getMoThPriority().equals(moThreshold.getMoThPriority())) {
+                                        log.info(rootResBase.getResAlias() + "产生的最高异常警告为id为：" + moThresholdCache.getMoThId()
+                                                + "类型为：" + moThresholdCache.getMoThType());
+                                        //有异常, 查询监控异常定义
+                                        MoAbnormalDef moAbnormalDef = moAbnormalDefService.selectById(moThresholdCache.getMoAbnormalId());
+                                        //异常定义level等级
+                                        ResAbnormallevel resAbnormalLevel = resAbnormallevelService.selectById(moAbnormalDef.getResAbnormallevelId());
+                                        //监控异常模版翻译
+                                        String errMainInfo = TranslateTemplateUtil.translateTemplate(moAbnormalDef.getMoAbnormalShowtemplate(), targetValue, moThresholdCache, moKpi,
+                                                resAbnormalLevel, moAbnormalDef, rootResBase, rootResBase.getResMainType(), rootResBase.getResSubtype());
+                                        ResMoAbnormalInfo resMoAbnormalInfo = new ResMoAbnormalInfo();
+                                        resMoAbnormalInfo.setResId(rootResBase.getResId());
+                                        resMoAbnormalInfo.setMoAbnormalId(moAbnormalDef.getMoAbnormalId());
+                                        resMoAbnormalInfo.setMoThId(moThresholdCache.getMoThId());
+                                        resMoAbnormalInfo.setMoKpiId(moThresholdCache.getMoKpiId());
+                                        resMoAbnormalInfo.setResAbnormalCode(moAbnormalDef.getMoAbnormalcode());
+                                        resMoAbnormalInfo.setResAbnormalName(moAbnormalDef.getMoAbnormalName());
+                                        resMoAbnormalInfo.setResAbnormallevelId(moAbnormalDef.getResAbnormallevelId());
+                                        resMoAbnormalInfo.setResAbnomaltime(new Date());
+                                        //异常信息翻译
+                                        resMoAbnormalInfo.setResAbnormaldesc(errMainInfo);
+                                        resMoAbnormalInfo.setResAbnormalvalue(targetValue);
+                                        resMoAbnormalInfo.setResAbnormalstatus(1);
+                                        resMoAbnormalInfo.setConfirmStatus(1);
+                                        resMoAbnormalInfo.setCleanType(0);
+                                        if (levelPriority > resAbnormalLevel.getResAbnormallevelPriority()) {
+                                            levelPriority = resAbnormalLevel.getResAbnormallevelPriority();
+                                            color = resAbnormalLevel.getResAbnormallevelColor();
+                                            try {
+                                                abnormalDefCache = (MoAbnormalDef) BeanUtils.cloneBean(moAbnormalDef);
+                                                errMoKpi = (MoKpi) BeanUtils.cloneBean(moKpi);
+                                                errDataValue = targetValue;
+                                                resMoAbnormalInfoCache = (ResMoAbnormalInfo) BeanUtils.cloneBean(resMoAbnormalInfo);
+                                                errMoThreshold = (MoThreshold) BeanUtils.cloneBean(moThresholdCache);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                                log.info("copy object failed");
+                                            }
+                                        }
+                                        if (null == tblResMoAbnormalInfos.get(kpiId)) {
+                                            resMoAbnormalInfoService.insert(resMoAbnormalInfo);
+                                        }
                                     }
-                                }
-                                if (null == tblResMoAbnormalInfos.get(kpiId)) {
-                                    resMoAbnormalInfoService.insert(resMoAbnormalInfo);
                                 }
                             } else {
                                 //没有异常   判断当前kpi异常表有没有异常 有则恢复， 没有跳过
@@ -223,7 +227,7 @@ public class QuartzUtil {
                 }
             }
             //更新 base表  显示多有指标下面  最严重的一条
-            updateOrRestorResbase(rootResBase, tblResMoAbnormalInfos, restoreNums, color, abnormalDefCache, rootMapCache, errMoKpi, errDataValue, errMoThreshold, flag,resMoAbnormalInfoCache);
+            updateOrRestorResbase(rootResBase, tblResMoAbnormalInfos, restoreNums, color, abnormalDefCache, rootMapCache, errMoKpi, errDataValue, errMoThreshold, flag, resMoAbnormalInfoCache);
             if (null != rootResBase.getTerminalObjct() && !rootResBase.getTerminalObjct().isEmpty()) {
                 for (String linkPort : rootResBase.getTerminalObjct().keySet()) {
                     compareThresholds(rootResBase.getTerminalObjct(), linkPort, rootMapCache, 1);
@@ -354,7 +358,7 @@ public class QuartzUtil {
      */
     protected void updateOrRestorResbase(ResBase rootBase, Map<Integer, ResMoAbnormalInfo> tblResMoAbnormalInfos, int restoreNums, String color,
                                          MoAbnormalDef abnormalDefCache, Map<String, Object> rootMapCache, MoKpi errMoKpi, String errDataValue,
-                                         MoThreshold errMoThreshold, Integer flag,ResMoAbnormalInfo resMoAbnormalInfoCache) throws Exception{
+                                         MoThreshold errMoThreshold, Integer flag, ResMoAbnormalInfo resMoAbnormalInfoCache) throws Exception {
         //TODO 待优化
         //说明  base 下面有异常信息
         if (null != abnormalDefCache) {
