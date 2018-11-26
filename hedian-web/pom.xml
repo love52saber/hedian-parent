@@ -115,6 +115,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <executable>true</executable>
+                </configuration>
             </plugin>
             <!-- 指定JDK编译版本 -->
             <plugin>

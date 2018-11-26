@@ -86,7 +86,7 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
                 topResResultMap.put(resBase.getResId(), resBase);
             });
         }
-        if (!ComUtil.isEmpty(topRes) && !ComUtil.isEmpty(topResH)) {
+        if (!ComUtil.isEmpty(topRes) || !ComUtil.isEmpty(topResH)) {
             topRes.stream().forEach(resBase -> {
                 topResH.stream().forEach(resBaseH -> {
                     if (resBase.getResId().equals(resBaseH.getResId())) {

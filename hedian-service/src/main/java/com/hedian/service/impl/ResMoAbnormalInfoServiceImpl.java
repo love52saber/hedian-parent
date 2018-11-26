@@ -71,17 +71,15 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
                 topAbnormalResultMap.put(moAbnormalDef.getMoAbnormalId(), moAbnormalDef);
             });
         }
-        if (!ComUtil.isEmpty(topAbnormal) && !ComUtil.isEmpty(topAbnormalH)) {
-            if (!ComUtil.isEmpty(topAbnormalH) && !ComUtil.isEmpty(topAbnormal)) {
-                topAbnormal.stream().forEach(moAbnormalDef -> {
-                    topAbnormalH.stream().forEach(moAbnormalDefH -> {
-                        if (moAbnormalDef.getMoAbnormalId().equals(moAbnormalDefH.getMoAbnormalId())) {
-                            moAbnormalDef.setCountNum(moAbnormalDef.getCountNum() + moAbnormalDefH.getCountNum());
-                        }
-                    });
-                    topAbnormalResultMap.put(moAbnormalDef.getMoAbnormalId(), moAbnormalDef);
+        if (!ComUtil.isEmpty(topAbnormal) || !ComUtil.isEmpty(topAbnormalH)) {
+            topAbnormal.stream().forEach(moAbnormalDef -> {
+                topAbnormalH.stream().forEach(moAbnormalDefH -> {
+                    if (moAbnormalDef.getMoAbnormalId().equals(moAbnormalDefH.getMoAbnormalId())) {
+                        moAbnormalDef.setCountNum(moAbnormalDef.getCountNum() + moAbnormalDefH.getCountNum());
+                    }
                 });
-            }
+                topAbnormalResultMap.put(moAbnormalDef.getMoAbnormalId(), moAbnormalDef);
+            });
         }
         List<MoAbnormalDef> topAbnormalResult = new ArrayList<>();
         if (null != topAbnormalResultMap && !topAbnormalResultMap.isEmpty()) {
@@ -102,7 +100,7 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
                                                               String abnormalName, String mokpiName, String resName, Integer resId,
                                                               String resAlias, boolean isAutoOrder, String resAbnormalId, List<Integer> resIds) {
         return page.setRecords(resMoAbnormalInfoMapper.selectPageByCondition(page, beginTime, endTime, conStatus, abnormalLevel, abnormalType,
-                abnormalName, mokpiName, resName, resId, resAlias, isAutoOrder, resAbnormalId,resIds));
+                abnormalName, mokpiName, resName, resId, resAlias, isAutoOrder, resAbnormalId, resIds));
     }
 
     @Override
