@@ -41,11 +41,12 @@ public class ResourceController {
             Arrays.asList("bmp", "jpg", "png", "tif", "gif", "pcx", "tga", "exif", "fpx", "svg", "psd", "cdr", "pcd", "dxf", "ufo", "eps", "ai", "raw", "WMF", "webp");
 
     @PostMapping
+    @Pass
     public PublicResult uploadResource(@RequestParam("file") MultipartFile multipartFile) throws Exception {
         boolean result = false;
         String newFileName = null;
         if (!ComUtil.isEmpty(multipartFile)) {
-            String fileType = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+            String fileType = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1);
             if (imageTypes.contains(fileType)) {
                 newFileName = UUID.randomUUID() + multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
             } else {
