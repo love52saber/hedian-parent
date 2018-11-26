@@ -123,7 +123,7 @@
         <if test="resIds == null">AND res_id = -1</if>
         <if test="resMtypeId != null and resMtypeId != ''">AND res_mtype_id = #{resMtypeId}</if>
         <if test="resStatus != null and resStatus != ''">AND res_status != #{resStatus}</if>
-        <if test="resStatu != null and resStatu != ''">AND res_status != #{resStatus}</if>
+        <if test="resStatu != null and resStatu != ''">AND res_status != #{resStatu}</if>
         ) a
         LEFT JOIN (SELECT * FROM tbl_res_abnormallevel WHERE useflag=1) b ON
         a.res_abnormallevel_id=b.res_abnormallevel_id
