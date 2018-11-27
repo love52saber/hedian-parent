@@ -52,6 +52,7 @@ public class MoKpi extends Model<MoKpi> {
      */
     @TableField("unit_en")
     private String unitEn;
+    @TableField(value = "showorder", fill = FieldFill.INSERT)
     private Integer showorder;
     @TableLogic
     @TableField(value = "useflag", fill = FieldFill.INSERT)

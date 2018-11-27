@@ -87,7 +87,7 @@ public class MoKpiController {
      * @return
      */
     @PostMapping
-    public PublicResult<String> addMokpi(@ValidationParam("moKpiName,moKpiKey,showorder")
+    public PublicResult<String> addMokpi(@ValidationParam("moKpiName,moKpiKey")
                                          @RequestBody JSONObject requestJson) throws Exception {
         //可直接转为java对象,简化操作,不用再set一个个属性
         MoKpi moKpi = requestJson.toJavaObject(MoKpi.class);

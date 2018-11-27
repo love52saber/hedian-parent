@@ -40,6 +40,7 @@ public class Md extends Model<Md> {
     /**
      * 显示顺序
      */
+    @TableField(value = "showorder", fill = FieldFill.INSERT)
     private Integer showorder;
     /**
      * 删除标记：0 不能删除， 1可以删除， 默认 1

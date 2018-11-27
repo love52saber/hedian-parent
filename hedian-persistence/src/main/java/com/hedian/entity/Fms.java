@@ -77,6 +77,7 @@ public class Fms extends Model<Fms> {
     /**
      * 显示顺序，从小到大，如果匹配到多条则显示在前面的那条生效
      */
+    @TableField(value = "showorder", fill = FieldFill.INSERT)
     private Integer showorder;
     @TableLogic
     @TableField(value = "useflag", fill = FieldFill.INSERT)

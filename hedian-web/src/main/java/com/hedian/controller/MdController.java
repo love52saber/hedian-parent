@@ -112,7 +112,7 @@ public class MdController {
      * @return
      */
     @PostMapping
-    public PublicResult<String> addMd(@ValidationParam("mdName,showorder")
+    public PublicResult<String> addMd(@ValidationParam("mdName")
                                       @RequestBody JSONObject requestJson) throws Exception {
         //可直接转为java对象,简化操作,不用再set一个个属性
         Md md = requestJson.toJavaObject(Md.class);
