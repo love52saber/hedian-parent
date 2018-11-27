@@ -3,19 +3,22 @@ package com.hedian.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hedian.base.BusinessException;
+import com.hedian.base.Constant;
+import com.hedian.base.PublicResult;
+import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.*;
 import com.hedian.mapper.SysRoleMapper;
 import com.hedian.mapper.SysUserMapper;
 import com.hedian.service.*;
 import com.hedian.util.ComUtil;
 import com.hedian.util.JWTUtil;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * <p>
@@ -170,5 +173,64 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             userList = this.selectUserList(Long.valueOf(sysConf.getParavalue()));
         }
         return userList;
+    }
+
+    @Override
+    public Map<String, Object> login(SysUser user) throws Exception {
+        String userName = user.getUsername();
+        String password = user.getPassword();
+        user = this.getUserByUserName(userName);
+        if (ComUtil.isEmpty(user)) {
+            throw new BusinessException("该用户名不存在");
+        }
+        if (user.getStatus().equals(0)) {
+            throw new BusinessException("该用户已被禁用请联系管理员");
+        }
+        //locktype和lockflag不为空
+        if (!ComUtil.isEmpty(user.getLocktype()) && !ComUtil.isEmpty(user.getLockflag())) {
+            if (user.getLockflag().equals(1) && user.getLocktype().equals(1)) {
+                if (user.getUnlocktime().getTime() > System.currentTimeMillis()) {
+                    throw new BusinessException("用户已锁定请联系管理员");
+                }
+            }
+            if (user.getLockflag().equals(1) && user.getLocktype().equals(2)) {
+                throw new BusinessException("用户已锁定请联系管理员");
+            }
+        }
+
+        if (!BCrypt.checkpw(password, user.getPassword())) {
+            //管理员不锁定
+            if (userName.equals(Constant.RoleType.ADMIN)) {
+                throw new BusinessException("密码错误");
+            }
+            if (!ComUtil.isEmpty(user.getLastwrongTime()) && user.getLastwrongTime().getTime() < System.currentTimeMillis() + (30 * 60 * 1000)) {
+                user.setWrongTimes((ComUtil.isEmpty(user.getWrongTimes())) ? 1 : user.getWrongTimes() + 1);
+            } else {
+                user.setWrongTimes(1);
+            }
+            user.setLastwrongTime(new Date());
+            if (user.getWrongTimes().equals(5)) {
+                user.setLockreason(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "密码输入错误次数超过5次");
+                user.setLocktype(1);
+                user.setLockflag(1);
+                user.setUnlocktime(new Date(System.currentTimeMillis() + (30 * 60 * 1000)));
+                user.setLastwrongTime(null);
+                user.setWrongTimes(null);
+            }
+            this.updateAllColumnById(user);
+            String msg = !ComUtil.isEmpty(user.getWrongTimes()) ? "用户名或密码错误，剩余" + (5 - user.getWrongTimes()) + "次后该用户将会被锁定30分钟" : "用户已锁定请联系管理员";
+            throw new BusinessException(msg);
+        }
+        Map<String, Object> result = this.getLoginUserAndMenuInfo(user);
+        //用户被锁定 登录完清空消息
+        if (!ComUtil.isEmpty(user.getLockflag()) && user.getLockflag() != 0) {
+            user.setUnlocktime(null);
+            user.setLocktype(null);
+            user.setLockflag(0);
+            user.setLockreason(null);
+            user.setLastwrongTime(null);
+            this.updateAllColumnById(user);
+        }
+        return result;
     }
 }
