@@ -77,6 +77,7 @@ public class MoThresholdController {
 
     /**
      * 新增或删除阈值参数校验
+     *
      * @param moThreshold
      */
     private void checkParam(MoThreshold moThreshold) throws BusinessException {
@@ -111,6 +112,9 @@ public class MoThresholdController {
                 if (ComUtil.isEmpty(moThValue)) {
                     throw new BusinessException("对比值不能为空");
                 }
+                break;
+            default:
+                throw new BusinessException("阈值规则类型错误");
         }
     }
 
