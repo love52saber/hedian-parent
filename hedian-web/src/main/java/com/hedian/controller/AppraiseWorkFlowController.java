@@ -107,10 +107,9 @@ public class AppraiseWorkFlowController {
 
 
     })
-    @Pass
     public PublicResult updateBaseAppra(@ValidationParam("businessId,baseAppraScore,kexinAppraScore") @RequestBody JSONObject requestJson ) throws Exception{
         boolean result = iWfBaseAppraInfoService.save(requestJson);
-        return  result? new PublicResult<>(PublicResultConstant.SUCCESS,null):new PublicResult<>(PublicResultConstant.SUCCESS.ERROR,null);
+        return  result? new PublicResult<>(PublicResultConstant.SUCCESS,null):new PublicResult<>(PublicResultConstant.ERROR,null);
     }
 
 
