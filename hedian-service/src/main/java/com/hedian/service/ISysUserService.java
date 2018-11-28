@@ -68,4 +68,6 @@ public interface ISysUserService extends IService<SysUser> {
      */
 
     List<SysUser> getWfUsers(Integer stepType, Long deptId) throws BusinessException;
+
+    Map<String, Object> login(SysUser user) throws Exception;
 }

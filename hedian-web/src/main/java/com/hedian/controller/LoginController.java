@@ -44,61 +44,11 @@ public class LoginController {
             @ApiImplicitParam(name = "requestJson", value = "{\\\"username\\\":\\\"admin\\\",\\\"password\\\":\\\"XXXX\\\"}", required = true, dataType = "String", paramType = "body")
     })
     @Pass
-    public PublicResult<Map<String, Object>> login(
+    public PublicResult login(
             @ValidationParam("username,password") @RequestBody JSONObject requestJson) throws Exception {
         //由于 @ValidationParam注解已经验证过mobile和password参数，所以可以直接get使用没毛病。
-        String userName = requestJson.getString("username");
-        SysUser user = userService.getUserByUserName(userName);
-        if (ComUtil.isEmpty(user)) {
-            return new PublicResult<>(PublicResultConstant.INVALID_USERNAME_PASSWORD, null);
-        }
-        if (user.getStatus().equals(0)) {
-            return new PublicResult<>("该用户已被禁用请联系管理员", null);
-        }
-        //locktype和lockflag不为空
-        if (!ComUtil.isEmpty(user.getLocktype()) && !ComUtil.isEmpty(user.getLockflag())) {
-            if (user.getLockflag().equals(1) && user.getLocktype().equals(1)) {
-                if (user.getUnlocktime().getTime() > System.currentTimeMillis()) {
-                    return new PublicResult<>("用户已锁定请联系管理员", null);
-                }
-            }
-            if (user.getLockflag().equals(1) && user.getLocktype().equals(2)) {
-                return new PublicResult<>("用户已锁定请联系管理员", null);
-            }
-        }
-
-        if (!BCrypt.checkpw(requestJson.getString("password"), user.getPassword())) {
-            //管理员不锁定
-            if(userName.equals("admin")){
-                return new PublicResult<>("密码错误", null);
-            }
-            if (!ComUtil.isEmpty(user.getLastwrongTime()) && user.getLastwrongTime().getTime() < System.currentTimeMillis() + (30 * 60 * 1000)) {
-                user.setWrongTimes((ComUtil.isEmpty(user.getWrongTimes())) ? 1 : user.getWrongTimes() + 1);
-            } else {
-                user.setWrongTimes(1);
-            }
-            user.setLastwrongTime(new Date());
-            if (user.getWrongTimes().equals(5)) {
-                user.setLockreason(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "密码输入错误次数超过5次");
-                user.setLocktype(1);
-                user.setLockflag(1);
-                user.setUnlocktime(new Date(System.currentTimeMillis() + (30 * 60 * 1000)));
-                user.setLastwrongTime(null);
-                user.setWrongTimes(null);
-            }
-            userService.updateAllColumnById(user);
-            return new PublicResult<>(!ComUtil.isEmpty(user.getWrongTimes()) ? "用户名或密码错误，剩余" + (5 - user.getWrongTimes()) + "次后该用户将会被锁定30分钟" : "用户已锁定请联系管理员", null);
-        }
-        Map<String, Object> result = userService.getLoginUserAndMenuInfo(user);
-        //用户被锁定 登录完清空消息
-        if (!ComUtil.isEmpty(user.getLockflag()) && user.getLockflag() != 0) {
-            user.setUnlocktime(null);
-            user.setLocktype(null);
-            user.setLockflag(0);
-            user.setLockreason(null);
-            user.setLastwrongTime(null);
-            userService.updateAllColumnById(user);
-        }
+       SysUser user = requestJson.toJavaObject(SysUser.class);
+        Map<String, Object> result = userService.login(user);
         return new PublicResult<>(PublicResultConstant.SUCCESS, result);
     }
 
