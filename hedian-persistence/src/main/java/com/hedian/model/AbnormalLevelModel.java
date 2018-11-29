@@ -6,6 +6,7 @@ public class AbnormalLevelModel implements Serializable {
 
     private Integer abnormalLevelCount;
     private String abnormalLevelColor;
+    private String abnormalLevelName;
 
     public Integer getAbnormalLevelCount() {
         return abnormalLevelCount;
@@ -23,11 +24,20 @@ public class AbnormalLevelModel implements Serializable {
         this.abnormalLevelColor = abnormalLevelColor;
     }
 
+    public String getAbnormalLevelName() {
+        return abnormalLevelName;
+    }
+
+    public void setAbnormalLevelName(String abnormalLevelName) {
+        this.abnormalLevelName = abnormalLevelName;
+    }
+
     @Override
     public String toString() {
         return "AbnormalLevelModel{" +
                 "abnormalLevelCount=" + abnormalLevelCount +
                 ", abnormalLevelColor='" + abnormalLevelColor + '\'' +
+                ", abnormalLevelName='" + abnormalLevelName + '\'' +
                 '}';
     }
 }

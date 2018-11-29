@@ -248,7 +248,8 @@
     </select>
     <!--统计告警级别数量-->
     <select id="selectAbnormalLevelCount" resultType="com.hedian.model.AbnormalLevelModel">
-        SELECT COUNT(rmi.res_abnormallevel_id) AS abnormalLevelCount, ra.res_abnormallevel_color  AS abnormalLevelColor
+        SELECT COUNT(rmi.res_abnormallevel_id) AS abnormalLevelCount, ra.res_abnormallevel_color AS abnormalLevelColor,
+        ra.res_abnormallevel_name AS abnormalLevelName
         FROM tbl_res_mo_abnormal_info rmi
         INNER JOIN tbl_res_abnormallevel ra ON rmi.res_abnormallevel_id = ra.res_abnormallevel_id
         WHERE rmi.useflag = 1 and rmi.res_abnormalstatus = 1

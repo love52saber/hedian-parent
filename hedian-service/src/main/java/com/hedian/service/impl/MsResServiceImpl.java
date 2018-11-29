@@ -24,7 +24,7 @@ public class MsResServiceImpl extends ServiceImpl<MsResMapper, MsRes> implements
 
     @Override
     public boolean insertAll(Integer msId, List<Integer> resIds) {
-        boolean result = false;
+        boolean result = true;
         if (!ComUtil.isEmpty(resIds)) {
             List<MsRes> msResList = new ArrayList<>();
             resIds.stream().forEach(resId -> {
