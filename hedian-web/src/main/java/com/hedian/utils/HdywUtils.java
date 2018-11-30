@@ -37,6 +37,7 @@ public class HdywUtils {
     @Autowired
     private IResSubtypeService resSubtypeService;
 
+
     public static HdywUtils hdywUtils;
 
     public HdywUtils() {
@@ -62,9 +63,14 @@ public class HdywUtils {
         List<MdUser> mdUsers = hdywUtils.mdUserService.selectList(new EntityWrapper<MdUser>().eq("user_id", sysUser.getUserId()));
         if (!ComUtil.isEmpty(mdUsers)) {
             map.put("mdIds", mdUsers.stream().map(MdUser::getMdId).collect(Collectors.toList()));
-            //获取管理域关联的资产
-            List<MdRes> mdResList = hdywUtils.mdResService.findByMap(map);
-            resIds = mdResList.stream().map(MdRes::getResId).collect(Collectors.toList());
+            //获取管理域关联的终端
+            List<MdRes> mdTerminalResList = hdywUtils.mdResService.findByMap(map);
+            //根据终端id查关联的设备
+            map.put("mdTerminalIds",mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
+
+            List<ResTerminal> mdResList=hdywUtils.resTerminalService.findByMap(map);
+            resIds = mdResList.stream().map(ResTerminal::getResId).collect(Collectors.toList());
+            resIds.addAll(mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
         } else {
             //如果该用户没有管理域，获取该用户的部门，并判断该部门是否有管理域
             Long deptId = sysUser.getDeptId();
@@ -81,9 +87,13 @@ public class HdywUtils {
                 map.clear();
                 //管理域ID集合
                 map.put("mdIds", mdDepts.stream().map(MdDept::getMdId).collect(Collectors.toList()));
-                //获取管理域关联的资产
-                List<MdRes> mdResList = hdywUtils.mdResService.findByMap(map);
-                resIds = mdResList.stream().map(MdRes::getResId).collect(Collectors.toList());
+                //获取管理域关联的终端
+                List<MdRes> mdTerminalResList = hdywUtils.mdResService.findByMap(map);
+                //根据终端id查关联的设备
+                map.put("mdTerminalIds",mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
+                List<ResTerminal> mdResList=hdywUtils.resTerminalService.findByMap(map);
+                resIds = mdResList.stream().map(ResTerminal::getResId).collect(Collectors.toList());
+                resIds.addAll(mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
             }
         }
         return resIds;

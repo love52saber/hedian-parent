@@ -1,5 +1,6 @@
 package com.hedian.service.impl;
 
+import com.hedian.entity.MdRes;
 import com.hedian.entity.ResTerminal;
 import com.hedian.mapper.ResTerminalMapper;
 import com.hedian.service.IResTerminalService;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -25,5 +27,10 @@ public class ResTerminalServiceImpl extends ServiceImpl<ResTerminalMapper, ResTe
     @Override
     public List<ResTerminal> selectByResIdTerminal(Integer resId) {
         return resTerminalMapper.selectByResIdTerminal(resId);
+    }
+
+    @Override
+    public List<ResTerminal> findByMap(Map<String, Object> map) {
+        return resTerminalMapper.findResByTerminalId(map);
     }
 }

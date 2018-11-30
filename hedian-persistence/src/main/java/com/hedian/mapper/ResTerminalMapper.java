@@ -1,10 +1,12 @@
 package com.hedian.mapper;
 
+import com.hedian.entity.MdRes;
 import com.hedian.entity.ResTerminal;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -17,5 +19,7 @@ import java.util.List;
 public interface ResTerminalMapper extends BaseMapper<ResTerminal> {
 
     List<ResTerminal> selectByResIdTerminal(@Param("res_id_terminal") Integer resIdTerminal);
+
+    List<ResTerminal> findResByTerminalId(Map<String, Object> map);
 
 }

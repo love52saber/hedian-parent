@@ -22,9 +22,6 @@
         <result column="res_id" property="resId" />
         <result column="link_port" property="linkPort" />
         <result column="useflag" property="useflag" />
-        <association property="resBase" javaType="com.hedian.entity.ResBase"
-                     resultMap="com.hedian.mapper.ResBaseMapper.ResOtherMap">
-        </association>
     </resultMap>
 
     <select id="selectByResIdTerminal" resultMap="BaseCustomMap">
@@ -36,6 +33,18 @@
 		    INNER JOIN tbl_res_status rss ON rb.res_status = rss.res_status
             LEFT JOIN tbl_res_abnormallevel ra ON  rb.res_abnormallevel_id = ra.res_abnormallevel_id
         WHERE it.res_id_terminal = #{res_id_terminal,jdbcType=INTEGER}
+    </select>
+
+    <select id="findResByTerminalId"  resultMap="BaseCustomMap">
+        select * from tbl_res_terminal
+        where useflag=1
+        <if test="mdTerminalIds !=null and mdTerminalIds.size()>0"> and res_id_terminal in
+            <foreach  item="mTId" collection="mdTerminalIds" open="(" separator="," close=")">
+                #{mTId}
+            </foreach>
+
+        </if>
+
     </select>
 
 </mapper>

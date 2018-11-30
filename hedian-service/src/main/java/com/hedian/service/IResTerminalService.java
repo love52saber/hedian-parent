@@ -1,9 +1,11 @@
 package com.hedian.service;
 
+import com.hedian.entity.MdRes;
 import com.hedian.entity.ResTerminal;
 import com.baomidou.mybatisplus.service.IService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -16,4 +18,7 @@ import java.util.List;
 public interface IResTerminalService extends IService<ResTerminal> {
 
     List<ResTerminal> selectByResIdTerminal(Integer resId);
+
+
+    List<ResTerminal> findByMap(Map<String, Object> map);
 }
