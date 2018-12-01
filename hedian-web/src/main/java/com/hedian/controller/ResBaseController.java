@@ -97,29 +97,6 @@ public class ResBaseController {
     }
 
     /**
-     * 获取最新故障
-     */
-    @GetMapping("/getTopAlarm")
-    public PublicResult getTopAlarm(@CurrentUser SysUser sysUser) {
-        Map<String, Object> map = new HashMap<>(16);
-        List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
-        if(!ComUtil.isEmpty(resIds)){
-            map.put("resIds", resIds);
-            map.put("resStatus", 1);
-            map.put("resStatu", 3);
-        }else{
-            map.put("resIds", null);
-            map.put("resStatus", null);
-            map.put("resStatu", null);
-        }
-
-        List<ResBase> resBaseAlarms = resBaseService.findByMap(map);
-        if(!ComUtil.isEmpty(resBaseAlarms)&& resBaseAlarms.size()>5){
-            resBaseAlarms = resBaseAlarms.subList(0,5);
-        }
-        return new PublicResult(PublicResultConstant.SUCCESS, resBaseAlarms);
-    }
-    /**
      * 获得TOP故障设备统计
      *
      * @return

@@ -9,12 +9,14 @@ import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.MoAbnormalDef;
+import com.hedian.entity.ResBase;
 import com.hedian.entity.ResMoAbnormalInfo;
 import com.hedian.entity.SysUser;
 import com.hedian.model.AbnormalLevelModel;
 import com.hedian.model.AlarmInfoModel;
 import com.hedian.model.ResMoAbnormalInfoModel;
 import com.hedian.service.IResMoAbnormalInfoService;
+import com.hedian.util.ComUtil;
 import com.hedian.utils.HdywUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -143,6 +145,21 @@ public class ResMoAbnormalInfoController {
     public PublicResult selectAlarmByResid(@PathVariable String resId) {
         List<AlarmInfoModel> alarmInfoModelList = resMoAbnormalInfoService.selectAlarmByResId(resId);
         return new PublicResult(PublicResultConstant.SUCCESS, alarmInfoModelList);
+    }
+
+    /**
+     * 获取最新TOP故障
+     */
+    @GetMapping("/getTopAlarm")
+    public PublicResult getTopAlarm(@CurrentUser SysUser sysUser) {
+        Map<String, Object> map = new HashMap<>(16);
+        List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
+        map.put("resIds",resIds);
+        List<ResMoAbnormalInfo>  abnormalInfos=resMoAbnormalInfoService.findByMap(map);
+        if(!ComUtil.isEmpty( abnormalInfos)&&  abnormalInfos.size()>5){
+            abnormalInfos =  abnormalInfos.subList(0,5);
+        }
+        return new PublicResult(PublicResultConstant.SUCCESS, abnormalInfos);
     }
 
 }

@@ -1,6 +1,8 @@
 package com.hedian.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.hedian.entity.ResAbnormallevel;
 
 import java.util.Date;
 
@@ -102,6 +104,16 @@ public class ResMoAbnormalInfoModel {
     private String dispatchUserName;
     private String cleanUserName;
     private String delUserName;
+    @TableField(exist = false)
+    private ResAbnormallevel resAbnormallevel;
+
+    public ResAbnormallevel getResAbnormallevel() {
+        return resAbnormallevel;
+    }
+
+    public void setResAbnormallevel(ResAbnormallevel resAbnormallevel) {
+        this.resAbnormallevel = resAbnormallevel;
+    }
 
     public Integer getResAbnormallevelPriority() {
         return resAbnormallevelPriority;

@@ -96,6 +96,10 @@ public class HdywUtils {
                 resIds.addAll(mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
             }
         }
+        //对resIds进行去重
+        HashSet hashSet=new HashSet(resIds);
+        resIds.clear();
+        resIds.addAll(hashSet);
         return resIds;
     }
 

@@ -84,6 +84,14 @@
         <result column="dispatchUserName" property="dispatchUserName"/>
         <result column="cleanUserName" property="cleanUserName"/>
         <result column="mo_kpi_name" property="mokpiName"/>
+        <association property="resAbnormallevel" javaType="com.hedian.entity.ResAbnormallevel">
+            <id column="res_abnormallevel_id" property="resAbnormallevelId"/>
+            <result column="res_abnormallevel_name" property="resAbnormallevelName"/>
+            <result column="res_abnormallevel_color" property="resAbnormallevelColor"/>
+            <result column="res_abnormallevel_priority" property="resAbnormallevelPriority"/>
+            <result column="showorder" property="showorder"/>
+            <result column="useflag" property="useflag"/>
+        </association>
     </resultMap>
 
     <resultMap id="AlarmResultMap" type="com.hedian.model.AlarmInfoModel">
@@ -278,4 +286,21 @@
         </where>
         order by a.res_abnormal_id desc
     </select>
+
+    <!--top故障列表-->
+    <select id="findByMap" resultMap="CustomMap">
+        select trm.*,tra.*
+        from tbl_res_mo_abnormal_info trm
+        LEFT JOIN tbl_res_abnormallevel tra
+        on trm.res_abnormallevel_id=tra.res_abnormallevel_id
+        where 1=1
+        <if test="resIds != null and resIds.size()>0">AND res_id IN
+            <foreach item="rId" collection="resIds" open="(" separator=","
+                     close=")">
+                #{rId}
+            </foreach>
+        </if>
+        order by trm.res_abnomaltime
+    </select>
+
 </mapper>

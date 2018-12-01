@@ -32,7 +32,7 @@ import java.util.*;
  * @since 2018-08-17
  */
 @Service
-public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoMapper, ResMoAbnormalInfo> implements IResMoAbnormalInfoService {
+public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoMapper, ResMoAbnormalInfo> implements IResMoAbnormalInfoService{
 
     @Resource
     private ResMoAbnormalInfoMapper resMoAbnormalInfoMapper;
@@ -229,6 +229,11 @@ public class ResMoAbnormalInfoServiceImpl extends ServiceImpl<ResMoAbnormalInfoM
         noticeModel.setType(1);
         MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
         return result;
+    }
+
+    @Override
+    public List<ResMoAbnormalInfo> findByMap(Map<String, Object> map) {
+        return resMoAbnormalInfoMapper.findByMap(map);
     }
 
     /**

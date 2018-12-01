@@ -49,4 +49,6 @@ public interface IResMoAbnormalInfoService extends IService<ResMoAbnormalInfo> {
     boolean cleanResAbnormal(JSONObject requestJson, SysUser user) throws Exception;
 
     boolean cleanOrDelete(Long resAbnormalId, ResMoAbnormalInfo resMoAbnormalInfo) throws Exception;
+
+    List<ResMoAbnormalInfo>  findByMap(Map<String, Object> map);
 }
