@@ -114,16 +114,19 @@
     <select id="findByMap" resultMap="ResOtherMap">
         SELECT a.*,b.*,d.*
         FROM (SELECT * FROM tbl_res_base WHERE 1=1
-        <if test="resIds != null and resIds.size()>0">AND res_id IN
-            <foreach item="rId" collection="resIds" open="(" separator=","
-                     close=")">
-                #{rId}
-            </foreach>
-        </if>
-        <if test="resIds == null">AND res_id = -1</if>
+        <choose>
+            <when test="resIds != null and resIds.size()>0">
+                <foreach item="rId" collection="resIds" open="(" separator=","
+                         close=")">
+                    #{rId}
+                </foreach>
+            </when>
+            <otherwise>
+                AND res_id = -1
+            </otherwise>
+        </choose>
         <if test="resMtypeId != null and resMtypeId != ''">AND res_mtype_id = #{resMtypeId}</if>
         <if test="resStatus != null and resStatus != ''">AND res_status != #{resStatus}</if>
-        <if test="resStatu != null and resStatu != ''">AND res_status != #{resStatu}</if>
         ) a
         LEFT JOIN (SELECT * FROM tbl_res_abnormallevel WHERE useflag=1) b ON
         a.res_abnormallevel_id=b.res_abnormallevel_id
@@ -135,12 +138,17 @@
         SELECT b.res_id,b.res_name,b.res_alias,count(b.res_id) AS countNum
         FROM (SELECT * FROM tbl_res_mo_abnormal_info
         WHERE 1=1
-        <if test="resIds != null and resIds.size()>0">AND res_id IN
-            <foreach item="rId" collection="resIds" open="(" separator=","
-                     close=")">
-                #{rId}
-            </foreach>
-        </if>
+        <choose>
+            <when test="resIds != null and resIds.size()>0">
+                <foreach item="rId" collection="resIds" open="(" separator=","
+                         close=")">
+                    #{rId}
+                </foreach>
+            </when>
+            <otherwise>
+                AND res_id = -1
+            </otherwise>
+        </choose>
         ) a
         LEFT JOIN tbl_res_base b ON a.res_id=b.res_id
         GROUP BY a.res_id ORDER BY countNum DESC
@@ -150,12 +158,17 @@
         SELECT b.res_id,b.res_name,b.res_alias,count(b.res_id) AS countNum
         FROM (SELECT * FROM tbl_res_mo_abnormal_info_h
         WHERE useflag=1
-        <if test="resIds != null and resIds.size()>0">AND res_id IN
-            <foreach item="rId" collection="resIds" open="(" separator=","
-                     close=")">
-                #{rId}
-            </foreach>
-        </if>
+        <choose>
+            <when test="resIds != null and resIds.size()>0">
+                <foreach item="rId" collection="resIds" open="(" separator=","
+                         close=")">
+                    #{rId}
+                </foreach>
+            </when>
+            <otherwise>
+                AND res_id = -1
+            </otherwise>
+        </choose>
         ) a
         LEFT JOIN tbl_res_base b ON a.res_id=b.res_id
         GROUP BY a.res_id ORDER BY countNum DESC

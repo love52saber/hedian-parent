@@ -15,12 +15,13 @@ import java.util.Date;
  */
 public class JWTUtil {
 
-    // 过期时间1天
-    private static final long EXPIRE_TIME = 24*60*60*1000;
+    // 过期时间1小时
+    private static final long EXPIRE_TIME = 60 * 60 * 1000;
 
     /**
      * 校验token是否正确
-     * @param token 密钥
+     *
+     * @param token  密钥
      * @param secret 用户的密码
      * @return 是否正确
      */
@@ -39,6 +40,7 @@ public class JWTUtil {
 
     /**
      * 获得token中的信息无需secret解密也能获得
+     *
      * @return token中包含的用户名
      */
     public static String getUserNo(String token) {
@@ -52,13 +54,14 @@ public class JWTUtil {
 
     /**
      * 生成签名,指定时间后过期,一经生成不可修改，令牌在指定时间内一直有效
+     *
      * @param userNo 用户编号
      * @param secret 用户的密码
      * @return 加密的token
      */
     public static String sign(String userNo, String secret) {
         try {
-            Date date = new Date(System.currentTimeMillis()+EXPIRE_TIME);
+            Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
             Algorithm algorithm = Algorithm.HMAC256(secret);
             // 附带username信息
             return JWT.create()

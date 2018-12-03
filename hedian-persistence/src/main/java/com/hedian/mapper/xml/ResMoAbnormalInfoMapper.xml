@@ -180,12 +180,17 @@
         countNum
         from
         (select * from tbl_res_mo_abnormal_info where res_abnormalstatus=1
-        <if test="resIds != null and resIds.size()>0">and res_id IN
-            <foreach item="rId" collection="resIds" open="(" separator=","
-                     close=")">
-                #{rId}
-            </foreach>
-        </if>
+        <choose>
+            <when test="resIds != null and resIds.size()>0">
+                <foreach item="rId" collection="resIds" open="(" separator=","
+                         close=")">
+                    #{rId}
+                </foreach>
+            </when>
+            <otherwise>
+                AND res_id = -1
+            </otherwise>
+        </choose>
         ) a LEFT JOIN tbl_mo_abnormal_def b ON a.mo_abnormal_id=b.mo_abnormal_id
         GROUP BY b.mo_abnormal_id ORDER BY countNum DESC
     </select>
@@ -294,12 +299,17 @@
         LEFT JOIN tbl_res_abnormallevel tra
         on trm.res_abnormallevel_id=tra.res_abnormallevel_id
         where 1=1
-        <if test="resIds != null and resIds.size()>0">AND res_id IN
-            <foreach item="rId" collection="resIds" open="(" separator=","
-                     close=")">
-                #{rId}
-            </foreach>
-        </if>
+        <choose>
+            <when test="resIds != null and resIds.size()>0">
+                <foreach item="rId" collection="resIds" open="(" separator=","
+                         close=")">
+                    #{rId}
+                </foreach>
+            </when>
+            <otherwise>
+                AND res_id = -1
+            </otherwise>
+        </choose>
         order by trm.res_abnomaltime
     </select>
 
