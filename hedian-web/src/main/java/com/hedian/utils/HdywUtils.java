@@ -56,21 +56,14 @@ public class HdywUtils {
      * @param sysUser
      * @return
      */
-    public static List<Integer> getResidsByUserid(SysUser sysUser) {
-        List<Integer> resIds = new ArrayList<>();
+    public static Set<Integer> getResidsByUserid(SysUser sysUser) {
+        Set<Integer> resIds = new HashSet<>();
         Map<String, Object> map = new HashMap<>(16);
         //根据用户id获取该用户管理域列表
         List<MdUser> mdUsers = hdywUtils.mdUserService.selectList(new EntityWrapper<MdUser>().eq("user_id", sysUser.getUserId()));
         if (!ComUtil.isEmpty(mdUsers)) {
             map.put("mdIds", mdUsers.stream().map(MdUser::getMdId).collect(Collectors.toList()));
-            //获取管理域关联的终端
-            List<MdRes> mdTerminalResList = hdywUtils.mdResService.findByMap(map);
-            //根据终端id查关联的设备
-            map.put("mdTerminalIds",mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
-
-            List<ResTerminal> mdResList=hdywUtils.resTerminalService.findByMap(map);
-            resIds = mdResList.stream().map(ResTerminal::getResId).collect(Collectors.toList());
-            resIds.addAll(mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
+            resIds=HdywUtils.getResIds(map);
         } else {
             //如果该用户没有管理域，获取该用户的部门，并判断该部门是否有管理域
             Long deptId = sysUser.getDeptId();
@@ -87,19 +80,9 @@ public class HdywUtils {
                 map.clear();
                 //管理域ID集合
                 map.put("mdIds", mdDepts.stream().map(MdDept::getMdId).collect(Collectors.toList()));
-                //获取管理域关联的终端
-                List<MdRes> mdTerminalResList = hdywUtils.mdResService.findByMap(map);
-                //根据终端id查关联的设备
-                map.put("mdTerminalIds",mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
-                List<ResTerminal> mdResList=hdywUtils.resTerminalService.findByMap(map);
-                resIds = mdResList.stream().map(ResTerminal::getResId).collect(Collectors.toList());
-                resIds.addAll(mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
+                resIds=HdywUtils.getResIds(map);
             }
         }
-        //对resIds进行去重
-        HashSet hashSet=new HashSet(resIds);
-        resIds.clear();
-        resIds.addAll(hashSet);
         return resIds;
     }
 
@@ -121,6 +104,21 @@ public class HdywUtils {
         }
         return dataMap;
     }
+
+    /**
+     * 获得管理域关联终端下的resIds
+     */
+    public static Set getResIds( Map<String, Object> map){
+        Set<Integer> resIds = new HashSet<>();
+        //获取管理域关联的终端
+        List<MdRes> mdTerminalResList = hdywUtils.mdResService.findByMap(map);
+        //根据终端id查关联的设备
+        List<ResTerminal> mdResList=hdywUtils.resTerminalService.selectList(new EntityWrapper<ResTerminal>().in("res_id_terminal",mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toList())));
+        resIds = mdResList.stream().map(ResTerminal::getResId).collect(Collectors.toSet());
+        resIds.addAll(mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toSet()));
+        return  resIds;
+    }
+
 
     /**
      * 封装终端及下面子集的数据结构

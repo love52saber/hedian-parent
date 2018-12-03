@@ -28,9 +28,4 @@ public class ResTerminalServiceImpl extends ServiceImpl<ResTerminalMapper, ResTe
     public List<ResTerminal> selectByResIdTerminal(Integer resId) {
         return resTerminalMapper.selectByResIdTerminal(resId);
     }
-
-    @Override
-    public List<ResTerminal> findByMap(Map<String, Object> map) {
-        return resTerminalMapper.findResByTerminalId(map);
-    }
 }

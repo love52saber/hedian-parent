@@ -135,7 +135,7 @@ public class ResMoAbnormalInfoController {
     @GetMapping("/getTopAbnormal")
     public PublicResult getTopAbnormal(@CurrentUser SysUser sysUser) {
         Map<String, Object> map = new HashMap<String, Object>(16);
-        List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
+        Set<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
         map.put("resIds", resIds);
         List<MoAbnormalDef> moAbnormalDefs = resMoAbnormalInfoService.getTopAbnormal(map);
         return new PublicResult(PublicResultConstant.SUCCESS, moAbnormalDefs);
@@ -153,7 +153,7 @@ public class ResMoAbnormalInfoController {
     @GetMapping("/getTopAlarm")
     public PublicResult getTopAlarm(@CurrentUser SysUser sysUser) {
         Map<String, Object> map = new HashMap<>(16);
-        List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
+        Set<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
         map.put("resIds",resIds);
         List<ResMoAbnormalInfo>  abnormalInfos=resMoAbnormalInfoService.findByMap(map);
         if(!ComUtil.isEmpty( abnormalInfos)&&  abnormalInfos.size()>5){
