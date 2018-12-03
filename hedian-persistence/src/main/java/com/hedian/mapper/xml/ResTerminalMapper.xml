@@ -22,6 +22,9 @@
         <result column="res_id" property="resId" />
         <result column="link_port" property="linkPort" />
         <result column="useflag" property="useflag" />
+        <association property="resBase" javaType="com.hedian.entity.ResBase"
+                     resultMap="com.hedian.mapper.ResBaseMapper.ResOtherMap">
+        </association>
     </resultMap>
 
     <select id="selectByResIdTerminal" resultMap="BaseCustomMap">
