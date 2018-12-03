@@ -67,7 +67,6 @@ public class HdywUtils {
             List<MdRes> mdTerminalResList = hdywUtils.mdResService.findByMap(map);
             //根据终端id查关联的设备
             map.put("mdTerminalIds",mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toList()));
-
             List<ResTerminal> mdResList=hdywUtils.resTerminalService.findByMap(map);
             resIds = mdResList.stream().map(ResTerminal::getResId).collect(Collectors.toList());
             resIds.addAll(mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toList()));

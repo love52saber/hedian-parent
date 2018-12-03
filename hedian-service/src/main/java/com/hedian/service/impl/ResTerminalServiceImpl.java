@@ -31,6 +31,7 @@ public class ResTerminalServiceImpl extends ServiceImpl<ResTerminalMapper, ResTe
 
     @Override
     public List<ResTerminal> findByMap(Map<String, Object> map) {
+
         return resTerminalMapper.findResByTerminalId(map);
     }
 }

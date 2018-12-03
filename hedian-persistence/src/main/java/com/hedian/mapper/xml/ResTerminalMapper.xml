@@ -22,6 +22,9 @@
         <result column="res_id" property="resId" />
         <result column="link_port" property="linkPort" />
         <result column="useflag" property="useflag" />
+        <association property="resBase" javaType="com.hedian.entity.ResBase"
+                     resultMap="com.hedian.mapper.ResBaseMapper.ResOtherMap">
+        </association>
     </resultMap>
 
     <select id="selectByResIdTerminal" resultMap="BaseCustomMap">
@@ -35,14 +38,13 @@
         WHERE it.res_id_terminal = #{res_id_terminal,jdbcType=INTEGER}
     </select>
 
-    <select id="findResByTerminalId"  resultMap="BaseCustomMap">
+    <select id="findResByTerminalId"  resultMap="BaseResultMap">
         select * from tbl_res_terminal
         where useflag=1
         <if test="mdTerminalIds !=null and mdTerminalIds.size()>0"> and res_id_terminal in
             <foreach  item="mTId" collection="mdTerminalIds" open="(" separator="," close=")">
                 #{mTId}
             </foreach>
-
         </if>
 
     </select>

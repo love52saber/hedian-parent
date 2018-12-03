@@ -8,20 +8,15 @@ import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.SysUser;
 import com.hedian.service.ISysUserService;
-import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import org.apache.tools.ant.util.DateUtils;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -47,18 +42,9 @@ public class LoginController {
     public PublicResult login(
             @ValidationParam("username,password") @RequestBody JSONObject requestJson) throws Exception {
         //由于 @ValidationParam注解已经验证过mobile和password参数，所以可以直接get使用没毛病。
-       SysUser user = requestJson.toJavaObject(SysUser.class);
+        SysUser user = requestJson.toJavaObject(SysUser.class);
         Map<String, Object> result = userService.login(user);
         return new PublicResult<>(PublicResultConstant.SUCCESS, result);
     }
-
-
-    public static void main(String[] args) {
-
-        System.out.println("1,2,3");
-
-        System.out.println(BCrypt.hashpw("12345678", BCrypt.gensalt()));
-    }
-
 
 }
