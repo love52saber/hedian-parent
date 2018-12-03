@@ -45,12 +45,7 @@ public class ResAbnormallevelController {
     public PublicResult getCountByLevel(@CurrentUser SysUser sysUser) {
         Map<String, Object> map = new HashMap<>(16);
         List<Integer> redIds = HdywUtils.getResidsByUserid(sysUser);
-        if (!ComUtil.isEmpty(redIds)) {
-            map.put("resIds", redIds);
-        } else {
-            map.put("resIds", null);
-        }
-
+        map.put("resIds", redIds);
         List<ResAbnormallevel> resAbnormallevels = resAbnormallevelService.getCountByLevelMap(map);
         return new PublicResult(PublicResultConstant.SUCCESS, resAbnormallevels);
     }

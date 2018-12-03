@@ -161,7 +161,7 @@
         from
         (select * from tbl_res_mo_abnormal_info_h where useflag=1
         <choose>
-            <when test="resIds != null and resIds.size()>0">
+            <when test="resIds != null and resIds.size()>0">AND res_id IN
                 <foreach item="rId" collection="resIds" open="(" separator=","
                          close=")">
                     #{rId}

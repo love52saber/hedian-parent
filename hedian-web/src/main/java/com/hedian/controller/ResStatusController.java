@@ -47,11 +47,7 @@ public class ResStatusController {
     public PublicResult getCountByStatus(@CurrentUser SysUser sysUser) {
         Map<String, Object> map = new HashMap<>(16);
         List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
-        if (!ComUtil.isEmpty(resIds)) {
-            map.put("resIds", resIds);
-        }else{
-            map.put("resIds", null);
-        }
+        map.put("resIds", resIds);
         List<ResStatus> resStatusList = iResStatusService.getCountByStatusMap(map);
         return new PublicResult(PublicResultConstant.SUCCESS, resStatusList);
     }
