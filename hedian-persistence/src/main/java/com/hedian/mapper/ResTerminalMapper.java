@@ -20,6 +20,4 @@ public interface ResTerminalMapper extends BaseMapper<ResTerminal> {
 
     List<ResTerminal> selectByResIdTerminal(@Param("res_id_terminal") Integer resIdTerminal);
 
-    List<ResTerminal> findResByTerminalId(Map<String, Object> map);
-
 }

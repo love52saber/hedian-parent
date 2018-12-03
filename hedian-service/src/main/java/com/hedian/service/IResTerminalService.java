@@ -18,7 +18,4 @@ import java.util.Map;
 public interface IResTerminalService extends IService<ResTerminal> {
 
     List<ResTerminal> selectByResIdTerminal(Integer resId);
-
-
-    List<ResTerminal> findByMap(Map<String, Object> map);
 }

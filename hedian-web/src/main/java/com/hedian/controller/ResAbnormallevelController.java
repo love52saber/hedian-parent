@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>
@@ -44,7 +45,7 @@ public class ResAbnormallevelController {
     @GetMapping("/getCountByLevel")
     public PublicResult getCountByLevel(@CurrentUser SysUser sysUser) {
         Map<String, Object> map = new HashMap<>(16);
-        List<Integer> redIds = HdywUtils.getResidsByUserid(sysUser);
+        Set<Integer> redIds = HdywUtils.getResidsByUserid(sysUser);
         map.put("resIds", redIds);
         List<ResAbnormallevel> resAbnormallevels = resAbnormallevelService.getCountByLevelMap(map);
         return new PublicResult(PublicResultConstant.SUCCESS, resAbnormallevels);

@@ -104,7 +104,7 @@ public class ResBaseController {
     @GetMapping("/getTopRes")
     public PublicResult getTopRes(@CurrentUser SysUser sysUser) {
         Map<String, Object> map = new HashMap<String, Object>(16);
-        List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
+        Set<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
         map.put("resIds", resIds);
         List<ResBase> resBaseList = resBaseService.getTopRes(map);
         return new PublicResult(PublicResultConstant.SUCCESS, resBaseList);

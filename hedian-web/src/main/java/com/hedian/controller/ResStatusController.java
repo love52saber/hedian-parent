@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>
@@ -46,7 +47,7 @@ public class ResStatusController {
     @GetMapping("/getCountByStatus")
     public PublicResult getCountByStatus(@CurrentUser SysUser sysUser) {
         Map<String, Object> map = new HashMap<>(16);
-        List<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
+        Set<Integer> resIds = HdywUtils.getResidsByUserid(sysUser);
         map.put("resIds", resIds);
         List<ResStatus> resStatusList = iResStatusService.getCountByStatusMap(map);
         return new PublicResult(PublicResultConstant.SUCCESS, resStatusList);
