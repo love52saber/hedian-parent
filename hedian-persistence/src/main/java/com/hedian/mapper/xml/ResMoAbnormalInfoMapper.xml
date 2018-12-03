@@ -184,7 +184,7 @@
         <when test="resIds != null and resIds.size()>0"> AND res_id IN
             <foreach item="rId" collection="resIds" open="(" separator=","
                      close=")">
-                AND res_id IN #{rId}
+                #{rId}
                 </foreach>
             </when>
             <otherwise>
