@@ -181,10 +181,10 @@
         from
         (select * from tbl_res_mo_abnormal_info where res_abnormalstatus=1
         <choose>
-            <when test="resIds != null and resIds.size()>0">
-                <foreach item="rId" collection="resIds" open="(" separator=","
-                         close=")">
-                    #{rId}
+        <when test="resIds != null and resIds.size()>0"> AND res_id IN
+            <foreach item="rId" collection="resIds" open="(" separator=","
+                     close=")">
+                AND res_id IN #{rId}
                 </foreach>
             </when>
             <otherwise>
@@ -300,7 +300,7 @@
         on trm.res_abnormallevel_id=tra.res_abnormallevel_id
         where 1=1
         <choose>
-            <when test="resIds != null and resIds.size()>0">
+            <when test="resIds != null and resIds.size()>0"> AND res_id IN
                 <foreach item="rId" collection="resIds" open="(" separator=","
                          close=")">
                     #{rId}
