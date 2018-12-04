@@ -4,22 +4,19 @@ package com.hedian.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.hedian.annotation.CurrentUser;
-import com.hedian.annotation.Log;
-import com.hedian.annotation.Pass;
 import com.hedian.annotation.ValidationParam;
 import com.hedian.base.BusinessException;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.RepairOrderAppraiser;
-import com.hedian.entity.SysUser;
 import com.hedian.service.IRepairOrderAppraiserMdService;
 import com.hedian.service.IRepairOrderAppraiserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +52,7 @@ public class RepairOrderAppraiserController {
     }
 
     @PutMapping("")
+    @RequiresPermissions("repairOrderAppraiser:update")
     @ApiOperation("修改评价人")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "requestJson", value = "{\"appraiserid\":评价人规则id,\"appraisertype\":评价人类型," +

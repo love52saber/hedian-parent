@@ -9,7 +9,6 @@ import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.MoAbnormalDef;
-import com.hedian.entity.ResBase;
 import com.hedian.entity.ResMoAbnormalInfo;
 import com.hedian.entity.SysUser;
 import com.hedian.model.AbnormalLevelModel;
@@ -21,6 +20,7 @@ import com.hedian.utils.HdywUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -106,6 +106,7 @@ public class ResMoAbnormalInfoController {
      * 确认告警
      */
     @PutMapping(value = "/confirmAbnormal")
+    @RequiresPermissions("resMoAbnormalInfo:confirmAbnormal")
     public PublicResult confirmAbnormalInfo(@ValidationParam("resAbnormalId") @CurrentUser SysUser user,
                                             @RequestBody JSONObject requestJson) {
         ResMoAbnormalInfo resMoAbnormalInfo = requestJson.toJavaObject(ResMoAbnormalInfo.class);
@@ -120,6 +121,7 @@ public class ResMoAbnormalInfoController {
      * 清除告警
      */
     @PutMapping(value = "/cleanAbnormal")
+    @RequiresPermissions("resMoAbnormalInfo:cleanAbnormal")
     public PublicResult cleanAbnormalInfo(@ValidationParam("resAbnormalId") @CurrentUser SysUser user,
                                           @RequestBody JSONObject requestJson) throws Exception {
         boolean result = resMoAbnormalInfoService.cleanResAbnormal(requestJson, user);

@@ -26,6 +26,10 @@ public class ShiroConfig {
         return new LifecycleBeanPostProcessor();
     }
 
+    /**
+     *开启spring aop支持
+     * @return
+     */
     @Bean
     public static DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator(){
         DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator=new DefaultAdvisorAutoProxyCreator();
@@ -80,7 +84,12 @@ public class ShiroConfig {
         return factoryBean;
     }
 
-    @Bean
+    /**
+     * 开启shiro授权注解支持,注释掉可以使@requirePermissions等shiro相关注解失效
+     * @param securityManager
+     * @return
+     */
+//    @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(DefaultWebSecurityManager securityManager) {
         AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
         advisor.setSecurityManager(securityManager);
