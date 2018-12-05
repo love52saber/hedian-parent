@@ -52,13 +52,4 @@ public class LoginController {
         return new PublicResult<>(PublicResultConstant.SUCCESS, result);
     }
 
-
-    public static void main(String[] args) {
-
-        System.out.println("1,2,3");
-
-        System.out.println(BCrypt.hashpw("12345678", BCrypt.gensalt()));
-    }
-
-
 }

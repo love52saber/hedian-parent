@@ -42,7 +42,7 @@
             AND user_id = #{userId}
         </if>
         )) t
-        INNER JOIN sys_role_menu rm on t.role_id=rm.role_id) m
+        INNER JOIN sys_role_menu rm on t.role_id=rm.role_id where rm.useflag = 1) m
         INNER JOIN sys_menu sm on m.menu_id=sm.menu_id
 
         union all
@@ -57,7 +57,7 @@
             AND ur.user_id = #{userId}
         </if>
         ) m
-        INNER JOIN sys_role_menu rm on m.role_id = rm.role_id)tt
+        INNER JOIN sys_role_menu rm on m.role_id = rm.role_id where rm.useflag = 1 )tt
         INNER JOIN sys_menu sm on tt.menu_id = sm.menu_id) menu_all
 
     </select>
