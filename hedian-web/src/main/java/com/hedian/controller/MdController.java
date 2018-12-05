@@ -14,6 +14,7 @@ import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -112,6 +113,7 @@ public class MdController {
      * @return
      */
     @PostMapping
+    @RequiresPermissions("md:add")
     public PublicResult<String> addMd(@ValidationParam("mdName")
                                       @RequestBody JSONObject requestJson) throws Exception {
         //可直接转为java对象,简化操作,不用再set一个个属性
@@ -124,6 +126,7 @@ public class MdController {
      * 修改管理域信息
      */
     @PutMapping
+    @RequiresPermissions("md:update")
     public PublicResult<String> updateMd(@ValidationParam("mdName,mdId,showorder")
                                          @RequestBody JSONObject requestJson) throws Exception {
         Md md = requestJson.toJavaObject(Md.class);
@@ -135,6 +138,7 @@ public class MdController {
      * 删除管理域
      */
     @DeleteMapping(value = "/{mdId}")
+    @RequiresPermissions("md:delete")
     public PublicResult deleteMd(@PathVariable("mdId") Integer mdId) {
         if (ComUtil.isEmpty(mdService.selectById(mdId))) {
             return new PublicResult<>(PublicResultConstant.ERROR, null);

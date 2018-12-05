@@ -46,6 +46,7 @@ public class RepairOrderAppraiserController {
             @ApiImplicitParam(name = "requestJson", value = "{\"appraisertype\":评价人类型,\"apprasiername\":\"评价人规则名称\"," +
                     "\"grpId\":评价用户组id,\"mdIds\":[管理域id数组]}", required = true, dataType = "string", paramType = "body")
     })
+    @RequiresPermissions("repairOrderAppraiser:add")
     public PublicResult addAppraiser(@ValidationParam("appraisertype,apprasiername,grpId") @RequestBody JSONObject requestJson) throws BusinessException {
         boolean result = iRepairOrderAppraiserService.addAppraiser(requestJson);
         return result ? new PublicResult(PublicResultConstant.SUCCESS, null) : new PublicResult(PublicResultConstant.ERROR, null);
@@ -97,6 +98,7 @@ public class RepairOrderAppraiserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "jsonObject", value = "{\"appraiserids\":评价人id数组}", required = true, dataType = "string", paramType = "body")
     })
+    @RequiresPermissions("repairOrderAppraiser:delete")
     public PublicResult delBatchById(@ValidationParam("appraiserids") @RequestBody JSONObject jsonObject) throws Exception {
         JSONArray appraiserids = jsonObject.getJSONArray("appraiserids");
         List<Integer> appraiseridList = appraiserids.toJavaList(Integer.class);

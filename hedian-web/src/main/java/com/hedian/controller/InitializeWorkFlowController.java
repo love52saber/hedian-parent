@@ -3,24 +3,19 @@ package com.hedian.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.hedian.annotation.CurrentUser;
-import com.hedian.annotation.Pass;
 import com.hedian.annotation.ValidationParam;
 import com.hedian.base.BusinessException;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
-import com.hedian.entity.SysUser;
 import com.hedian.model.WfBusinessModel;
 import com.hedian.service.IRuntimeService;
-import com.hedian.service.ISysFileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
 
 /**
  * <p>
@@ -82,6 +77,7 @@ public class InitializeWorkFlowController {
      * 保存流程审批
      */
     @PostMapping(value = "saveWorkFlow")
+    @RequiresPermissions("workflow:saveWorkFlow")
     public PublicResult<String> saveWorkFlow(@RequestBody JSONObject requestJson) throws Exception {
         String instanceId = runtimeService.saveWorkFlow(requestJson);
         return new PublicResult<>(PublicResultConstant.SUCCESS, instanceId);
@@ -91,6 +87,7 @@ public class InitializeWorkFlowController {
      * 提交流程审批
      */
     @PostMapping(value = "startWorkFlow")
+    @RequiresPermissions("workflow:startWorkFlow")
     public PublicResult<String> startWorkFlow(@RequestBody JSONObject requestJson) throws Exception {
         String instanceId = runtimeService.startWorkFlow(requestJson);
         return new PublicResult<>(PublicResultConstant.SUCCESS, instanceId);
@@ -101,6 +98,7 @@ public class InitializeWorkFlowController {
      * 审批，派发，查看，处理，确认
      */
     @PostMapping(value = "handleWorkFlow")
+    @RequiresPermissions("workflow:handleWorkFlow")
     public PublicResult<String> handleWorkFlow(@ValidationParam("currentStep,taskId,businessId") @RequestBody JSONObject requestJson) throws BusinessException {
         String instanceId = runtimeService.handleWorkFlow(requestJson);
         return new PublicResult<>(PublicResultConstant.SUCCESS, instanceId);
@@ -110,6 +108,7 @@ public class InitializeWorkFlowController {
      * 驳回，跳转
      */
     @PostMapping(value = "rejectWorkFlow")
+    @RequiresPermissions("workflow:rejectWorkFlow")
     public PublicResult<String> rejectWorkFlow(@ValidationParam("currentStep,taskId,businessId") @RequestBody JSONObject requestJson) throws BusinessException {
         String instanceId = runtimeService.rejectWorkFlow(requestJson);
         return new PublicResult<>(PublicResultConstant.SUCCESS, instanceId);
@@ -119,6 +118,7 @@ public class InitializeWorkFlowController {
      * 删除
      */
     @DeleteMapping(value = "/{businessId}")
+    @RequiresPermissions("workflow:delete")
     public PublicResult<String> deleteWorkFlow(@PathVariable("businessId") Long businessId) throws BusinessException {
         String instanceId = runtimeService.deleteWorkFlow(businessId);
         return new PublicResult<>(PublicResultConstant.SUCCESS, instanceId);

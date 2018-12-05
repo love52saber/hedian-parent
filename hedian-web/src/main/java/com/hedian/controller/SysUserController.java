@@ -5,10 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.annotation.CurrentUser;
-import com.hedian.annotation.Pass;
 import com.hedian.annotation.ValidationParam;
 import com.hedian.base.*;
-import com.hedian.entity.SysConf;
 import com.hedian.entity.SysFile;
 import com.hedian.entity.SysUser;
 import com.hedian.entity.SysUserRole;
@@ -19,12 +17,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -129,6 +127,7 @@ public class SysUserController {
      * @return
      */
     @PostMapping
+    @RequiresPermissions("sysUser:add")
     public PublicResult<String> addSysUser(@ValidationParam("name,username,sex,deptId,mobile,email,status")
                                            @RequestBody JSONObject requestJson) throws Exception {
 
@@ -195,6 +194,7 @@ public class SysUserController {
      * @return
      */
     @PutMapping
+    @RequiresPermissions("sysUser:update")
     public PublicResult<String> updateSysUser(@ValidationParam("userId,name,username,sex,deptId,mobile,email,status,roleIds")
                                               @RequestBody JSONObject requestJson) throws Exception {
 
@@ -229,6 +229,7 @@ public class SysUserController {
             @ApiImplicitParam(name = "requestJson", value = "{\\\"userId\\\":\\\"xxx\\\",\\\"oldPassword\\\":\\\"xxx\\\"," +
                     "\\\"password\\\":\\\"xxx\\\",\\\"rePassword\\\":\\\"xxx\\\"}", required = true, dataType = "String", paramType = "body")
     })
+    @RequiresPermissions("sysUser:updatePassword")
     public PublicResult<String> updatePassword(@ValidationParam("userId,oldPassword,password,rePassword")
                                                @RequestBody JSONObject requestJson) throws Exception {
         SysUser user = userService.selectById(requestJson.getString("userId"));
@@ -254,6 +255,7 @@ public class SysUserController {
      * @throws Exception
      */
     @PutMapping("/resetPassword")
+    @RequiresPermissions("sysUser:resetPassword")
     public PublicResult<String> resetPassWord(@CurrentUser SysUser user) throws Exception {
         user.setPwdFlag(2);
         user.setLockflag(0);
@@ -270,6 +272,7 @@ public class SysUserController {
     @ApiOperation(value = "删除用户", notes = "根据url的id来删除用户")
     @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "String", paramType = "path")
     @DeleteMapping(value = "/{userId}")
+    @RequiresPermissions("sysUser:delete")
     public PublicResult<String> deleteUser(@PathVariable("userId") Long userId) {
         SysUser user = userService.selectById(userId);
         if (ComUtil.isEmpty(user)) {
@@ -287,6 +290,7 @@ public class SysUserController {
 
 
     @PutMapping("/info")
+    @RequiresPermissions("sysUser:updateInfo")
     public PublicResult resetUserInfo(@CurrentUser SysUser currentUser, @RequestBody JSONObject requestJson) throws Exception {
 
         if (!ComUtil.isEmpty(requestJson.getString("email"))) {

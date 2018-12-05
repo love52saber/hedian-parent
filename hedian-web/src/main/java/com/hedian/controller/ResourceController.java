@@ -7,6 +7,7 @@ import com.hedian.util.ComUtil;
 import com.hedian.util.FileUtil;
 import com.hedian.util.FtpUtil;
 import io.swagger.annotations.Api;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,6 +64,7 @@ public class ResourceController {
     }
 
     @DeleteMapping
+    @RequiresPermissions("resource:delete")
     public PublicResult deleteResource(@RequestParam("filePaths") List<String> filePaths) {
         if (!ComUtil.isEmpty(filePaths) && filePaths.size() != 0) {
             for (String item : filePaths) {

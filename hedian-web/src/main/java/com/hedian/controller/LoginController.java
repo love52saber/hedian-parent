@@ -8,11 +8,9 @@ import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.SysUser;
 import com.hedian.service.ISysUserService;
-import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import org.apache.tools.ant.util.DateUtils;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -41,7 +37,7 @@ public class LoginController {
     @PostMapping("/login")
     @Log(description = "前台密码登录接口:/login")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "requestJson", value = "{\\\"username\\\":\\\"admin\\\",\\\"password\\\":\\\"XXXX\\\"}", required = true, dataType = "String", paramType = "body")
+            @ApiImplicitParam(name = "requestJson", value = "{\"username\":\"admin\",\"password\":\"XXXX\"}", required = true, dataType = "String", paramType = "body")
     })
     @Pass
     public PublicResult login(

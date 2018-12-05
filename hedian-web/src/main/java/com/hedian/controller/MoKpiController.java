@@ -15,6 +15,7 @@ import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,6 +88,7 @@ public class MoKpiController {
      * @return
      */
     @PostMapping
+    @RequiresPermissions("mokpi:add")
     public PublicResult<String> addMokpi(@ValidationParam("moKpiName,moKpiKey")
                                          @RequestBody JSONObject requestJson) throws Exception {
         //可直接转为java对象,简化操作,不用再set一个个属性
@@ -99,6 +101,7 @@ public class MoKpiController {
      * 修改mokpi信息
      */
     @PutMapping
+    @RequiresPermissions("mokpi:update")
     public PublicResult<String> updateMokpi(@ValidationParam("moKpiName,moKpiKey,showorder,moKpiId")
                                            @RequestBody JSONObject requestJson) throws Exception {
         MoKpi moKpi = requestJson.toJavaObject(MoKpi.class);
@@ -110,6 +113,7 @@ public class MoKpiController {
      * 删除mokpi
      */
     @DeleteMapping(value = "/{mokpiId}")
+    @RequiresPermissions("mokpi:delete")
     public PublicResult deleteMokpi(@PathVariable("mokpiId") Integer mokpiId) {
         if (ComUtil.isEmpty(moKpiService.selectById(mokpiId))) {
             return new PublicResult<>(PublicResultConstant.ERROR, null);

@@ -14,14 +14,13 @@ import com.hedian.service.IMaintainStrategyService;
 import com.hedian.service.IMsResService;
 import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -90,6 +89,7 @@ public class MaintainStrategyController {
      * @return
      */
     @PostMapping
+    @RequiresPermissions("maintainStrategy:add")
     public PublicResult<String> addMs(@ValidationParam("msName,msType,beginTime,endTime,msStatus")
                                       @RequestBody JSONObject requestJson) throws Exception {
         //可直接转为java对象,简化操作,不用再set一个个属性
@@ -102,6 +102,7 @@ public class MaintainStrategyController {
      * 修改维护策略
      */
     @PutMapping
+    @RequiresPermissions("maintainStrategy:update")
     public PublicResult<String> updateMs(@ValidationParam("msId,msName,msType,beginTime,endTime,msStatus")
                                          @RequestBody JSONObject requestJson) throws Exception {
         MaintainStrategy ms = requestJson.toJavaObject(MaintainStrategy.class);
@@ -113,6 +114,7 @@ public class MaintainStrategyController {
      * 删除维护策略
      */
     @DeleteMapping(value = "/{msId}")
+    @RequiresPermissions("maintainStrategy:delete")
     public PublicResult deleteMs(@PathVariable("msId") Integer msId) {
         if (ComUtil.isEmpty(maintainStrategyService.selectById(msId))) {
             return new PublicResult<>(PublicResultConstant.ERROR, null);

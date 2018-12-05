@@ -4,22 +4,20 @@ package com.hedian.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.hedian.annotation.Pass;
 import com.hedian.annotation.ValidationParam;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.SysDept;
 import com.hedian.entity.SysUser;
-import com.hedian.exception.UnauthorizedException;
 import com.hedian.service.ISysDeptService;
 import com.hedian.service.ISysUserService;
 import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -90,6 +88,7 @@ public class SysDeptController {
      * @return
      */
     @PostMapping
+    @RequiresPermissions("sysDept:add")
     public PublicResult<String> addDept(@ValidationParam("parentId,name,shortName,orderNum,orgType")
                                         @RequestBody JSONObject requestJson) throws Exception {
         if (!ComUtil.isEmpty(sysDeptService.selectList(new EntityWrapper<SysDept>().eq("name",requestJson.getString("name"))))) {
@@ -105,6 +104,7 @@ public class SysDeptController {
      * 修改组织信息
      */
     @PutMapping
+    @RequiresPermissions("sysDept:update")
     public PublicResult<String> updateDept(@ValidationParam("name,shortName,orderNum,orgType,deptId")
                                                @RequestBody JSONObject requestJson) throws Exception {
         SysDept sysDept = requestJson.toJavaObject(SysDept.class);
@@ -120,6 +120,7 @@ public class SysDeptController {
      * 删除组织
      */
     @DeleteMapping(value = "/{deptId}")
+    @RequiresPermissions("sysDept:delete")
     public PublicResult deleteDept(@PathVariable("deptId") Long deptId) {
         if (ComUtil.isEmpty(sysDeptService.selectById(deptId))) {
             return new PublicResult<>(PublicResultConstant.ERROR, null);

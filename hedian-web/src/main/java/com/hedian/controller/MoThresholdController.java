@@ -15,6 +15,7 @@ import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +67,7 @@ public class MoThresholdController {
      * @return
      */
     @PostMapping
+    @RequiresPermissions("moThreshold:add")
     public PublicResult<String> addMokpi(@ValidationParam("moThType,resStypeId,moKpiId,moAbnormalId")
                                          @RequestBody JSONObject requestJson) throws Exception {
         //可直接转为java对象,简化操作,不用再set一个个属性
@@ -122,6 +124,7 @@ public class MoThresholdController {
      * 修改moThreshold信息
      */
     @PutMapping
+    @RequiresPermissions("moThreshold:update")
     public PublicResult<String> updateMokpi(@ValidationParam("moThType,moThId,resStypeId,moKpiId,moAbnormalId,showorder")
                                             @RequestBody JSONObject requestJson) throws Exception {
         MoThreshold moThreshold = requestJson.toJavaObject(MoThreshold.class);
@@ -134,6 +137,7 @@ public class MoThresholdController {
      * 删除moThreshold
      */
     @DeleteMapping(value = "/{moThId}")
+    @RequiresPermissions("moThreshold:delete")
     public PublicResult deleteMokpi(@PathVariable("moThId") Integer moThId) {
         if (ComUtil.isEmpty(moThresholdService.selectById(moThId))) {
             return new PublicResult<>(PublicResultConstant.ERROR, null);

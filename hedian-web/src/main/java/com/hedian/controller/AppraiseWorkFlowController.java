@@ -5,29 +5,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.annotation.Pass;
 import com.hedian.annotation.ValidationParam;
-import com.hedian.base.BusinessException;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
-import com.hedian.entity.WfBaseAppraInfo;
-import com.hedian.entity.WfBusiness;
-import com.hedian.entity.WfKexinAppraInfo;
 import com.hedian.model.AppraiseWfBusinessModel;
-import com.hedian.model.WfBaseAppraInfoModel;
-import com.hedian.model.WfBusinessModel;
 import com.hedian.service.IRuntimeService;
-import com.hedian.service.ISysFileService;
 import com.hedian.service.IWfBaseAppraInfoService;
-import com.hedian.service.IWfKexinAppraInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.spel.ast.NullLiteral;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * <p>
@@ -95,18 +84,19 @@ public class AppraiseWorkFlowController {
      */
     @PutMapping("/updateAppra")
     @ApiImplicitParams({
-            @ApiImplicitParam(name="requestJson",value ="{\\\"businessId\\\":\\\"XXX\\\"," +
-                    "\\\"baseAppraId\\\":\\\"基层评价id\\\"," +
-                    "\\\"kexinAppraId\\\":\\\"科信评价id\\\"" +
-                    "\\\"baseAppraScore\\\":\\\"基层评价分\\\" ," +
-                    "\\\"kexinAppraScore\\\":\\\"科信评价分\\\"，" +
-                    "\\\"baseAppraInfo\\\":\\\"基层评价信息\\\"，" +
-                    "\\\"kexinAppraInfo\\\":\\\"科信评价信息\\\" " +
+            @ApiImplicitParam(name="requestJson",value ="{\"businessId\":\"XXX\"," +
+                    "\"baseAppraId\":\"基层评价id\"," +
+                    "\"kexinAppraId\":\"科信评价id\"," +
+                    "\"baseAppraScore\":\"基层评价分\"," +
+                    "\"kexinAppraScore\":\"科信评价分\"," +
+                    "\"baseAppraInfo\":\"基层评价信息\"," +
+                    "\"kexinAppraInfo\":\"科信评价信息\"" +
                     "}",dataType = "String",paramType = "body",required = true),
 
 
 
     })
+    @RequiresPermissions("appraise:update")
     public PublicResult updateBaseAppra(@ValidationParam("businessId,baseAppraScore,kexinAppraScore") @RequestBody JSONObject requestJson ) throws Exception{
         boolean result = iWfBaseAppraInfoService.save(requestJson);
         return  result? new PublicResult<>(PublicResultConstant.SUCCESS,null):new PublicResult<>(PublicResultConstant.ERROR,null);

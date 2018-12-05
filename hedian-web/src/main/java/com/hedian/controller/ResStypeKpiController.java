@@ -11,6 +11,7 @@ import com.hedian.service.IMoKpiService;
 import com.hedian.service.IResStypeKpiService;
 import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +43,7 @@ public class ResStypeKpiController {
      * @return
      */
     @PostMapping
+    @RequiresPermissions("resStypeKpi:add")
     public PublicResult<String> addMokpiObject(@ValidationParam("moKpiId,resStypeId,stypeFlag")
                                                @RequestBody JSONObject requestJson) throws Exception {
         //可直接转为java对象,简化操作,不用再set一个个属性
@@ -62,6 +64,7 @@ public class ResStypeKpiController {
      * 修改mokpid对象
      */
     @PutMapping
+    @RequiresPermissions("resStypeKpi:update")
     public PublicResult<String> updateMokpiObject(@ValidationParam("skId,stypeFlag")
                                                   @RequestBody JSONObject requestJson) throws Exception {
         //先删除，在添加
@@ -75,6 +78,7 @@ public class ResStypeKpiController {
      * 删除mokpi对象
      */
     @DeleteMapping(value = "/{skId}")
+    @RequiresPermissions("resStypeKpi:delete")
     public PublicResult deletemoKpiObject(@PathVariable("skId") Integer skId) {
         if (ComUtil.isEmpty(resStypeKpiService.selectById(skId))) {
             return new PublicResult<>(PublicResultConstant.ERROR, null);

@@ -4,12 +4,14 @@ package com.hedian.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.hedian.annotation.Pass;
 import com.hedian.annotation.ValidationParam;
 import com.hedian.base.PageResult;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
-import com.hedian.entity.*;
+import com.hedian.entity.SysGrpRole;
+import com.hedian.entity.SysRole;
+import com.hedian.entity.SysRoleMenu;
+import com.hedian.entity.SysUserRole;
 import com.hedian.service.ISysGrpRoleService;
 import com.hedian.service.ISysRoleMenuService;
 import com.hedian.service.ISysRoleService;
@@ -18,9 +20,9 @@ import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.HashMap;
 import java.util.List;
@@ -110,6 +112,7 @@ public class SysRoleController {
      * 删除角色
      */
     @DeleteMapping(value = "/{roleId}")
+    @RequiresPermissions("sysRole:delete")
     public PublicResult deleteRole(@PathVariable("roleId") Long roleId) {
         if (ComUtil.isEmpty(roleService.selectById(roleId))) {
             return new PublicResult<>(PublicResultConstant.INVALID_ROLE, null);
@@ -131,6 +134,7 @@ public class SysRoleController {
      * @return
      */
     @PostMapping
+    @RequiresPermissions("sysRole:add")
     public PublicResult<String> addRole(@ValidationParam("roleName") @RequestBody JSONObject requestJson) throws Exception {
         if (!ComUtil.isEmpty(roleService.selectList(new EntityWrapper<SysRole>().eq("role_name",requestJson.getString("roleName"))))) {
             return new PublicResult<>("角色名已存在", null);
@@ -143,6 +147,7 @@ public class SysRoleController {
      * 修改角色信息
      */
     @PutMapping
+    @RequiresPermissions("sysRole:update")
     public PublicResult<String> updateRole(@ValidationParam("roleName,roleId") @RequestBody JSONObject requestJson) throws Exception {
         SysRole sysRole = roleService.selectById(requestJson.getLong("roleId"));
         if (!sysRole.getRoleName().equals(requestJson.getString("roleName")) && !ComUtil.isEmpty(roleService.selectList(new EntityWrapper<SysRole>().eq("role_name",requestJson.getString("roleName"))))) {

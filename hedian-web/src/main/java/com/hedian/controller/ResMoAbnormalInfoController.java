@@ -96,6 +96,7 @@ public class ResMoAbnormalInfoController {
      * 删除告警
      */
     @DeleteMapping(value = "/{resAbnormalId}")
+    @RequiresPermissions("repairOrderAppraiser:delete")
     public PublicResult deleteAbnormalInfo(@PathVariable("resAbnormalId") Long resAbnormalId, @CurrentUser SysUser user) throws Exception {
 
         boolean result = resMoAbnormalInfoService.deleteResAbnoraml(resAbnormalId, user);

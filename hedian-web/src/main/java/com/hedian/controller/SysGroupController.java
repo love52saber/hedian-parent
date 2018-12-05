@@ -16,6 +16,7 @@ import com.hedian.util.ComUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -122,6 +123,7 @@ public class SysGroupController {
      * @return
      */
     @PostMapping
+    @RequiresPermissions("sysGroup:add")
     public PublicResult<String> addGroup(@ValidationParam("grpName")
                                              @RequestBody JSONObject requestJson) throws Exception {
         if (!ComUtil.isEmpty(sysGroupService.selectList(new EntityWrapper<SysGroup>().eq("grp_name",requestJson.getString("grpName"))))) {
@@ -137,6 +139,7 @@ public class SysGroupController {
      * 修改用户组信息
      */
     @PutMapping
+    @RequiresPermissions("sysGroup:update")
     public PublicResult<String> updateGroup(@ValidationParam("grpId,grpName")
                                                 @RequestBody JSONObject requestJson) throws Exception {
         SysGroup sysGroup = requestJson.toJavaObject(SysGroup.class);
@@ -154,6 +157,7 @@ public class SysGroupController {
      * 删除用户组
      */
     @DeleteMapping(value = "/{grpId}")
+    @RequiresPermissions("sysGroup:delete")
     public PublicResult deleteGroup(@PathVariable("grpId") Long grpId) {
         if (ComUtil.isEmpty(sysGroupService.selectById(grpId))) {
             return new PublicResult<>(PublicResultConstant.INVALID_USER, null);
