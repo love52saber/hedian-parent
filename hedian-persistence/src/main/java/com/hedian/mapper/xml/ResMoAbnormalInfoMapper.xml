@@ -298,7 +298,7 @@
         from tbl_res_mo_abnormal_info trm
         LEFT JOIN tbl_res_abnormallevel tra
         on trm.res_abnormallevel_id=tra.res_abnormallevel_id
-        where 1=1
+        where 1=1 and trm.res_abnormalstatus=1
         <choose>
             <when test="resIds != null and resIds.size()>0"> AND res_id IN
                 <foreach item="rId" collection="resIds" open="(" separator=","
@@ -310,7 +310,7 @@
                 AND res_id = -1
             </otherwise>
         </choose>
-        order by trm.res_abnomaltime
+        order by tra.res_abnormallevel_priority,trm.res_abnomaltime
     </select>
 
 </mapper>
