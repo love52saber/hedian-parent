@@ -130,6 +130,17 @@
                 </configuration>
             </plugin>
         </plugins>
+        <!--对外打包，配置文件放在外面，便于修改-->
+        <!--<sourceDirectory>src/main/java</sourceDirectory>-->
+        <!--<resources>-->
+            <!--<resource>-->
+                <!--<directory>src/main/resources</directory>-->
+                <!--<targetPath>${project.build.directory}</targetPath>-->
+                <!--<excludes>-->
+                    <!--<exclude>**/*.java</exclude>-->
+                <!--</excludes>-->
+            <!--</resource>-->
+        <!--</resources>-->
     </build>
 
 </project>

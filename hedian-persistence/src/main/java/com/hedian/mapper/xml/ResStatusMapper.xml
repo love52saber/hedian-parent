@@ -30,13 +30,17 @@
     <select id="getCountByStatusMap" resultMap="CountResultMap">
         select b.res_status,b.res_status_name,b.res_status_color,count(a.res_status) as countNum from tbl_res_status b
         left join (select * from tbl_res_base WHERE 1=1
-        <if test="resIds != null and resIds.size()>0">and res_id IN
-            <foreach item="rId" collection="resIds" open="(" separator=","
-                     close=")">
-                #{rId}
-            </foreach>
-        </if>
-        <if test="resIds == null">AND res_id = -1</if>
+        <choose>
+            <when test="resIds != null and resIds.size()>0">AND res_id IN
+                <foreach item="rId" collection="resIds" open="(" separator=","
+                         close=")">
+                    #{rId}
+                </foreach>
+            </when>
+            <otherwise>
+                AND res_id = -1
+            </otherwise>
+        </choose>
         ) a on b.res_status=a.res_status
         where
         b.useflag=1

@@ -10,7 +10,10 @@ import com.hedian.base.*;
 import com.hedian.entity.SysFile;
 import com.hedian.entity.SysUser;
 import com.hedian.entity.SysUserRole;
-import com.hedian.service.*;
+import com.hedian.service.ISysDeptService;
+import com.hedian.service.ISysFileService;
+import com.hedian.service.ISysUserRoleService;
+import com.hedian.service.ISysUserService;
 import com.hedian.util.ComUtil;
 import com.hedian.util.StringUtil;
 import io.swagger.annotations.Api;
@@ -48,8 +51,6 @@ public class SysUserController {
     private ISysDeptService sysDeptService;
     @Autowired
     private ISysFileService sysFileService;
-    @Autowired
-    private ISysConfService sysConfService;
 
 
     /**
@@ -76,9 +77,9 @@ public class SysUserController {
                     , dataType = "String", paramType = "query"),
     })
     public PublicResult findPageList(@RequestParam(name = "pageIndex", defaultValue = "1", required = false) Integer pageIndex,
-                                 @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-                                 @RequestParam(value = "info", defaultValue = "", required = false) String info,
-                                 @RequestParam(value = "deptId", defaultValue = "", required = false) String deptId) {
+                                     @RequestParam(name = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+                                     @RequestParam(value = "info", defaultValue = "", required = false) String info,
+                                     @RequestParam(value = "deptId", defaultValue = "", required = false) String deptId) {
         EntityWrapper<SysUser> ew = new EntityWrapper<>();
         if (!ComUtil.isEmpty(info)) {
             ew.like("username", info).or().like("name", info);
@@ -106,7 +107,7 @@ public class SysUserController {
     public PublicResult findAll(@RequestParam(value = "grpId", defaultValue = "", required = false) Long grpId) {
 
         List<SysUser> userList = userService.selectUserList(grpId);
-        return  new PublicResult<>(PublicResultConstant.SUCCESS, userList);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, userList);
     }
 
     @GetMapping(value = "/wfUserList")
@@ -115,9 +116,9 @@ public class SysUserController {
             @ApiImplicitParam(name = "deptId", value = "部门id", dataType = "Long", paramType = "query")
     })
     public PublicResult wfUserList(@RequestParam(value = "stepType", defaultValue = "", required = false) Integer stepType,
-                                   @RequestParam(value = "deptId", defaultValue = "", required = false) Long deptId) throws BusinessException{
+                                   @RequestParam(value = "deptId", defaultValue = "", required = false) Long deptId) throws BusinessException {
         List<SysUser> userList = userService.getWfUsers(stepType, deptId);
-        return  new PublicResult<>(PublicResultConstant.SUCCESS, userList);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, userList);
     }
 
     /**
@@ -278,7 +279,7 @@ public class SysUserController {
         if (ComUtil.isEmpty(user)) {
             return new PublicResult<>(PublicResultConstant.INVALID_USER, null);
         }
-        if (user.getDelflag()==0) {
+        if (user.getDelflag() == 0) {
             return new PublicResult<>("该用户不能被删除", null);
         }
         boolean result = userService.deleteById(userId);

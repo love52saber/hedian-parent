@@ -115,7 +115,7 @@
         SELECT a.*,b.*,d.*
         FROM (SELECT * FROM tbl_res_base WHERE 1=1
         <choose>
-            <when test="resIds != null and resIds.size()>0">
+            <when test="resIds != null and resIds.size()>0"> AND res_id IN
                 <foreach item="rId" collection="resIds" open="(" separator=","
                          close=")">
                     #{rId}
@@ -139,10 +139,10 @@
         FROM (SELECT * FROM tbl_res_mo_abnormal_info
         WHERE 1=1
         <choose>
-            <when test="resIds != null and resIds.size()>0">
+            <when test="resIds != null and resIds.size()>0"> AND res_id IN
                 <foreach item="rId" collection="resIds" open="(" separator=","
                          close=")">
-                    #{rId}
+                   #{rId}
                 </foreach>
             </when>
             <otherwise>
@@ -159,10 +159,10 @@
         FROM (SELECT * FROM tbl_res_mo_abnormal_info_h
         WHERE useflag=1
         <choose>
-            <when test="resIds != null and resIds.size()>0">
+            <when test="resIds != null and resIds.size()>0"> AND res_id IN
                 <foreach item="rId" collection="resIds" open="(" separator=","
                          close=")">
-                    #{rId}
+                     #{rId}
                 </foreach>
             </when>
             <otherwise>
