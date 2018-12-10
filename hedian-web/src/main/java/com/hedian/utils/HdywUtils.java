@@ -25,8 +25,6 @@ public class HdywUtils {
     @Autowired
     private IResMoAbnormalInfoService resMoAbnormalInfoService;
     @Autowired
-    private ISysUserService sysUserService;
-    @Autowired
     private IMdUserService mdUserService;
     @Autowired
     private IMdResService mdResService;
@@ -34,8 +32,6 @@ public class HdywUtils {
     private IMdDeptService mdDeptService;
     @Autowired
     private ISysDeptService sysDeptService;
-    @Autowired
-    private IResSubtypeService resSubtypeService;
 
 
     public static HdywUtils hdywUtils;
@@ -66,18 +62,8 @@ public class HdywUtils {
             resIds=HdywUtils.getResIds(map);
         } else {
             //如果该用户没有管理域，获取该用户的部门，并判断该部门是否有管理域
-            Long deptId = sysUser.getDeptId();
-            //获取该部门及其下的所有子部门的id
-            List<SysDept> sysDeptList = hdywUtils.sysDeptService.getChildList(deptId);
-            List<Long> deptIds = null;
-            if (!ComUtil.isEmpty(sysDeptList)) {
-                deptIds = sysDeptList.stream().map(SysDept::getDeptId).collect(Collectors.toList());
-            }
-            map.put("deptIds", deptIds);
-            //获取管理域关联的组织机构
-            List<MdDept> mdDepts = hdywUtils.mdDeptService.findByMap(map);
+            List<MdDept> mdDepts = hdywUtils.mdDeptService.selectList(new EntityWrapper<MdDept>().eq("dept_id", sysUser.getDeptId()));
             if (!ComUtil.isEmpty(mdDepts)) {
-                map.clear();
                 //管理域ID集合
                 map.put("mdIds", mdDepts.stream().map(MdDept::getMdId).collect(Collectors.toList()));
                 resIds=HdywUtils.getResIds(map);
@@ -120,8 +106,6 @@ public class HdywUtils {
                 resIds.addAll(mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toSet()));
             }
         }
-
-
         return  resIds;
     }
 
