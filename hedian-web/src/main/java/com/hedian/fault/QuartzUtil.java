@@ -50,7 +50,7 @@ public class QuartzUtil {
     /**
      * 20S查询一次数据库更新 设备信息，检测报警  更新日志等
      */
-//    @Scheduled(fixedDelay = QuatzConstants.THREE_MINUTE)
+    @Scheduled(fixedDelay = QuatzConstants.THREE_MINUTE)
     @Transactional(rollbackFor = Exception.class)
     public void updateResBase() throws Exception {
         //取出系统配置时间 c_type=20000 parakey为offline_count和offline_interval的配置值
@@ -162,50 +162,46 @@ public class QuartzUtil {
                         if (null != tblMoThresholds && tblMoThresholds.size() > 0) {
                             MoThreshold moThresholdCache = getMoThreshold(targetValue, tblMoThresholds);
                             if (null != moThresholdCache) {
-                                for (MoThreshold moThreshold : tblMoThresholds) {
-                                    if (moThreshold.getMoThPriority().equals(moThresholdCache.getMoThPriority())) {
-                                        log.info(rootResBase.getResAlias() + "产生的最高异常警告为id为：" + moThresholdCache.getMoThId()
-                                                + "类型为：" + moThresholdCache.getMoThType());
-                                        //有异常, 查询监控异常定义
-                                        MoAbnormalDef moAbnormalDef = moAbnormalDefService.selectById(moThresholdCache.getMoAbnormalId());
-                                        //异常定义level等级
-                                        ResAbnormallevel resAbnormalLevel = resAbnormallevelService.selectById(moAbnormalDef.getResAbnormallevelId());
-                                        //监控异常模版翻译
-                                        String errMainInfo = TranslateTemplateUtil.translateTemplate(moAbnormalDef.getMoAbnormalShowtemplate(), targetValue, moThresholdCache, moKpi,
-                                                resAbnormalLevel, moAbnormalDef, rootResBase, rootResBase.getResMainType(), rootResBase.getResSubtype());
-                                        ResMoAbnormalInfo resMoAbnormalInfo = new ResMoAbnormalInfo();
-                                        resMoAbnormalInfo.setResId(rootResBase.getResId());
-                                        resMoAbnormalInfo.setMoAbnormalId(moAbnormalDef.getMoAbnormalId());
-                                        resMoAbnormalInfo.setMoThId(moThresholdCache.getMoThId());
-                                        resMoAbnormalInfo.setMoKpiId(moThresholdCache.getMoKpiId());
-                                        resMoAbnormalInfo.setResAbnormalCode(moAbnormalDef.getMoAbnormalcode());
-                                        resMoAbnormalInfo.setResAbnormalName(moAbnormalDef.getMoAbnormalName());
-                                        resMoAbnormalInfo.setResAbnormallevelId(moAbnormalDef.getResAbnormallevelId());
-                                        resMoAbnormalInfo.setResAbnomaltime(new Date());
-                                        //异常信息翻译
-                                        resMoAbnormalInfo.setResAbnormaldesc(errMainInfo);
-                                        resMoAbnormalInfo.setResAbnormalvalue(targetValue);
-                                        resMoAbnormalInfo.setResAbnormalstatus(1);
-                                        resMoAbnormalInfo.setConfirmStatus(1);
-                                        resMoAbnormalInfo.setCleanType(0);
-                                        if (levelPriority > resAbnormalLevel.getResAbnormallevelPriority()) {
-                                            levelPriority = resAbnormalLevel.getResAbnormallevelPriority();
-                                            color = resAbnormalLevel.getResAbnormallevelColor();
-                                            try {
-                                                abnormalDefCache = (MoAbnormalDef) BeanUtils.cloneBean(moAbnormalDef);
-                                                errMoKpi = (MoKpi) BeanUtils.cloneBean(moKpi);
-                                                errDataValue = targetValue;
-                                                resMoAbnormalInfoCache = (ResMoAbnormalInfo) BeanUtils.cloneBean(resMoAbnormalInfo);
-                                                errMoThreshold = (MoThreshold) BeanUtils.cloneBean(moThresholdCache);
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                                log.info("copy object failed");
-                                            }
-                                        }
-                                        if (null == tblResMoAbnormalInfos.get(kpiId)) {
-                                            resMoAbnormalInfoService.insert(resMoAbnormalInfo);
-                                        }
+                                log.info(rootResBase.getResAlias() + "产生的最高异常警告为id为：" + moThresholdCache.getMoThId()
+                                        + "类型为：" + moThresholdCache.getMoThType());
+                                //有异常, 查询监控异常定义
+                                MoAbnormalDef moAbnormalDef = moAbnormalDefService.selectById(moThresholdCache.getMoAbnormalId());
+                                //异常定义level等级
+                                ResAbnormallevel resAbnormalLevel = resAbnormallevelService.selectById(moAbnormalDef.getResAbnormallevelId());
+                                //监控异常模版翻译
+                                String errMainInfo = TranslateTemplateUtil.translateTemplate(moAbnormalDef.getMoAbnormalShowtemplate(), targetValue, moThresholdCache, moKpi,
+                                        resAbnormalLevel, moAbnormalDef, rootResBase, rootResBase.getResMainType(), rootResBase.getResSubtype());
+                                ResMoAbnormalInfo resMoAbnormalInfo = new ResMoAbnormalInfo();
+                                resMoAbnormalInfo.setResId(rootResBase.getResId());
+                                resMoAbnormalInfo.setMoAbnormalId(moAbnormalDef.getMoAbnormalId());
+                                resMoAbnormalInfo.setMoThId(moThresholdCache.getMoThId());
+                                resMoAbnormalInfo.setMoKpiId(moThresholdCache.getMoKpiId());
+                                resMoAbnormalInfo.setResAbnormalCode(moAbnormalDef.getMoAbnormalcode());
+                                resMoAbnormalInfo.setResAbnormalName(moAbnormalDef.getMoAbnormalName());
+                                resMoAbnormalInfo.setResAbnormallevelId(moAbnormalDef.getResAbnormallevelId());
+                                resMoAbnormalInfo.setResAbnomaltime(new Date());
+                                //异常信息翻译
+                                resMoAbnormalInfo.setResAbnormaldesc(errMainInfo);
+                                resMoAbnormalInfo.setResAbnormalvalue(targetValue);
+                                resMoAbnormalInfo.setResAbnormalstatus(1);
+                                resMoAbnormalInfo.setConfirmStatus(1);
+                                resMoAbnormalInfo.setCleanType(0);
+                                if (levelPriority > resAbnormalLevel.getResAbnormallevelPriority()) {
+                                    levelPriority = resAbnormalLevel.getResAbnormallevelPriority();
+                                    color = resAbnormalLevel.getResAbnormallevelColor();
+                                    try {
+                                        abnormalDefCache = (MoAbnormalDef) BeanUtils.cloneBean(moAbnormalDef);
+                                        errMoKpi = (MoKpi) BeanUtils.cloneBean(moKpi);
+                                        errDataValue = targetValue;
+                                        resMoAbnormalInfoCache = (ResMoAbnormalInfo) BeanUtils.cloneBean(resMoAbnormalInfo);
+                                        errMoThreshold = (MoThreshold) BeanUtils.cloneBean(moThresholdCache);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        log.info("copy object failed");
                                     }
+                                }
+                                if (null == tblResMoAbnormalInfos.get(kpiId)) {
+                                    resMoAbnormalInfoService.insert(resMoAbnormalInfo);
                                 }
                             } else {
                                 //没有异常   判断当前kpi异常表有没有异常 有则恢复， 没有跳过
