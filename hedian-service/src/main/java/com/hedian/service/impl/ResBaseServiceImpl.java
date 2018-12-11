@@ -132,7 +132,6 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
             }
         } else {
             //如果该用户没有管理域，获取该用户的部门，并判断该部门是否有管理域
-            //获取该部门及其下的所有子部门的id
             List<MdDept> mdDeptList = mdDeptService.selectList(new EntityWrapper<MdDept>().eq("dept_id", sysUser.getDeptId()));
             List<Integer> mdIds = null;
             if (!ComUtil.isEmpty(mdDeptList)) {
