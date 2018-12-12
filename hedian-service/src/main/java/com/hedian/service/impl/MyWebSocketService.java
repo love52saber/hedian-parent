@@ -45,7 +45,7 @@ public class MyWebSocketService {
         //在线数加1
         addOnlineCount();
         clients.put(userId, this);
-        logger.info("有新连接加入！当前在线人数为" + getOnlineCount());
+        logger.info("New connection:" + getOnlineCount() + ",number");
 //        try {
 //            sendMessage("当前人数为："+getOnlineCount());
 //        } catch (IOException e) {
@@ -62,7 +62,7 @@ public class MyWebSocketService {
         clients.remove(userId);
         //在线数减1
         subOnlineCount();
-        logger.info("有一连接关闭！当前在线人数为" + getOnlineCount());
+        logger.info("Close Connection:" + getOnlineCount() + ",number");
     }
 
     /**
@@ -93,6 +93,7 @@ public class MyWebSocketService {
         Set<Map.Entry<Integer, MyWebSocketService>> entries = clients.entrySet();
         for (Map.Entry<Integer, MyWebSocketService> item : entries) {
             item.getValue().session.getAsyncRemote().sendText(message);
+            logger.info("push success" + message);
         }
     }
 
@@ -104,7 +105,7 @@ public class MyWebSocketService {
      */
     @OnError
     public void onError(Session session, Throwable error) {
-        logger.error(error.toString() + "发生错误");
+        logger.error(error.toString() + "error");
         error.printStackTrace();
     }
 
