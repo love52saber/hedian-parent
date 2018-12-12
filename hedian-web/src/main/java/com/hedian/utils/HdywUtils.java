@@ -97,14 +97,15 @@ public class HdywUtils {
     public static Set getResIds( Map<String, Object> map){
         Set<Integer> resIds = new HashSet<>();
         //获取管理域关联的终端
-        List<MdRes> mdTerminalResList = hdywUtils.mdResService.findByMap(map);
-        if(!ComUtil.isEmpty(mdTerminalResList)){
+        List<MdRes> TerminalList = hdywUtils.mdResService.findByMap(map);
+        if(!ComUtil.isEmpty(TerminalList)){
             //根据终端id查关联的设备
-            List<ResTerminal> mdResList=hdywUtils.resTerminalService.selectList(new EntityWrapper<ResTerminal>().in("res_id_terminal",mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toList())));
-            if(!ComUtil.isEmpty(mdResList)){
-                resIds = mdResList.stream().map(ResTerminal::getResId).collect(Collectors.toSet());
-                resIds.addAll(mdTerminalResList.stream().map(MdRes::getResId).collect(Collectors.toSet()));
+            resIds=TerminalList.stream().map(MdRes::getResId).collect(Collectors.toSet());
+            List<ResTerminal> ResList=hdywUtils.resTerminalService.selectList(new EntityWrapper<ResTerminal>().in("res_id_terminal",TerminalList.stream().map(MdRes::getResId).collect(Collectors.toList())));
+            if(!ComUtil.isEmpty(ResList)){
+                resIds.addAll(ResList.stream().map(ResTerminal::getResId).collect(Collectors.toSet()));
             }
+
         }
         return  resIds;
     }
