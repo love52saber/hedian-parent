@@ -25,6 +25,7 @@
         <result column="current_step" property="currentStep"/>
         <result column="current_user" property="currentUser"/>
         <result column="wo_eval_score" property="woEvalScore"/>
+        <result column="parent_business_id" property="parentBusinessId"/>
     </resultMap>
 
     <!-- 通用查询映射结果 -->
@@ -171,7 +172,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        business_id AS businessId, wf_id AS wfId, wf_title AS wfTitle, wf_type AS wfType, wo_sla_id AS woSlaId, user_id AS userId,telephone, gmt_create AS gmtCreate, res_abnormaldesc AS resAbnormaldesc, url, res_abnormal_id AS resAbnormalId, abnormal_type_id AS abnormalTypeId, res_abnormallevel_id AS resAbnormallevelId, res_id AS resId, res_stype_id AS resStypeId, res_mtype_id AS resMtypeId, wf_status AS wfStatus, useflag, current_step AS currentStep, current_user AS currentUser, wo_eval_score AS woEvalScore
+        business_id AS businessId, wf_id AS wfId, wf_title AS wfTitle, wf_type AS wfType, wo_sla_id AS woSlaId, user_id AS userId,telephone, gmt_create AS gmtCreate, res_abnormaldesc AS resAbnormaldesc, url, res_abnormal_id AS resAbnormalId, abnormal_type_id AS abnormalTypeId, res_abnormallevel_id AS resAbnormallevelId, res_id AS resId, res_stype_id AS resStypeId, res_mtype_id AS resMtypeId, wf_status AS wfStatus, useflag, current_step AS currentStep, current_user AS currentUser, wo_eval_score AS woEvalScore, parent_business_id AS parentBusinessId
     </sql>
 
     <select id="selectPageByCondition" resultMap="CustomMap">

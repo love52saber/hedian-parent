@@ -1,16 +1,15 @@
 package com.hedian.entity;
 
-import java.io.Serializable;
-
+import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableLogic;
+import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableName;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -94,6 +93,19 @@ public class WfBusiness extends Model<WfBusiness> {
     @TableField("wo_eval_score")
     private Integer woEvalScore;
 
+    /**
+     * 父工单id
+     */
+    @TableField("parent_business_id")
+    private Long parentBusinessId;
+
+    public Long getParentBusinessId() {
+        return parentBusinessId;
+    }
+
+    public void setParentBusinessId(Long parentBusinessId) {
+        this.parentBusinessId = parentBusinessId;
+    }
 
     public Long getBusinessId() {
         return businessId;
