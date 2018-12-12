@@ -10,6 +10,9 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
+import javax.print.DocFlavor;
 import java.io.Serializable;
 
 /**
@@ -18,14 +21,14 @@ import java.io.Serializable;
  * </p>
  *
  * @author hedian123
- * @since 2018-10-18
+ * @since 2018-11-27
  */
 @TableName("tbl_wo_sla")
 public class WoSla extends Model<WoSla> {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId("wo_sla_id")
+    @TableId(value="wo_sla_id",type = IdType.AUTO)
     private Integer woSlaId;
     @TableField("wo_sla_name")
     private String woSlaName;
@@ -59,9 +62,9 @@ public class WoSla extends Model<WoSla> {
      * 最晚时长：小时为单位存储
      */
     private BigDecimal deadtime;
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date begintime;
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date endtime;
     /**
      * 启用状态：1 启用 0 禁用
@@ -76,16 +79,23 @@ public class WoSla extends Model<WoSla> {
     private Integer useflag;
     @TableField("user_id_create")
     private Long userIdCreate;
-
     @TableField("gmt_create")
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date gmtCreate;
     @TableField("user_id_mod")
     private Long userIdMod;
     @TableField("gmt_modified")
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date gmtModified;
 
+    @TableField(exist = false)
+    private String resAbnormallevelName;
+
+    public String getResAbnormallevelName() {
+        return resAbnormallevelName;
+    }
+
+    public void setResAbnormallevelName(String resAbnormallevelName) {
+        this.resAbnormallevelName = resAbnormallevelName;
+    }
 
     public Integer getWoSlaId() {
         return woSlaId;

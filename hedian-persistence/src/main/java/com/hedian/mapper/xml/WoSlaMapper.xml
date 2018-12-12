@@ -25,9 +25,62 @@
         <result column="gmt_modified" property="gmtModified" />
     </resultMap>
 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="SlaPageMap" type="com.hedian.entity.WoSla">
+        <id column="wo_sla_id" property="woSlaId" />
+        <result column="wo_sla_name" property="woSlaName" />
+        <result column="wo_sla_desc" property="woSlaDesc" />
+        <result column="res_abnormallevel_id" property="resAbnormallevelId" />
+        <result column="proc_def_id" property="procDefId" />
+        <result column="act_id_in" property="actIdIn" />
+        <result column="act_id_out" property="actIdOut" />
+        <result column="hopetime" property="hopetime" />
+        <result column="deadtime" property="deadtime" />
+        <result column="begintime" property="begintime" />
+        <result column="endtime" property="endtime" />
+        <result column="wo_sla_status" property="woSlaStatus" />
+        <result column="createflag" property="createflag" />
+        <result column="delflag" property="delflag" />
+        <result column="useflag" property="useflag" />
+        <result column="user_id_create" property="userIdCreate" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="user_id_mod" property="userIdMod" />
+        <result column="gmt_modified" property="gmtModified" />
+        <result column="res_abnormallevel_name" property="resAbnormallevelName"/>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         wo_sla_id AS woSlaId, wo_sla_name AS woSlaName, wo_sla_desc AS woSlaDesc, res_abnormallevel_id AS resAbnormallevelId, proc_def_id AS procDefId, act_id_in AS actIdIn, act_id_out AS actIdOut, hopetime, deadtime, begintime, endtime, wo_sla_status AS woSlaStatus, createflag, delflag, useflag, user_id_create AS userIdCreate, gmt_create AS gmtCreate, user_id_mod AS userIdMod, gmt_modified AS gmtModified
     </sql>
 
+    <select id="selectwoSlaPageByCondition" resultMap="SlaPageMap">
+      SELECT ws.wo_sla_name,ws.res_abnormallevel_id,ws.proc_def_id,ws.act_id_in,ws.act_id_out,ws.hopetime,ws.deadtime,ws.begintime,ws.endtime,ws.wo_sla_status,ws.wo_sla_desc,
+      ws.*,
+      ra.*
+      FROM tbl_wo_sla ws
+      LEFT JOIN tbl_res_abnormallevel ra ON ws.res_abnormallevel_id = ra.res_abnormallevel_id
+      WHERE ws.useflag=1
+      <if test="woSlaName !=null and woSlaName !=''" >
+              AND ws.wo_sla_name=#{woSlaName}
+      </if>
+      <if test="resAbnormallevelId!=null and resAbnormallevelId!=''">
+        and  ws.res_abnormallevel_id=#{resAbnormallevelId}
+      </if>
+
+      <if test="procDefId !=null and procDefId!=''">
+              AND ws.proc_def_id=#{procDefId}
+      </if>
+      <if test="woSlaStatus !=null and woSlaStatus !=''">
+              AND ws.wo_sla_status=#{woSlaStatus}
+      </if>
+      <if test="flag==1">
+        and '${nowTime}' &gt; ws.begintime
+        and '${nowTime}' &lt; ws.endtime
+      </if>
+      <if test="woSlaDesc !=null and woSlaDesc !=''">
+              AND ws.wo_sla_desc=#{woSlaDesc}
+      </if>
+        ORDER BY ws.gmt_create DESC
+    </select>
 </mapper>
