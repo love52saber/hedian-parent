@@ -101,6 +101,9 @@ public class QuartzUtil {
                             resBaseService.updateAllColumnById(rootbase);
                             log.info("update rootBase" + rootbase.getResAlias() + " Successful!");
                         }
+                        //消息推送
+                        noticeModel.setType(1);
+                        MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
                     }
                 }
             }
@@ -144,9 +147,6 @@ public class QuartzUtil {
                 resMoAbnormalInfo.setResRecoverytime(new Date());
                 //修改
                 resMoAbnormalInfoService.updateById(resMoAbnormalInfo);
-                //消息推送
-                noticeModel.setType(1);
-                MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
             }
             if (null != moKpiMap && !moKpiMap.isEmpty()) {
                 for (Integer kpiId : moKpiMap.keySet()) {
@@ -213,9 +213,6 @@ public class QuartzUtil {
                                     resMoAbnormalInfo.setResRecoverytime(new Date());
                                     //修改
                                     resMoAbnormalInfoService.updateById(resMoAbnormalInfo);
-                                    //消息推送
-                                    noticeModel.setType(1);
-                                    MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
                                 }
                             }
                         }
@@ -382,9 +379,7 @@ public class QuartzUtil {
                 rootBase.setResColor(color);
                 resBaseService.updateById(rootBase);
             }
-            //消息推送
-            noticeModel.setType(1);
-            MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
+
         } else if ((restoreNums == tblResMoAbnormalInfos.size() && tblResMoAbnormalInfos.size() > 0)
                 || rootBase.getResStatus().equals(QuatzConstants.UNKNOWN)
                 || rootBase.getResStatus().equals(QuatzConstants.OFFLINE)) {
@@ -404,9 +399,6 @@ public class QuartzUtil {
                 rootBase.setResColor(null);
                 resBaseService.updateById(rootBase);
             }
-            //消息推送
-            noticeModel.setType(1);
-            MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
         }
         //终端正常没有异常数据是也要把对象放进去
         if (flag == 0 && null == rootMapCache.get(QuatzConstants.ROOTBASE)) {
@@ -483,7 +475,7 @@ public class QuartzUtil {
                 }
             }
         }
-        // 消息推送
+        //消息推送
         noticeModel.setType(1);
         MyWebSocketService.sendMessageAll(JSONObject.toJSONString(noticeModel));
     }

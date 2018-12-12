@@ -22,7 +22,6 @@ public class MyMetaObjectHandler extends MetaObjectHandler {
         Object gmtModified = getFieldValByName("gmtModified", metaObject);
         Object useFlag = getFieldValByName("useflag", metaObject);
         Object showorder = getFieldValByName("showorder", metaObject);
-        System.out.println("gmtCreate=" + gmtCreate);
         if (null == gmtCreate) {
             setFieldValByName("gmtCreate", new Date(), metaObject);
         }
