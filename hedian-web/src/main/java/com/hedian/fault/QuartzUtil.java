@@ -397,7 +397,7 @@ public class QuartzUtil {
                 rootMapCache.put(QuatzConstants.ROOTBASE, rootBase);
             } else {
                 rootBase.setResColor(null);
-                resBaseService.updateById(rootBase);
+                resBaseService.updateAllColumnById(rootBase);
             }
         }
         //终端正常没有异常数据是也要把对象放进去
