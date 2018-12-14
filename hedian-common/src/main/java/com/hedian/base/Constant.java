@@ -81,7 +81,7 @@ public class Constant {
     }
 
     //此工单是最顶层工单标志
-    public static final Long IS_ORIGINAL_BUSINESS_ID = 0L;
+    public static final Long TOPPEST_BUSINESS_PARENT_ID = 0L;
 
 
 }

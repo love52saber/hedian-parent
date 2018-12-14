@@ -30,16 +30,16 @@ public class WfBusinessServiceImpl extends ServiceImpl<WfBusinessMapper, WfBusin
 
     @Override
     public List<WfBusiness> getAssociatedBusinessListExceptSelf(Long businessId) throws Exception {
-        List<WfBusiness> associatedBusinessList = new ArrayList<>();
+
         WfBusiness currentWfBusiness = this.selectById(businessId);
         if (ComUtil.isEmpty(currentWfBusiness)) {
             throw new BusinessException("查询不到这条工单");
         }
-        //获取最顶层工单id
-        Long originalBusinessId = this.getOriginalBusinessId(currentWfBusiness);
+        //获取最顶层工单
+        WfBusiness toppestBusiness = this.getToppestBusiness(currentWfBusiness);
         //获取整个工单树
-        associatedBusinessList.add(this.selectById(originalBusinessId));
-        associatedBusinessList = this.getAssociatedBusinessList(originalBusinessId, associatedBusinessList);
+        List<WfBusiness> associatedBusinessList = new ArrayList<>();
+        this.addBusinessesUnderSpecifiedBusiness(toppestBusiness, associatedBusinessList, true);
         //排除当前工单
         associatedBusinessList.removeIf(wfBusiness -> {
             return wfBusiness.getBusinessId().equals(businessId);
@@ -48,37 +48,41 @@ public class WfBusinessServiceImpl extends ServiceImpl<WfBusinessMapper, WfBusin
     }
 
     /**
-     * 获取最顶层工单id
+     * 获取最顶层工单
      *
      * @param currentWfBusiness
      * @return
      */
-    public Long getOriginalBusinessId(WfBusiness currentWfBusiness) {
-        Long originalBusinessId = null;
-        Long currentBusinessBusinessId = currentWfBusiness.getBusinessId();
-        if (currentWfBusiness.getParentBusinessId().equals(Constant.IS_ORIGINAL_BUSINESS_ID)) {
-            originalBusinessId = currentBusinessBusinessId;
+    public WfBusiness getToppestBusiness(WfBusiness currentWfBusiness) {
+        Long parentBusinessId = currentWfBusiness.getParentBusinessId();
+        if (parentBusinessId.equals(Constant.TOPPEST_BUSINESS_PARENT_ID)) {
+            return currentWfBusiness;
         } else {
-            WfBusiness parentBusiness = this.selectById(currentWfBusiness.getParentBusinessId());
-            originalBusinessId = getOriginalBusinessId(parentBusiness);
+            WfBusiness parentBusiness = this.selectById(parentBusinessId);
+            return getToppestBusiness(parentBusiness);
         }
-        return originalBusinessId;
     }
 
     /**
-     * 获取整个相关的工单树
-     *
-     * @param originalBusinessId
-     * @param associatedBusinessList
+     * 添加指定工单下的子工单树(包括自身)到指定list
+     * @param currentBusiness 当前工单
+     * @param specifiedBusinessList 存储相关工单的list
+     * @param isOriginalFlag 是否为起始工单
      * @return
      */
-    private List<WfBusiness> getAssociatedBusinessList(Long originalBusinessId, List<WfBusiness> associatedBusinessList) {
-        List<WfBusiness> subBusinessList = this.selectList(new EntityWrapper<WfBusiness>().eq("parent_business_id", originalBusinessId));
-        associatedBusinessList.addAll(subBusinessList);
-        for (WfBusiness wfBusiness : subBusinessList) {
-            getAssociatedBusinessList(wfBusiness.getBusinessId(), associatedBusinessList);
+    private List<WfBusiness> addBusinessesUnderSpecifiedBusiness(WfBusiness currentBusiness,
+                                                       List<WfBusiness> specifiedBusinessList,
+                                                       boolean isOriginalFlag) {
+        if (isOriginalFlag) {
+            specifiedBusinessList.add(currentBusiness);
         }
-        return associatedBusinessList;
+        List<WfBusiness> subBusinessList = this.selectList(new EntityWrapper<WfBusiness>().eq("parent_business_id",
+                currentBusiness.getBusinessId()));
+        specifiedBusinessList.addAll(subBusinessList);
+        for (WfBusiness wfBusiness : subBusinessList) {
+            addBusinessesUnderSpecifiedBusiness(wfBusiness, specifiedBusinessList,false);
+        }
+        return specifiedBusinessList;
     }
 
 
