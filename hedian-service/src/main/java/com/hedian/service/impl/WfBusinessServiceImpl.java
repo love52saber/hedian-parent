@@ -37,8 +37,8 @@ public class WfBusinessServiceImpl extends ServiceImpl<WfBusinessMapper, WfBusin
         }
         //获取最顶层工单
         WfBusiness toppestBusiness = this.getToppestBusiness(currentWfBusiness);
-        //获取整个工单树
-        List<WfBusiness> associatedBusinessList = this.getBusinessesUnderSpecifiedBusiness(toppestBusiness);
+        //获取整个工单树的工单
+        List<WfBusiness> associatedBusinessList = this.getAllSubBusiness(toppestBusiness);
         //排除当前工单
         associatedBusinessList.removeIf(wfBusiness -> {
             return wfBusiness.getBusinessId().equals(businessId);
@@ -65,12 +65,12 @@ public class WfBusinessServiceImpl extends ServiceImpl<WfBusinessMapper, WfBusin
     /**
      * 获取指定工单下的子工单list(包括自身)
      *
-     * @param specifiedBusiness
+     * @param originalBusiness 指定的起始工单
      * @return
      */
-    private List<WfBusiness> getBusinessesUnderSpecifiedBusiness(WfBusiness specifiedBusiness) {
+    private List<WfBusiness> getAllSubBusiness(WfBusiness originalBusiness) {
         List<WfBusiness> associatedBusinessList = new ArrayList<>();
-        this.addBusinessesUnderSpecifiedBusiness(specifiedBusiness, associatedBusinessList, true);
+        this.addAllSubBusiness(originalBusiness, associatedBusinessList, true);
         return associatedBusinessList;
     }
 
@@ -82,7 +82,7 @@ public class WfBusinessServiceImpl extends ServiceImpl<WfBusinessMapper, WfBusin
      * @param isOriginalFlag        是否为起始节点
      * @return
      */
-    private List<WfBusiness> addBusinessesUnderSpecifiedBusiness(WfBusiness currentBusiness,
+    private List<WfBusiness> addAllSubBusiness(WfBusiness currentBusiness,
                                                                  List<WfBusiness> specifiedBusinessList,
                                                                  boolean isOriginalFlag) {
         if (isOriginalFlag) {
@@ -92,7 +92,7 @@ public class WfBusinessServiceImpl extends ServiceImpl<WfBusinessMapper, WfBusin
                 currentBusiness.getBusinessId()));
         specifiedBusinessList.addAll(subBusinessList);
         for (WfBusiness subBusiness : subBusinessList) {
-            addBusinessesUnderSpecifiedBusiness(subBusiness, specifiedBusinessList, false);
+            addAllSubBusiness(subBusiness, specifiedBusinessList, false);
         }
         return specifiedBusinessList;
     }
