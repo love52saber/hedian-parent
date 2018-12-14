@@ -38,8 +38,7 @@ public class WfBusinessServiceImpl extends ServiceImpl<WfBusinessMapper, WfBusin
         //获取最顶层工单
         WfBusiness toppestBusiness = this.getToppestBusiness(currentWfBusiness);
         //获取整个工单树
-        List<WfBusiness> associatedBusinessList = new ArrayList<>();
-        this.addBusinessesUnderSpecifiedBusiness(toppestBusiness, associatedBusinessList, true);
+        List<WfBusiness> associatedBusinessList = getBusinessesUnderSpecifiedBusiness(toppestBusiness);
         //排除当前工单
         associatedBusinessList.removeIf(wfBusiness -> {
             return wfBusiness.getBusinessId().equals(businessId);
@@ -64,7 +63,18 @@ public class WfBusinessServiceImpl extends ServiceImpl<WfBusinessMapper, WfBusin
     }
 
     /**
-     * 添加指定工单下的子工单树(包括自身)到指定list
+     * 获取指定工单下的子工单list(包括自身)
+     * @param originalBusiness
+     * @return
+     */
+    private List<WfBusiness> getBusinessesUnderSpecifiedBusiness(WfBusiness originalBusiness) {
+        List<WfBusiness> associatedBusinessList = new ArrayList<>();
+        this.addBusinessesUnderSpecifiedBusiness(originalBusiness, associatedBusinessList, true);
+        return associatedBusinessList;
+    }
+
+    /**
+     * 递归添加指定工单下的子工单树(包括自身)到指定list
      * @param currentBusiness 当前工单
      * @param specifiedBusinessList 存储相关工单的list
      * @param isOriginalFlag 是否为起始工单
@@ -79,8 +89,8 @@ public class WfBusinessServiceImpl extends ServiceImpl<WfBusinessMapper, WfBusin
         List<WfBusiness> subBusinessList = this.selectList(new EntityWrapper<WfBusiness>().eq("parent_business_id",
                 currentBusiness.getBusinessId()));
         specifiedBusinessList.addAll(subBusinessList);
-        for (WfBusiness wfBusiness : subBusinessList) {
-            addBusinessesUnderSpecifiedBusiness(wfBusiness, specifiedBusinessList,false);
+        for (WfBusiness subBusiness : subBusinessList) {
+            addBusinessesUnderSpecifiedBusiness(subBusiness, specifiedBusinessList,false);
         }
         return specifiedBusinessList;
     }
