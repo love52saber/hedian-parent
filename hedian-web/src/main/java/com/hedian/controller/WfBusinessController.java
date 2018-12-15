@@ -40,5 +40,12 @@ public class WfBusinessController {
         List<WfBusiness> associatedBusinessListExceptSelf = iWfBusinessService.getAssociatedBusinessListExceptSelf(businessId);
         return new PublicResult(PublicResultConstant.SUCCESS, associatedBusinessListExceptSelf);
     }
-	
+
+    @GetMapping("/pageList")
+    @ApiOperation("获取工单工单")
+    @ApiImplicitParam(name = "businessId",value = "工单id",required = true,dataType = "Long",paramType = "path")
+    public PublicResult findBuinessPage(@ValidationParam @PathVariable("businessId")Long businessId) throws Exception {
+        List<WfBusiness> associatedBusinessListExceptSelf = iWfBusinessService.getAssociatedBusinessListExceptSelf(businessId);
+        return new PublicResult(PublicResultConstant.SUCCESS, associatedBusinessListExceptSelf);
+    }
 }

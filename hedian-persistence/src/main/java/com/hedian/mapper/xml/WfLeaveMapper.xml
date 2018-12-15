@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hedian.mapper.WfLeaveMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.hedian.entity.WfLeave">
+		<id column="leave_id" property="leaveId" />
+		<result column="leave_user_id" property="leaveUserId" />
+		<result column="start_time" property="startTime" />
+		<result column="end_time" property="endTime" />
+		<result column="reality_start_time" property="realityStartTime" />
+		<result column="reality_end_time" property="realityEndTime" />
+		<result column="reason" property="reason" />
+		<result column="apply_time" property="applyTime" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        leave_id AS leaveId, leave_user_id AS leaveUserId, start_time AS startTime, end_time AS endTime, reality_start_time AS realityStartTime, reality_end_time AS realityEndTime, reason, apply_time AS applyTime
+    </sql>
+
+</mapper>
