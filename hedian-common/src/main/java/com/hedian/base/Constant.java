@@ -80,5 +80,8 @@ public class Constant {
         public static final String USER = "user";
     }
 
+    //此工单是最顶层工单标志
+    public static final Long TOPPEST_BUSINESS_PARENT_ID = 0L;
+
 
 }
