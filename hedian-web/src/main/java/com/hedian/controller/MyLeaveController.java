@@ -4,6 +4,7 @@ package com.hedian.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hedian.annotation.ValidationParam;
+import com.hedian.base.BusinessException;
 import com.hedian.base.PublicResult;
 import com.hedian.base.PublicResultConstant;
 import com.hedian.entity.WfLeave;
@@ -36,7 +37,7 @@ public class MyLeaveController {
         return null;
     }
 
-    @PostMapping("")
+    @PostMapping("save")
     @ApiOperation("保存请假条")
     @ApiImplicitParam(name = "requestJson",value = "{\"leave_user_id\":请假人id,\"start_time\":\"开始时间\"," +
             "\"end_time\":\"结束时间\",\"reason\":\"申请理由\",\"apply_time\":\"申请时间\"}",paramType = "String",dataType = "body")
@@ -46,7 +47,25 @@ public class MyLeaveController {
                 new PublicResult(PublicResultConstant.ERROR,null);
     }
 
+    @PostMapping("leaveApplication")
+    @ApiOperation("申请请假")
+    @ApiImplicitParam(name = "requestJson",value = "{\"start_time\":\"开始时间\"," +
+            "\"end_time\":\"结束时间\",\"reason\":\"申请理由\",\"apply_time\":\"申请时间\"}",paramType = "String",dataType = "body")
+    public PublicResult startLeave(@RequestBody JSONObject requestJson) throws BusinessException {
+        WfLeave wfLeave = JSON.toJavaObject(requestJson, WfLeave.class);
+        return iWfLeaveService.startLeave(wfLeave)?new PublicResult(PublicResultConstant.SUCCESS,null):
+                new PublicResult(PublicResultConstant.ERROR,null);
+    }
 
+    @PostMapping("capitalAudit")
+    @ApiOperation("组长审批")
+    @ApiImplicitParam(name = "requestJson",value = "{\"leaveId\":\"请假单id\",\"\":\"\"}",paramType = "String",dataType =
+            "body")
+    public PublicResult capitalAudit(@RequestBody JSONObject requestJson) throws BusinessException {
+        WfLeave wfLeave = JSON.toJavaObject(requestJson, WfLeave.class);
+        return iWfLeaveService.capitalAudit(wfLeave)?new PublicResult(PublicResultConstant.SUCCESS,null):
+                new PublicResult(PublicResultConstant.ERROR,null);
+    }
 
 
 }

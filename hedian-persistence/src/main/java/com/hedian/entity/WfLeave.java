@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
@@ -30,7 +31,7 @@ public class WfLeave extends Model<WfLeave> {
     /**
      * 请假人id
      */
-	@TableField("leave_user_id")
+	@TableField(value = "leave_user_id",fill = FieldFill.INSERT)
 	private Long leaveUserId;
     /**
      * 请假开始时间
