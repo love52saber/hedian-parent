@@ -6,6 +6,8 @@ import com.hedian.base.BusinessException;
 import com.hedian.entity.Fms;
 import com.hedian.model.FmsModel;
 
+import java.util.List;
+
 /**
  * <p>
  * 故障维修策略 服务类
@@ -22,4 +24,6 @@ public interface IFmsService extends IService<Fms> {
     boolean addAllNodes(Fms fms) throws Exception;
 
     boolean updateFms(Fms fms) throws Exception;
+
+    List<Fms> selectByCondition(Integer resId, Integer abnormalTypeId, Integer moAbnormalId, Integer mdId) throws Exception;
 }

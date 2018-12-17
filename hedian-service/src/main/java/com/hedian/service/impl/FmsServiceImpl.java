@@ -12,6 +12,8 @@ import com.hedian.util.ComUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 故障维修策略 服务实现类
@@ -109,5 +111,11 @@ public class FmsServiceImpl extends ServiceImpl<FmsMapper, Fms> implements IFmsS
             throw new BusinessException("更新设备信息失败");
         }
         return result;
+    }
+
+
+    @Override
+    public List<Fms> selectByCondition(Integer resId, Integer abnormalTypeId, Integer moAbnormalId, Integer mdId) throws Exception {
+        return fmsMapper.selectByCondition(resId,abnormalTypeId,moAbnormalId,mdId);
     }
 }
