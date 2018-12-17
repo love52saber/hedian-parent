@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
 
 import javax.print.DocFlavor;
@@ -77,13 +78,13 @@ public class WoSla extends Model<WoSla> {
     private Integer createflag;
     private Integer delflag;
     private Integer useflag;
-    @TableField("user_id_create")
+    @TableField(value = "user_id_create",fill = FieldFill.INSERT)
     private Long userIdCreate;
-    @TableField("gmt_create")
+    @TableField(value = "gmt_create",fill = FieldFill.INSERT)
     private Date gmtCreate;
-    @TableField("user_id_mod")
+    @TableField(value = "user_id_mod",fill = FieldFill.UPDATE)
     private Long userIdMod;
-    @TableField("gmt_modified")
+    @TableField(value = "gmt_modified",fill = FieldFill.UPDATE)
     private Date gmtModified;
 
     @TableField(exist = false)
