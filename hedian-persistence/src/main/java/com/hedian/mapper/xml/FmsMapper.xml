@@ -81,27 +81,24 @@
     </select>
 
     <select id="selectByCondition" resultMap="BaseResultMap">
-        SELECT fms.begin_time, fms.end_time, fms.fms_name, fms.dept_id, fms.user_id, fms.dispatchflag, fms.grp_id, fms.fms_desc, fms.fms_status, fa.mo_abnormal_id as moAbnormalId, fm.md_id as mdId, fat.abnormal_type_id as abnormalTypeId, fr.res_id as resId,fms.*
-        FROM tbl_fms fms,tbl_fms_abnormal fa,
-        tbl_fms_md fm,
-        tbl_fms_abnormal_type fat,
-        tbl_fms_res fr
-        WHERE fms.fms_id = fa.fms_id
-        AND   fms.fms_id = fm.fms_id
-        AND   fms.fms_id = fat.fms_id
-        AND   fms.fms_id = fr.fms_id
-        AND fms.useflag=1 AND fa.useflag=1 AND fm.useflag=1 AND fat.useflag=1 AND fr.useflag=1
-        <if test="moAbnormalId !=null and moAbnormalId !=''">
-            AND fa.mo_abnormal_id=#{moAbnormalId}
+        SELECT DISTINCT fms.*
+        FROM tbl_fms fms
+        LEFT JOIN tbl_fms_abnormal fa ON fms.fms_id = fa.fms_id
+        LEFT JOIN tbl_fms_md fm ON fms.fms_id = fm.fms_id
+        LEFT JOIN tbl_fms_abnormal_type fat ON fms.fms_id = fat.fms_id
+        LEFT JOIN tbl_fms_res fr ON fms.fms_id = fr.fms_id
+        WHERE fms.useflag = 1 AND fms.fms_status = 1
+        <if test="moAbnormalId != null and moAbnormalId != ''">
+            AND fa.mo_abnormal_id=#{moAbnormalId} AND fa.useflag = 1
         </if>
-        <if test="mdId !=null and mdId !=''">
-            AND fm.md_id=#{mdId}
+        <if test="mdId != null and mdId != ''">
+            AND fm.md_id=#{mdId} AND fm.useflag = 1
         </if>
-        <if test="abnormalTypeId !=null and abnormalTypeId !=''">
-            AND fat.abnormal_type_id=#{abnormalTypeId}
+        <if test="abnormalTypeId != null and abnormalTypeId != ''">
+            AND fat.abnormal_type_id=#{abnormalTypeId} AND fat.useflag = 1
         </if>
-        <if test="resId !=null and resId !=''">
-            AND fr.res_id=#{resId}
+        <if test="resId != null and resId != ''">
+            AND fr.res_id=#{resId} AND fr.useflag = 1
         </if>
     </select>
 
