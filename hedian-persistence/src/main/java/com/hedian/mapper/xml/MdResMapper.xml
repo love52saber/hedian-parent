@@ -31,7 +31,7 @@
         select tmr.*
         from tbl_md_res tmr
 	    left join tbl_res_base trb on tmr.res_id=trb.res_id
-        where trb.res_serialnumber is not null
+        where trb.res_serialnumber is not null and tmr.useflag = 1
         <if test="mdIds != null and mdIds.size()>0">and tmr.md_id IN
             <foreach item="mId" collection="mdIds" open="(" separator=","
                      close=")">
