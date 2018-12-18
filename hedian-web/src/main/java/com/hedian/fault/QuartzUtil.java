@@ -396,7 +396,7 @@ public class QuartzUtil {
             if (flag == 0) {
                 rootMapCache.put(QuatzConstants.ROOTBASE, rootBase);
             } else {
-                rootBase.setResColor(null);
+                rootBase.setResColor("#04bbb7");
                 resBaseService.updateAllColumnById(rootBase);
             }
         }
