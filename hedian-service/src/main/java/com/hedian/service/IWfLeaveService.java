@@ -1,8 +1,10 @@
 package com.hedian.service;
 
 import com.hedian.base.BusinessException;
+import com.hedian.entity.SysUser;
 import com.hedian.entity.WfLeave;
 import com.baomidou.mybatisplus.service.IService;
+import com.hedian.entity.WfLeaveCapitalAudit;
 
 /**
  * <p>
@@ -14,7 +16,7 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IWfLeaveService extends IService<WfLeave> {
 
-    boolean startLeave(WfLeave wfLeave) throws BusinessException;
+    boolean startLeave(WfLeave wfLeave, long capitalAuditUserId) throws BusinessException;
 
-    boolean capitalAudit(WfLeave wfLeave);
+    boolean capitalAudit(WfLeaveCapitalAudit wfLeave, SysUser currentUser);
 }
