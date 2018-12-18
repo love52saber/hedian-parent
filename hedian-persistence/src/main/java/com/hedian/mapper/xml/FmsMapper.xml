@@ -80,4 +80,26 @@
         ORDER BY fm.gmt_create
     </select>
 
+    <select id="selectByCondition" resultMap="BaseResultMap">
+        SELECT DISTINCT fms.*
+        FROM tbl_fms fms
+        LEFT JOIN tbl_fms_abnormal fa ON fms.fms_id = fa.fms_id
+        LEFT JOIN tbl_fms_md fm ON fms.fms_id = fm.fms_id
+        LEFT JOIN tbl_fms_abnormal_type fat ON fms.fms_id = fat.fms_id
+        LEFT JOIN tbl_fms_res fr ON fms.fms_id = fr.fms_id
+        WHERE fms.useflag = 1 AND fms.fms_status = 1
+        <if test="moAbnormalId != null and moAbnormalId != ''">
+            AND fa.mo_abnormal_id=#{moAbnormalId} AND fa.useflag = 1
+        </if>
+        <if test="mdId != null and mdId != ''">
+            AND fm.md_id=#{mdId} AND fm.useflag = 1
+        </if>
+        <if test="abnormalTypeId != null and abnormalTypeId != ''">
+            AND fat.abnormal_type_id=#{abnormalTypeId} AND fat.useflag = 1
+        </if>
+        <if test="resId != null and resId != ''">
+            AND fr.res_id=#{resId} AND fr.useflag = 1
+        </if>
+    </select>
+
 </mapper>

@@ -21,4 +21,6 @@ public interface FmsMapper extends BaseMapper<Fms> {
     List<FmsModel> selectPageByCondition(Page<FmsModel> page, @Param("fmsName") String fmsName, @Param("deptName") String deptName, @Param("userName") String userName,
                                            @Param("dispatchflag") Integer dispatchflag, @Param("grpName") String grpName, @Param("fmsStatus") Integer fmsStatus);
 
+    List<Fms> selectByCondition(@Param("resId")Integer resId,@Param("abnormalTypeId")Integer abnormalTypeId ,@Param("moAbnormalId")Integer moAbnormalId,
+                                @Param("mdId")Integer mdId);
 }

@@ -122,6 +122,19 @@ public class FmsController {
         return result ? new PublicResult<>(PublicResultConstant.SUCCESS, null) : new PublicResult<>(PublicResultConstant.ERROR, null);
     }
 
+    /**
+     * 根据资源信息、管理域、故障定义、故障类型查询故障维护策略基本信息
+     */
 
+        @GetMapping("/condition")
+
+      public PublicResult getFms(@RequestParam(value = "resId",defaultValue = "",required = false) Integer resId,
+                                 @RequestParam(value = "moAbnormalId",defaultValue = "",required = false) Integer moAbnormalId,
+                                 @RequestParam(value = "abnormalTypeId",defaultValue = "",required = false) Integer abnormalTypeId,
+                                 @RequestParam(value = "mdId",defaultValue = "",required = false) Integer mdId)throws Exception {
+
+            List<Fms> fmsList = fmsService.selectByCondition(resId,abnormalTypeId,moAbnormalId,mdId);
+            return new PublicResult<>(PublicResultConstant.SUCCESS,fmsList);
+      }
 }
 
