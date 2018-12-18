@@ -9,6 +9,7 @@ import com.hedian.service.IWoSlaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,30 +42,22 @@ public class WoSlaServiceImpl extends ServiceImpl<WoSlaMapper, WoSla> implements
 
 
     @Override
-    public Page<WoSla> selectwoSlaPageByCondition(Page<WoSla> page, String woSlaName, Integer resAbnormallevelId,
-                                           String procDefId, String woSlaStatus, Integer flag, String nowTime,String woSlaDesc) {
-        return page.setRecords(woSlaMapper.selectwoSlaPageByCondition(page,woSlaName,resAbnormallevelId,procDefId,woSlaStatus,flag,nowTime,woSlaDesc));
+    public Page<WoSla> selectwoSlaPageByCondition(Page<WoSla> page, Integer woSlaId, String woSlaName, Integer resAbnormallevelId,
+                                                  String procDefId, String woSlaStatus, Integer flag, String woSlaDesc) {
+        return page.setRecords(woSlaMapper.selectwoSlaPageByCondition(page,woSlaId,woSlaName,resAbnormallevelId,procDefId,woSlaStatus,flag,woSlaDesc));
     }
-
-
-//    @Override
-//    public boolean delBatchByIds(List<Integer> appraiseridList) throws BusinessException {
-//        for (Integer appraiserid : appraiseridList) {
-//            if (!delById(appraiserid)) {
-//                throw new BusinessException("评价人删除失败");
-//            }
-//        }
-//        return true;
-//    }
 
     @Override
     public boolean deleteBatchByIds(List<Integer> woslaidList) throws BusinessException {
-        for (Integer woslaid: woslaidList) {
-            if (!deleteById(woslaid)){
-                throw new BusinessException("woslaid删除失败");
-            }
-        }
-        return true;
+
+        List<WoSla> woSlaList = new ArrayList<>();
+        woslaidList.stream().forEach(id -> {
+            WoSla woSla = new WoSla();
+            woSla.setWoSlaId(id);
+            woSla.setUseflag(0);
+            woSlaList.add(woSla);
+        });
+        return this.updateBatchById(woSlaList);
     }
 
 

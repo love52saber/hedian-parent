@@ -17,12 +17,12 @@ import java.util.List;
  */
 public interface WoSlaMapper extends BaseMapper<WoSla> {
 
-      List<WoSla> selectwoSlaPageByCondition(Page<WoSla> page, @Param("woSlaName")String woSlaName,
+      List<WoSla> selectwoSlaPageByCondition(Page<WoSla> page, @Param("woSlaId")Integer woSlaId,
+                                       @Param("woSlaName")String woSlaName,
                                        @Param("resAbnormallevelId")Integer resAbnormallevelId,
                                        @Param("procDefId")String procDefId,
                                        @Param("woSlaStatus")String woSlaStatus,
                                        @Param("flag")Integer flag,
-                                       @Param("nowTime")String nowTime,
                                        @Param("woSlaDesc")String woSlaDesc);
 
 }

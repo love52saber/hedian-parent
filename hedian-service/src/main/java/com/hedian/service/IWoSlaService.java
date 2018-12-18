@@ -19,8 +19,8 @@ public interface IWoSlaService extends IService<WoSla> {
 
         boolean addSla(WoSla woSla) throws Exception;
 
-        Page<WoSla> selectwoSlaPageByCondition(Page<WoSla> objectPage, String woSlaName, Integer resAbnormallevelId,
-                                        String procDefId, String woSlaStatus, Integer flag, String nowTime,String woSlaDesc);
+        Page<WoSla> selectwoSlaPageByCondition(Page<WoSla> objectPage, Integer woSlaId, String woSlaName, Integer resAbnormallevelId,
+                                               String procDefId, String woSlaStatus, Integer flag, String woSlaDesc);
 
         boolean deleteBatchByIds(List<Integer> woslaidList) throws BusinessException;
 }

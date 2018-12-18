@@ -55,17 +55,20 @@
     </sql>
 
     <select id="selectwoSlaPageByCondition" resultMap="SlaPageMap">
-      SELECT ws.wo_sla_name,ws.res_abnormallevel_id,ws.proc_def_id,ws.act_id_in,ws.act_id_out,ws.hopetime,ws.deadtime,ws.begintime,ws.endtime,ws.wo_sla_status,ws.wo_sla_desc,
+      SELECT ws.wo_sla_id,ws.wo_sla_name,ws.res_abnormallevel_id,ws.proc_def_id,ws.act_id_in,ws.act_id_out,ws.hopetime,ws.deadtime,ws.begintime,ws.endtime,ws.wo_sla_status,ws.wo_sla_desc,
       ws.*,
       ra.*
       FROM tbl_wo_sla ws
       LEFT JOIN tbl_res_abnormallevel ra ON ws.res_abnormallevel_id = ra.res_abnormallevel_id
       WHERE ws.useflag=1
+      <if test="woSlaId !=null and woSlaId !=''">
+              AND ws.wo_sla_id=#{woSlaId}
+      </if>
       <if test="woSlaName !=null and woSlaName !=''" >
               AND ws.wo_sla_name=#{woSlaName}
       </if>
       <if test="resAbnormallevelId!=null and resAbnormallevelId!=''">
-        and  ws.res_abnormallevel_id=#{resAbnormallevelId}
+              AND ws.res_abnormallevel_id=#{resAbnormallevelId}
       </if>
 
       <if test="procDefId !=null and procDefId!=''">
@@ -75,8 +78,8 @@
               AND ws.wo_sla_status=#{woSlaStatus}
       </if>
       <if test="flag==1">
-        and '${nowTime}' &gt; ws.begintime
-        and '${nowTime}' &lt; ws.endtime
+              AND now() &gt; ws.begintime
+              AND now() &lt; ws.endtime
       </if>
       <if test="woSlaDesc !=null and woSlaDesc !=''">
               AND ws.wo_sla_desc=#{woSlaDesc}
