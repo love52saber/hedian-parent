@@ -1,18 +1,15 @@
 package com.hedian.entity;
 
-import java.io.Serializable;
-
-import java.util.Date;
-
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -100,6 +97,19 @@ public class Fms extends Model<Fms> {
     private List<Integer> mdIds;
     @TableField(exist = false)
     private List<Integer> resIds;
+    /**
+     * 默认选择的工单处理人
+     */
+    @TableField(exist = false)
+    private Long defaultReviewUserId;
+
+    public Long getDefaultReviewUserId() {
+        return defaultReviewUserId;
+    }
+
+    public void setDefaultReviewUserId(Long defaultReviewUserId) {
+        this.defaultReviewUserId = defaultReviewUserId;
+    }
 
     public List<Integer> getAbnormalIds() {
         return abnormalIds;

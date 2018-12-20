@@ -3,10 +3,9 @@ package com.hedian.service;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.base.BusinessException;
+import com.hedian.entity.ResMoAbnormalInfo;
 import com.hedian.model.AppraiseWfBusinessModel;
 import com.hedian.model.WfBusinessModel;
-
-import java.util.List;
 
 public interface IRuntimeService {
 
@@ -60,6 +59,6 @@ public interface IRuntimeService {
 
 
 
-
+    public void startBusinessToDistributeAutomatic(ResMoAbnormalInfo resMoAbnormalInfo) throws Exception;
 }
 

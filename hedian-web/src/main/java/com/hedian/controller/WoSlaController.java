@@ -3,7 +3,6 @@ package com.hedian.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.annotation.ValidationParam;
 import com.hedian.base.PublicResult;
@@ -14,7 +13,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,9 +30,6 @@ import java.util.List;
 @Api(description = "工单考核sla定义")
 public class WoSlaController {
 
-    @Value("${workflow.workorderkey}")
-    private String workOrderKey;
-
     @Autowired
     private IWoSlaService iWoSlaService;
 
@@ -44,7 +39,7 @@ public class WoSlaController {
      */
     @GetMapping("/wosla")
     public PublicResult getSingleWoSla() {
-        WoSla woSla = iWoSlaService.selectOne(new EntityWrapper<WoSla>().eq("proc_def_id", workOrderKey));
+        WoSla woSla = iWoSlaService.getSingleWoSla();
         return new PublicResult(PublicResultConstant.SUCCESS, woSla);
     }
 

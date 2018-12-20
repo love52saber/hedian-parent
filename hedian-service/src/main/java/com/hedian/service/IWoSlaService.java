@@ -23,4 +23,6 @@ public interface IWoSlaService extends IService<WoSla> {
                                                String procDefId, String woSlaStatus, Integer flag, String woSlaDesc);
 
         boolean deleteBatchByIds(List<Integer> woslaidList) throws BusinessException;
+
+    WoSla getSingleWoSla();
 }

@@ -47,6 +47,29 @@ public class Constant {
      */
     public static final String PASSWORD = "123456";
 
+    /**
+     * 自动派单flag
+     */
+    public static final int FMS_DISPATCH_AUTOMATIC = 1;
+
+    /**
+     * 工单类型：维修类型
+     */
+    public static final int WF_TYPE_MAINTAIN_TYPE = 1;
+
+    /**
+     * 工单状态:已完成
+     */
+    public static final int WF_STATUS_HAS_COMPLETED = 1;
+    /**
+     * 自动工单审核意见:同意
+     */
+    public static final String WF_REVIEW_DESC_AGREEMENT = "同意";
+    /**
+     * admin用户用户名
+     */
+    public static final Long SYS_USER_ID_ADMIN = 1L;
+
     public static class FilePostFix {
         public static final String ZIP_FILE = ".zip";
 

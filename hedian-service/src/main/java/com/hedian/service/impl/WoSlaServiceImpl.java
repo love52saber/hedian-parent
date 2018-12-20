@@ -1,5 +1,6 @@
 package com.hedian.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hedian.base.BusinessException;
@@ -7,6 +8,7 @@ import com.hedian.entity.WoSla;
 import com.hedian.mapper.WoSlaMapper;
 import com.hedian.service.IWoSlaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,7 +31,8 @@ public class WoSlaServiceImpl extends ServiceImpl<WoSlaMapper, WoSla> implements
     @Autowired
     private IWoSlaService iWoSlaService;
 
-
+    @Value("${workflow.workorderkey}")
+    private String workOrderKey;
 
     @Override
     public boolean addSla(WoSla woSla) throws Exception {
@@ -60,5 +63,9 @@ public class WoSlaServiceImpl extends ServiceImpl<WoSlaMapper, WoSla> implements
         return this.updateBatchById(woSlaList);
     }
 
+    @Override
+    public WoSla getSingleWoSla() {
+        return iWoSlaService.selectOne(new EntityWrapper<WoSla>().eq("proc_def_id", workOrderKey));
+    }
 
 }

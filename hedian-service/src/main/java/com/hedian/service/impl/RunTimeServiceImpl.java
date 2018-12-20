@@ -1,9 +1,11 @@
 package com.hedian.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.hedian.base.BusinessException;
+import com.hedian.base.Constant;
 import com.hedian.base.WorkFlowConstants;
 import com.hedian.entity.*;
 import com.hedian.mapper.WfBusinessMapper;
@@ -16,9 +18,18 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import sun.misc.Cache;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -33,6 +44,8 @@ public class RunTimeServiceImpl implements IRuntimeService {
     private String workOrderKey;
     @Value("${workflow.uservariable}")
     private String uservariable;
+
+    private static Logger logger = LoggerFactory.getLogger(RunTimeServiceImpl.class);
 
     @Autowired
     private RuntimeService runtimeService;
@@ -67,6 +80,27 @@ public class RunTimeServiceImpl implements IRuntimeService {
     @Autowired
     private IWfKexinAppraInfoService wfKexinAppraInfoService;
 
+    @Autowired
+    private IFmsService iFmsService;
+
+    @Autowired
+    private IWoSlaService iWoSlaService;
+
+    @Autowired
+    private IResBaseService iResBaseService;
+
+    @Autowired
+    private ISysGrpUserService iSysGrpUserService;
+
+    @Autowired
+    private ISysUserService iSysUserService;
+
+    @Autowired
+    private IMdResService iMdResService;
+
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
 
     @Override
     public Page<WfBusinessModel> selectPageByConditionResBase(Page<WfBusinessModel> page, Integer wfType, String wfTitle, String resAbnormallevelName, String resName,
@@ -87,6 +121,7 @@ public class RunTimeServiceImpl implements IRuntimeService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public String startWorkFlow(JSONObject requestJson) throws Exception {
         //业务数据导入
         Map<String, Object> variables = new HashMap<>();
@@ -462,13 +497,149 @@ public class RunTimeServiceImpl implements IRuntimeService {
     }
 
     @Override
-    public Page<AppraiseWfBusinessModel> selectAppraisePageByCondition(Page<AppraiseWfBusinessModel> page, String wfTitle, String wfId,String kexinUserName, String baseUserName,  String baseAppraBeginTime,String kexinAppraBeginTime,String kexinAppraEndTime,
-                                                                       String baseAppraEndTime,Integer baseAppraScore,Integer kexinAppraScore,Integer defFlag) {
-        return page.setRecords(wfBusinessMapper.selectAppraisePageByCondition(page, wfTitle,wfId,kexinUserName,baseUserName,baseAppraBeginTime, baseAppraEndTime,kexinAppraBeginTime,kexinAppraEndTime,baseAppraScore,kexinAppraScore,defFlag));
+    public Page<AppraiseWfBusinessModel> selectAppraisePageByCondition(Page<AppraiseWfBusinessModel> page, String wfTitle, String wfId, String kexinUserName, String baseUserName, String baseAppraBeginTime, String kexinAppraBeginTime, String kexinAppraEndTime,
+                                                                       String baseAppraEndTime, Integer baseAppraScore, Integer kexinAppraScore, Integer defFlag) {
+        return page.setRecords(wfBusinessMapper.selectAppraisePageByCondition(page, wfTitle, wfId, kexinUserName, baseUserName, baseAppraBeginTime, baseAppraEndTime, kexinAppraBeginTime, kexinAppraEndTime, baseAppraScore, kexinAppraScore, defFlag));
     }
 
+    /**
+     * 自动创建工单到派单
+     *
+     * @param resMoAbnormalInfo
+     * @throws Exception
+     */
+    @Override
+    public void startBusinessToDistributeAutomatic(ResMoAbnormalInfo resMoAbnormalInfo) throws Exception {
+        //1获取自动派单的策略
+        Fms fmsToDistributeAutomatic = this.getFmsToStartBusinessAutomatic(resMoAbnormalInfo);
+        logger.info("自动派单维护策略" + fmsToDistributeAutomatic);
+        if (!ComUtil.isEmpty(fmsToDistributeAutomatic)) {
+            Integer reviewGrpId = fmsToDistributeAutomatic.getGrpId();
+            Long defaultReviewUserId =
+                    iSysGrpUserService.selectList(new EntityWrapper<SysGrpUser>().eq("grp_id", reviewGrpId)).get(0).getUserId();
+            fmsToDistributeAutomatic.setDefaultReviewUserId(defaultReviewUserId);
+            //2自动创建工单
+            DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+            def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW); // 事物隔离级别，开启新事务，这样会比较安全些。
+            TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
+            String processInstanceId = null;
+            try {
+                processInstanceId = this.startBusinessAutomatic(resMoAbnormalInfo, fmsToDistributeAutomatic);
+                transactionManager.commit(status);
+            } catch (Exception e) {
+                transactionManager.rollback(status);
+            }
+            logger.info("自动创建工单,工单id为" + processInstanceId);
+            //3自动审核
+            this.reviewBusinessAutomatic(fmsToDistributeAutomatic, processInstanceId);
+            logger.info("自动审核工单,工单id为" + processInstanceId);
+        }
+    }
 
+    /**
+     * 获取自动派单的策略
+     *
+     * @param resMoAbnormalInfo
+     * @return
+     * @throws Exception
+     */
+    private Fms getFmsToStartBusinessAutomatic(ResMoAbnormalInfo resMoAbnormalInfo) throws Exception {
+        Fms fmsToDistributeAutomatic = null;
+        //获取mdid
+        Integer mdId =
+                iMdResService.selectOne(new EntityWrapper<MdRes>().eq("res_id", resMoAbnormalInfo.getResId())).getMdId();
+        List<Fms> fmsList = iFmsService.selectByCondition(resMoAbnormalInfo.getResId(), resMoAbnormalInfo.getAbnormalTypeId(),
+                resMoAbnormalInfo.getMoAbnormalId(), mdId);
+        if (fmsList.size() > 0) {
+            for (Fms fms : fmsList) {
+                if (fms.getDispatchflag().equals(Constant.FMS_DISPATCH_AUTOMATIC) && System.currentTimeMillis() > fms.getBeginTime()
+                        .getTime() && System.currentTimeMillis() < fms.getEndTime().getTime()) {
+                    fmsToDistributeAutomatic = fms;
+                    break;
+                }
+            }
+        }
+        return fmsToDistributeAutomatic;
+    }
 
+    /**
+     * 自动创建工单
+     *
+     * @param resMoAbnormalInfo
+     * @param fmsToDistributeAutomatic
+     * @return
+     * @throws Exception
+     */
+//    @Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.READ_UNCOMMITTED)
+    public String startBusinessAutomatic(ResMoAbnormalInfo resMoAbnormalInfo, Fms fmsToDistributeAutomatic) throws Exception {
+        //流程变量
+        SysUser createUser = iSysUserService.selectById(Constant.SYS_USER_ID_ADMIN);
+        ResBase resBase = iResBaseService.selectById(resMoAbnormalInfo.getResId());
 
+        JSONObject paramsToStartWorkFlow = (JSONObject) JSON.toJSON(resMoAbnormalInfo);
+        paramsToStartWorkFlow.put("woSlaId", iWoSlaService.getSingleWoSla().getWoSlaId());
+        paramsToStartWorkFlow.put("wfTitle", resBase.getResName() + resMoAbnormalInfo.getResAbnormalName());
+        paramsToStartWorkFlow.put("wfType", Constant.WF_TYPE_MAINTAIN_TYPE);
+        paramsToStartWorkFlow.put("userId", createUser.getUserId());
+        paramsToStartWorkFlow.put("telephone", createUser.getTelephone());
+        paramsToStartWorkFlow.put("url", null);
+        paramsToStartWorkFlow.put("resMtypeId", resBase.getResMainType());
+        paramsToStartWorkFlow.put("resStypeId", resBase.getResStypeId());
+        paramsToStartWorkFlow.put("wfStatus", Constant.WF_STATUS_HAS_COMPLETED);
+        paramsToStartWorkFlow.put("currentStep", WorkFlowConstants.CREATE_WF);
+        paramsToStartWorkFlow.put("currentUser", createUser.getUserId());
+        paramsToStartWorkFlow.put("woEvalScore", null);
+        paramsToStartWorkFlow.put(uservariable, fmsToDistributeAutomatic.getDefaultReviewUserId());
+        return this.startWorkFlow(paramsToStartWorkFlow);
+    }
 
+    /**
+     * 自动审核工单
+     *
+     * @param resMoAbnormalInfo
+     * @param fmsToDistributeAutomatic
+     * @param processInstanceId
+     * @throws BusinessException
+     */
+//    @Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.READ_UNCOMMITTED)
+    public void reviewBusinessAutomatic(Fms fmsToDistributeAutomatic, String processInstanceId) throws BusinessException {
+        //流程变量
+        Task currentTask =
+                taskService.createTaskQuery().taskAssignee(fmsToDistributeAutomatic.getDefaultReviewUserId().toString())
+                        .processInstanceId(processInstanceId).singleResult();
+        SysUser distributor = iSysUserService.selectById(fmsToDistributeAutomatic.getUserId());
+        WfBusiness wfBusiness = wfBusinessService.selectOne(new EntityWrapper<WfBusiness>().eq("wf_id", processInstanceId));
+
+        JSONObject paramsToStartWorkFlow = (JSONObject) JSON.toJSON(wfBusiness);
+        paramsToStartWorkFlow.put("currentStep", WorkFlowConstants.REVIEW_WF);
+        paramsToStartWorkFlow.put("taskId", currentTask.getId());
+        paramsToStartWorkFlow.put("wfReviewInfo", fmsToDistributeAutomatic.getFmsDesc());
+        paramsToStartWorkFlow.put("deptId", fmsToDistributeAutomatic.getDeptId());
+        paramsToStartWorkFlow.put("reviewUserId", fmsToDistributeAutomatic.getDefaultReviewUserId());
+        paramsToStartWorkFlow.put("reviewDesc", Constant.WF_REVIEW_DESC_AGREEMENT);
+        paramsToStartWorkFlow.put("reviewTime", new Date());
+        paramsToStartWorkFlow.put("disUserId", fmsToDistributeAutomatic.getUserId());
+        paramsToStartWorkFlow.put("disPhone", distributor.getTelephone());
+        this.handleWorkFlow(paramsToStartWorkFlow);
+    }
+
+    /**
+     * 自动关闭工单
+     * @param resMoAbnormalInfo
+     * @throws BusinessException
+     */
+    public void closeAutomaticBusiness(ResMoAbnormalInfo resMoAbnormalInfo) throws BusinessException {
+        //查询此告警相关的工单
+        Map<String, Object> wrapperParams = new HashMap<>();
+        wrapperParams.put("res_abnormal_id", resMoAbnormalInfo.getResAbnormalId());
+        wrapperParams.put("currentStep", WorkFlowConstants.DIS_WF);
+        List<WfBusiness> wfBusinessList = wfBusinessService.selectList(new EntityWrapper<WfBusiness>().allEq(wrapperParams));
+        //关闭工单
+        if (!ComUtil.isEmpty(wfBusinessList)) {
+            for (WfBusiness wfBusiness : wfBusinessList) {
+                this.deleteWorkFlow(wfBusiness.getBusinessId());
+            }
+        }
+
+    }
 }
