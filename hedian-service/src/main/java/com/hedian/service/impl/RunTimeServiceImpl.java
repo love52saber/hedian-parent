@@ -29,7 +29,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import sun.misc.Cache;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -514,10 +513,6 @@ public class RunTimeServiceImpl implements IRuntimeService {
         Fms fmsToDistributeAutomatic = this.getFmsToStartBusinessAutomatic(resMoAbnormalInfo);
         logger.info("自动派单维护策略" + fmsToDistributeAutomatic);
         if (!ComUtil.isEmpty(fmsToDistributeAutomatic)) {
-            Integer reviewGrpId = fmsToDistributeAutomatic.getGrpId();
-            Long defaultReviewUserId =
-                    iSysGrpUserService.selectList(new EntityWrapper<SysGrpUser>().eq("grp_id", reviewGrpId)).get(0).getUserId();
-            fmsToDistributeAutomatic.setDefaultReviewUserId(defaultReviewUserId);
             //2自动创建工单
             DefaultTransactionDefinition def = new DefaultTransactionDefinition();
             def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW); // 事物隔离级别，开启新事务，这样会比较安全些。
@@ -545,7 +540,7 @@ public class RunTimeServiceImpl implements IRuntimeService {
      */
     private Fms getFmsToStartBusinessAutomatic(ResMoAbnormalInfo resMoAbnormalInfo) throws Exception {
         Fms fmsToDistributeAutomatic = null;
-        //获取mdid
+        //获取故障发生的域mdid
         Integer mdId =
                 iMdResService.selectOne(new EntityWrapper<MdRes>().eq("res_id", resMoAbnormalInfo.getResId())).getMdId();
         List<Fms> fmsList = iFmsService.selectByCondition(resMoAbnormalInfo.getResId(), resMoAbnormalInfo.getAbnormalTypeId(),
@@ -554,8 +549,16 @@ public class RunTimeServiceImpl implements IRuntimeService {
             for (Fms fms : fmsList) {
                 if (fms.getDispatchflag().equals(Constant.FMS_DISPATCH_AUTOMATIC) && System.currentTimeMillis() > fms.getBeginTime()
                         .getTime() && System.currentTimeMillis() < fms.getEndTime().getTime()) {
-                    fmsToDistributeAutomatic = fms;
-                    break;
+                    //判断处理组中是否有成员
+                    Integer reviewGrpId = fms.getGrpId();
+                    List<SysGrpUser> reviewGrp = iSysGrpUserService.selectList(new EntityWrapper<SysGrpUser>().eq("grp_id",
+                            reviewGrpId));
+                    if (reviewGrp.size() != 0) {
+                        fmsToDistributeAutomatic = fms;
+                        Long defaultReviewUserId = reviewGrp.get(0).getUserId();
+                        fmsToDistributeAutomatic.setDefaultReviewUserId(defaultReviewUserId);
+                        break;
+                    }
                 }
             }
         }
@@ -570,21 +573,20 @@ public class RunTimeServiceImpl implements IRuntimeService {
      * @return
      * @throws Exception
      */
-//    @Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.READ_UNCOMMITTED)
     public String startBusinessAutomatic(ResMoAbnormalInfo resMoAbnormalInfo, Fms fmsToDistributeAutomatic) throws Exception {
         //流程变量
         SysUser createUser = iSysUserService.selectById(Constant.SYS_USER_ID_ADMIN);
-        ResBase resBase = iResBaseService.selectById(resMoAbnormalInfo.getResId());
+        ResBase errorResBase = iResBaseService.selectById(resMoAbnormalInfo.getResId());
 
         JSONObject paramsToStartWorkFlow = (JSONObject) JSON.toJSON(resMoAbnormalInfo);
         paramsToStartWorkFlow.put("woSlaId", iWoSlaService.getSingleWoSla().getWoSlaId());
-        paramsToStartWorkFlow.put("wfTitle", resBase.getResName() + resMoAbnormalInfo.getResAbnormalName());
+        paramsToStartWorkFlow.put("wfTitle", errorResBase.getResName() + resMoAbnormalInfo.getResAbnormalName());
         paramsToStartWorkFlow.put("wfType", Constant.WF_TYPE_MAINTAIN_TYPE);
         paramsToStartWorkFlow.put("userId", createUser.getUserId());
         paramsToStartWorkFlow.put("telephone", createUser.getTelephone());
         paramsToStartWorkFlow.put("url", null);
-        paramsToStartWorkFlow.put("resMtypeId", resBase.getResMainType());
-        paramsToStartWorkFlow.put("resStypeId", resBase.getResStypeId());
+        paramsToStartWorkFlow.put("resMtypeId", errorResBase.getResMainType());
+        paramsToStartWorkFlow.put("resStypeId", errorResBase.getResStypeId());
         paramsToStartWorkFlow.put("wfStatus", Constant.WF_STATUS_HAS_COMPLETED);
         paramsToStartWorkFlow.put("currentStep", WorkFlowConstants.CREATE_WF);
         paramsToStartWorkFlow.put("currentUser", createUser.getUserId());
@@ -596,14 +598,11 @@ public class RunTimeServiceImpl implements IRuntimeService {
     /**
      * 自动审核工单
      *
-     * @param resMoAbnormalInfo
      * @param fmsToDistributeAutomatic
      * @param processInstanceId
      * @throws BusinessException
      */
-//    @Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.READ_UNCOMMITTED)
     public void reviewBusinessAutomatic(Fms fmsToDistributeAutomatic, String processInstanceId) throws BusinessException {
-        //流程变量
         Task currentTask =
                 taskService.createTaskQuery().taskAssignee(fmsToDistributeAutomatic.getDefaultReviewUserId().toString())
                         .processInstanceId(processInstanceId).singleResult();
@@ -628,18 +627,18 @@ public class RunTimeServiceImpl implements IRuntimeService {
      * @param resMoAbnormalInfo
      * @throws BusinessException
      */
+    @Override
     public void closeAutomaticBusiness(ResMoAbnormalInfo resMoAbnormalInfo) throws BusinessException {
-        //查询此告警相关的工单
+        //1查询此告警相关的工单
         Map<String, Object> wrapperParams = new HashMap<>();
         wrapperParams.put("res_abnormal_id", resMoAbnormalInfo.getResAbnormalId());
-        wrapperParams.put("currentStep", WorkFlowConstants.DIS_WF);
+        wrapperParams.put("current_step", WorkFlowConstants.DIS_WF);
         List<WfBusiness> wfBusinessList = wfBusinessService.selectList(new EntityWrapper<WfBusiness>().allEq(wrapperParams));
-        //关闭工单
+        //2关闭工单
         if (!ComUtil.isEmpty(wfBusinessList)) {
             for (WfBusiness wfBusiness : wfBusinessList) {
                 this.deleteWorkFlow(wfBusiness.getBusinessId());
             }
         }
-
     }
 }

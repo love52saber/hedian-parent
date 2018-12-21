@@ -58,7 +58,18 @@ public interface IRuntimeService {
                                                                 String kexinAppraEndTIime,Integer baseAppraScore,Integer kexinAppraScore,Integer defFlag);
 
 
-
+    /**
+     * 根据设备故障告警自动生成工单
+     * @param resMoAbnormalInfo
+     * @throws Exception
+     */
     public void startBusinessToDistributeAutomatic(ResMoAbnormalInfo resMoAbnormalInfo) throws Exception;
+
+    /**
+     * 自动关闭工单
+     * @param resMoAbnormalInfo
+     * @throws BusinessException
+     */
+    void closeAutomaticBusiness(ResMoAbnormalInfo resMoAbnormalInfo) throws BusinessException;
 }
 

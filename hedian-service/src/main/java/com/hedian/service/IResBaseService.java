@@ -41,4 +41,6 @@ public interface IResBaseService extends IService<ResBase> {
      * @param resBase
      */
     void transferResToNormal(ResBase resBase) throws BusinessException;
+
+    Long findTerminalResIdByResId(Long currentResId) throws Exception;
 }

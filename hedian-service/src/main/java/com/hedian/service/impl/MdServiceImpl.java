@@ -104,4 +104,5 @@ public class MdServiceImpl extends ServiceImpl<MdMapper, Md> implements IMdServi
     public List<Md> selectPageByCondition(String mdName, Long deptId, Long userId) {
         return mdMapper.selectPageByCondition(mdName,deptId, userId);
     }
+
 }

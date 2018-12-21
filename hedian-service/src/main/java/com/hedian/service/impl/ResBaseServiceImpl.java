@@ -194,4 +194,15 @@ public class ResBaseServiceImpl extends ServiceImpl<ResBaseMapper, ResBase> impl
     public List<ResBase> selectByResMtypeId(Integer resMtypeId) {
         return resBaseMapper.selectByResMtypeId(resMtypeId);
     }
+
+
+    @Override
+    public Long findTerminalResIdByResId(Long currentResId) throws Exception {
+        ResBase resBase = this.selectById(currentResId);
+        if (ComUtil.isEmpty(resBase.getResSerialnumber())) {
+            return currentResId;
+        } else {
+            return Long.parseLong(resBase.getResSerialnumber());
+        }
+    }
 }
